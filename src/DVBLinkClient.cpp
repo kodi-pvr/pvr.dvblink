@@ -24,7 +24,7 @@
  */
 
 #include "DVBLinkClient.h"
-#include "platform/util/StdString.h"
+#include "kodi/util/StdString.h"
 #include "DialogRecordPref.h"
 #include "DialogDeleteTimer.h"
 
