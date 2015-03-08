@@ -25,6 +25,7 @@
 
 #include "DVBLinkClient.h"
 #include "kodi/util/StdString.h"
+#include "kodi/libKODI_guilib.h"
 #include "DialogRecordPref.h"
 #include "DialogDeleteTimer.h"
 
@@ -57,7 +58,7 @@ std::string DVBLinkClient::GetBuildInRecorderObjectID()
   return result;
 }
 
-DVBLinkClient::DVBLinkClient(CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* pvr, CHelper_libXBMC_gui* gui, std::string clientname, std::string hostname, 
+DVBLinkClient::DVBLinkClient(CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* pvr, CHelper_libKODI_guilib* gui, std::string clientname, std::string hostname, 
     long port, bool showinfomsg, std::string username, std::string password, bool add_episode_to_rec_title, bool group_recordings_by_series)
 {
   PVR = pvr;

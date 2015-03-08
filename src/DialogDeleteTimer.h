@@ -23,12 +23,13 @@
 #pragma once
 
 #include "client.h"
+#include "kodi/libKODI_guilib.h"
 
 class CDialogDeleteTimer
 {
 
 public:
-    CDialogDeleteTimer(ADDON::CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_gui* gui, bool recSeries);
+    CDialogDeleteTimer(ADDON::CHelper_libXBMC_addon* xbmc, CHelper_libKODI_guilib* gui, bool recSeries);
 	virtual ~CDialogDeleteTimer();
 
 	bool Show();
@@ -45,7 +46,7 @@ private:
   // following is needed for every dialog
 private:
   CAddonGUIWindow *_window;
-  CHelper_libXBMC_gui* GUI;
+  CHelper_libKODI_guilib* GUI;
   ADDON::CHelper_libXBMC_addon* XBMC;
   int _confirmed;							//-1=>dialog load failed, 0=>canceled, 1=>confirmed
 

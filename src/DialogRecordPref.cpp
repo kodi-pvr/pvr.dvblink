@@ -21,7 +21,7 @@
  */
 
 #include "DialogRecordPref.h"
-#include "kodi/libXBMC_gui.h"
+#include "kodi/libKODI_guilib.h"
 
 using namespace ADDON;
 
@@ -32,7 +32,7 @@ using namespace ADDON;
 #define RADIO_BUTTON_EPISODE			10
 #define RADIO_BUTTON_SERIES				11
 
-CDialogRecordPref::CDialogRecordPref(CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_gui* gui, bool recSeries)
+CDialogRecordPref::CDialogRecordPref(CHelper_libXBMC_addon* xbmc, CHelper_libKODI_guilib* gui, bool recSeries)
 {
 	RecSeries = recSeries;
     GUI = gui;

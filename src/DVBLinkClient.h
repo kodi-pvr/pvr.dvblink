@@ -32,6 +32,7 @@
 #include "kodi/xbmc_pvr_types.h"
 #include "kodi/libXBMC_addon.h"
 #include "kodi/libXBMC_pvr.h"
+#include "kodi/libKODI_guilib.h"
 #include "client.h"
 #include "kodi/threads/threads.h"
 #include "kodi/threads/mutex.h"
@@ -47,7 +48,7 @@ typedef std::map<std::string, std::string> recording_id_to_url_map_t;
 class DVBLinkClient : public PLATFORM::CThread
 {
 public:
-    DVBLinkClient(ADDON::CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* pvr, CHelper_libXBMC_gui* gui, std::string clientname, std::string hostname, long port, 
+    DVBLinkClient(ADDON::CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* pvr, CHelper_libKODI_guilib* gui, std::string clientname, std::string hostname, long port, 
         bool showinfomsg, std::string username, std::string password, bool add_episode_to_rec_title, bool group_recordings_by_series);
   ~DVBLinkClient(void);
   int GetChannelsAmount();
@@ -101,7 +102,7 @@ private:
   PLATFORM::CMutex        m_mutex;
   CHelper_libXBMC_pvr *PVR;
   ADDON::CHelper_libXBMC_addon  *XBMC; 
-  CHelper_libXBMC_gui   *GUI;
+  CHelper_libKODI_guilib   *GUI;
   std::string m_clientname;
   std::string m_hostname;
   LiveStreamerBase* m_live_streamer;

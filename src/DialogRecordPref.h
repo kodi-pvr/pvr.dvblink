@@ -23,11 +23,12 @@
 #pragma once
 
 #include "client.h"
+#include "kodi/libKODI_guilib.h"
 
 class CDialogRecordPref
 {
 public:
-    CDialogRecordPref(ADDON::CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_gui* gui, bool recSeries);
+    CDialogRecordPref(ADDON::CHelper_libXBMC_addon* xbmc, CHelper_libKODI_guilib* gui, bool recSeries);
 	virtual ~CDialogRecordPref();
 
 	bool Show();
@@ -43,7 +44,7 @@ private:
 
   // following is needed for every dialog
 private:
-    CHelper_libXBMC_gui* GUI;
+    CHelper_libKODI_guilib* GUI;
     ADDON::CHelper_libXBMC_addon* XBMC;
     CAddonGUIWindow *_window;
     int _confirmed;		//-1=> load failed, 0=>canceled, 1=>confirmed
