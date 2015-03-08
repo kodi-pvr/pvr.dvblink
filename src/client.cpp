@@ -61,9 +61,9 @@ std::string g_szAudiotrack          = DEFAULT_AUDIOTRACK;            ///< Audiot
 bool        g_bUseTimeshift         = DEFAULT_USETIMESHIFT;          ///< Use timeshift
 bool        g_bAddRecEpisode2title  = DEFAULT_ADDRECEPISODE2TITLE;   ///< Concatenate title and episode info for recordings
 bool        g_bGroupRecBySeries = DEFAULT_GROUPRECBYSERIES;         ///< Group Recordings as Directories by series
-CHelper_libXBMC_addon *XBMC = NULL;
-CHelper_libXBMC_pvr   *PVR          = NULL;
-CHelper_libXBMC_gui   *GUI          = NULL;
+CHelper_libXBMC_addon  *XBMC = NULL;
+CHelper_libXBMC_pvr    *PVR  = NULL;
+CHelper_libKODI_guilib *GUI  = NULL;
 
 extern "C" {
 
@@ -114,7 +114,7 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
     return ADDON_STATUS_PERMANENT_FAILURE;
   }
 
-  GUI = new CHelper_libXBMC_gui;
+  GUI = new CHelper_libKODI_guilib;
   if (!GUI->RegisterMe(hdl))
   {
       SAFE_DELETE(GUI);

@@ -21,7 +21,7 @@
  */
 
 #include "DialogDeleteTimer.h"
-#include "kodi/libXBMC_gui.h"
+#include "kodi/libKODI_guilib.h"
 
 using namespace ADDON;
 
@@ -34,7 +34,7 @@ using namespace ADDON;
 #define LABEL_SHOWNAME					20
 
 
-CDialogDeleteTimer::CDialogDeleteTimer(CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_gui* gui, bool delSeries)
+CDialogDeleteTimer::CDialogDeleteTimer(CHelper_libXBMC_addon* xbmc, CHelper_libKODI_guilib* gui, bool delSeries)
 {
     XBMC = xbmc; 
     GUI = gui;
