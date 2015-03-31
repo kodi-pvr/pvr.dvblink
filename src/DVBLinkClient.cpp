@@ -982,7 +982,12 @@ PVR_ERROR DVBLinkClient::GetEPGForChannel(ADDON_HANDLE handle, const PVR_CHANNEL
         broadcast.endTime             = p->GetStartTime() + p->GetDuration();
         broadcast.strPlotOutline      = p->SubTitle.c_str();
         broadcast.strPlot             = p->ShortDescription.c_str();
-        
+        broadcast.strOriginalTitle    = NULL; // unused
+        broadcast.strCast             = NULL; // unused
+        broadcast.strDirector         = NULL; // unused
+        broadcast.strWriter           = NULL; // unused
+        broadcast.iYear               = 0;    // unused
+        broadcast.strIMDBNumber       = NULL; // unused
         broadcast.strIconPath         = p->Image.c_str();
         broadcast.iGenreType          = 0;
         broadcast.iGenreSubType       = 0;
