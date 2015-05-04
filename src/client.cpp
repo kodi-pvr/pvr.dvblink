@@ -27,8 +27,8 @@
 #include "kodi/xbmc_pvr_dll.h"
 #include "kodi/libKODI_guilib.h"
 #include "DVBLinkClient.h"
-#include "kodi/util/util.h"
-#include "kodi/util/timeutils.h"
+#include "platform/util/util.h"
+#include "platform/util/timeutils.h"
 #include "RecordingStreamer.h"
 
 using namespace std;
