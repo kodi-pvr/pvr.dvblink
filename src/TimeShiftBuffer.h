@@ -26,9 +26,9 @@
 #pragma once
 
 #include "kodi/libXBMC_addon.h"
-#include "kodi/util/StdString.h"
+#include "platform/util/StdString.h"
 #include "libdvblinkremote/dvblinkremote.h"
-#include "kodi/util/util.h"
+#include "platform/util/util.h"
 
 class LiveStreamerBase
 {
