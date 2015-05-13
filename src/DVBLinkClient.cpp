@@ -59,7 +59,7 @@ std::string DVBLinkClient::GetBuildInRecorderObjectID()
 }
 
 DVBLinkClient::DVBLinkClient(CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* pvr, CHelper_libKODI_guilib* gui, std::string clientname, std::string hostname, 
-    long port, bool showinfomsg, std::string username, std::string password, bool add_episode_to_rec_title, bool group_recordings_by_series)
+    long port, bool showinfomsg, std::string username, std::string password, bool add_episode_to_rec_title, bool group_recordings_by_series, bool no_group_single_rec)
 {
   PVR = pvr;
   XBMC = xbmc;
@@ -71,6 +71,10 @@ DVBLinkClient::DVBLinkClient(CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* p
   m_showinfomsg = showinfomsg;
   m_add_episode_to_rec_title = add_episode_to_rec_title;
   m_group_recordings_by_series = group_recordings_by_series;
+  no_group_single_rec_ = no_group_single_rec;
+  setting_margins_supported_ = false;
+  favorites_supported_ = false;
+  transcoding_supported_ = false;
 
   m_httpClient = new HttpPostClient(XBMC,hostname, port, username, password);
   m_dvblinkRemoteCommunication = DVBLinkRemote::Connect((HttpClient&)*m_httpClient, m_hostname.c_str(), port, username.c_str(), password.c_str());
@@ -79,6 +83,27 @@ DVBLinkClient::DVBLinkClient(CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* p
   m_timerCount = -1;
   m_recordingCount = -1;
 
+  //get server version and build
+  GetServerInfoRequest server_info_request;
+  ServerInfo si;
+  if ((status = m_dvblinkRemoteCommunication->GetServerInfo(server_info_request, si)) == DVBLINK_REMOTE_STATUS_OK)
+  {
+      int server_build = atoi(si.build_.c_str());
+
+      //server with build earlier than 11410 does not support setting margins
+      setting_margins_supported_ = (server_build >= 11405);
+  }
+
+  GetStreamingCapabilitiesRequest streamin_caps_request;
+  StreamingCapabilities streaming_caps;
+  status = m_dvblinkRemoteCommunication->GetStreamingCapabilities(streamin_caps_request, streaming_caps);
+  if (status == DVBLINK_REMOTE_STATUS_OK)
+      transcoding_supported_ = streaming_caps.IsTranscoderSupported(dvblinkremote::StreamingCapabilities::STREAMING_TRANSCODER_H264);
+
+  GetFavoritesRequest favorites_request;
+  status = m_dvblinkRemoteCommunication->GetFavorites(favorites_request, channel_favorites_);
+  favorites_supported_ = (status == DVBLINK_REMOTE_STATUS_OK);
+  
   GetChannelsRequest request;
   m_channels = new ChannelList();
   m_stream = new Stream();
@@ -90,7 +115,9 @@ DVBLinkClient::DVBLinkClient(CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* p
     for (std::vector<Channel*>::iterator it = m_channels->begin(); it < m_channels->end(); it++) 
     {
       Channel* channel = (*it);
-      m_channelMap[++iChannelUnique] = channel;
+      int channel_id = ++iChannelUnique;
+      m_channelMap[channel_id] = channel;
+      inverse_channel_map_[channel->GetID()] = channel_id;
     }
     m_connected = true;
     
@@ -166,7 +193,11 @@ PVR_ERROR DVBLinkClient::GetChannels(ADDON_HANDLE handle, bool bRadio)
       PVR_CHANNEL xbmcChannel;
       memset(&xbmcChannel, 0, sizeof(PVR_CHANNEL));
       xbmcChannel.bIsRadio = isRadio;
-      xbmcChannel.iChannelNumber =channel->Number;
+      if (channel->Number != -1)
+      {
+          xbmcChannel.iChannelNumber = channel->Number;
+          xbmcChannel.iSubChannelNumber = channel->SubNumber;
+      }
       xbmcChannel.iEncryptionSystem = 0;
       xbmcChannel.iUniqueId = (*it).first;
 
@@ -178,6 +209,69 @@ PVR_ERROR DVBLinkClient::GetChannels(ADDON_HANDLE handle, bool bRadio)
     }
   }
   return PVR_ERROR_NO_ERROR;
+}
+
+int DVBLinkClient::GetChannelGroupsAmount(void)
+{
+    if (!favorites_supported_)
+        return -1;
+
+    return channel_favorites_.favorites_.size();
+}
+
+PVR_ERROR DVBLinkClient::GetChannelGroups(ADDON_HANDLE handle, bool bRadio)
+{
+    if (!favorites_supported_)
+        return PVR_ERROR_NOT_IMPLEMENTED;
+
+    for (size_t i = 0; i<channel_favorites_.favorites_.size(); i++)
+    {
+        PVR_CHANNEL_GROUP group;
+        memset(&group, 0, sizeof(PVR_CHANNEL_GROUP));
+        group.bIsRadio = bRadio;
+        PVR_STRCPY(group.strGroupName, channel_favorites_.favorites_[i].get_name().c_str());
+
+        PVR->TransferChannelGroup(handle, &group);
+    }
+
+    return PVR_ERROR_NO_ERROR;
+}
+
+PVR_ERROR DVBLinkClient::GetChannelGroupMembers(ADDON_HANDLE handle, const PVR_CHANNEL_GROUP &group)
+{
+    if (!favorites_supported_)
+        return PVR_ERROR_NOT_IMPLEMENTED;
+
+    for (size_t i = 0; i<channel_favorites_.favorites_.size(); i++)
+    {
+        if (channel_favorites_.favorites_[i].get_name() != group.strGroupName)
+            continue;
+
+        dvblinkremote::ChannelFavorite::favorite_channel_list_t chlist = channel_favorites_.favorites_[i].get_channels();
+
+        for (size_t j = 0; j<chlist.size(); j++)
+        {
+            if (inverse_channel_map_.find(chlist[j]) != inverse_channel_map_.end())
+            {
+                dvblinkremote::Channel* ch = m_channelMap[inverse_channel_map_[chlist[j]]];
+
+				bool isRadio = (ch->GetChannelType() == dvblinkremote::Channel::CHANNEL_TYPE_RADIO);
+
+				if (group.bIsRadio != isRadio)
+					continue;
+			  
+                PVR_CHANNEL_GROUP_MEMBER member;
+                memset(&member, 0, sizeof(PVR_CHANNEL_GROUP_MEMBER));
+                PVR_STRCPY(member.strGroupName, group.strGroupName);
+                member.iChannelUniqueId = inverse_channel_map_[chlist[j]];
+                if (ch->Number != -1)
+                    member.iChannelNumber = ch->Number;
+
+                PVR->TransferChannelGroupMember(handle, &member);
+            }
+        }
+    }
+    return PVR_ERROR_NO_ERROR;
 }
 
 int DVBLinkClient::GetTimersAmount()
@@ -330,15 +424,25 @@ PVR_ERROR DVBLinkClient::AddTimer(const PVR_TIMER &timer)
     if (timer.iEpgUid != -1)
     {
         bool record_series = false;
+        bool newOnly = true;
+        bool anytime = true;
+        int marginBefore = CDialogRecordPref::c_default_margin;
+        int marginAfter = CDialogRecordPref::c_default_margin;
+        int numberToKeep = CDialogRecordPref::c_keep_all_recordings;
         //do not ask if record is pressed during watching
         if (timer.startTime != 0)
         {
             // ask how to record this program
-            CDialogRecordPref vWindow(XBMC, GUI, record_series);
+            CDialogRecordPref vWindow(XBMC, GUI);
             int dlg_res = vWindow.DoModal();
             if (dlg_res == 1)
             {
                 record_series = vWindow.RecSeries;
+                newOnly = vWindow.newOnly;
+                anytime = vWindow.anytime;
+                marginBefore = vWindow.marginBefore == CDialogRecordPref::c_default_margin ? CDialogRecordPref::c_default_margin : vWindow.marginBefore * 60;
+                marginAfter = vWindow.marginAfter == CDialogRecordPref::c_default_margin ? CDialogRecordPref::c_default_margin : vWindow.marginAfter * 60;;
+                numberToKeep = vWindow.numberToKeep;
             } else 
             {
                 if (dlg_res == 0)
@@ -349,7 +453,12 @@ PVR_ERROR DVBLinkClient::AddTimer(const PVR_TIMER &timer)
         std::string dvblink_program_id;
         if (get_dvblink_program_id(channelId, timer.iEpgUid, dvblink_program_id))
         {
-            addScheduleRequest = new AddScheduleByEpgRequest(channelId, dvblink_program_id, record_series);
+            if (!setting_margins_supported_)
+            {
+                marginBefore = CDialogRecordPref::c_default_margin;
+                marginAfter = CDialogRecordPref::c_default_margin;
+            }
+            addScheduleRequest = new AddScheduleByEpgRequest(channelId, dvblink_program_id, record_series, newOnly, anytime, numberToKeep, marginBefore, marginAfter);
         }
         else
         {
@@ -555,67 +664,6 @@ static std::string get_subtitle(int season, int episode, const std::string& epis
     return se_str;
 }
 
-static void get_timer_id_from_recording_id(const std::string& recording_id, std::string& timer_id)
-{
-    //find last /
-    std::string::size_type pos = recording_id.rfind("/");
-    if (pos != std::string::npos)
-    {
-        timer_id = recording_id.substr(pos + 1);
-    }
-    else
-    {
-        timer_id = recording_id;
-    }
-}
-
-bool DVBLinkClient::build_recording_series_map(std::map<std::string, std::string>& rec_id_to_series_name)
-{
-    //get all series containers
-    PVR_ERROR result = PVR_ERROR_FAILED;
-    DVBLinkRemoteStatusCode status;
-
-    GetPlaybackObjectRequest getPlaybackObjectRequest(m_hostname.c_str(), m_recordingsid_by_series);
-    getPlaybackObjectRequest.IncludeChildrenObjectsForRequestedObject = true;
-    GetPlaybackObjectResponse getPlaybackObjectResponse;
-
-    if ((status = m_dvblinkRemoteCommunication->GetPlaybackObject(getPlaybackObjectRequest, getPlaybackObjectResponse)) != DVBLINK_REMOTE_STATUS_OK)
-    {
-        std::string error;
-        m_dvblinkRemoteCommunication->GetLastError(error);
-        XBMC->Log(LOG_ERROR, "Could not get recording series container (Error code : %d Description : %s)", (int)status, error.c_str());
-        return false;
-    }
-
-    PlaybackContainerList& series_containers = getPlaybackObjectResponse.GetPlaybackContainers();
-    for (size_t i = 0; i<series_containers.size(); i++)
-    {
-        //ask for the items of this container
-        GetPlaybackObjectRequest container_items_req(m_hostname.c_str(), series_containers.at(i)->GetObjectID());
-        container_items_req.IncludeChildrenObjectsForRequestedObject = true;
-        GetPlaybackObjectResponse container_items_resp;
-
-        if ((status = m_dvblinkRemoteCommunication->GetPlaybackObject(container_items_req, container_items_resp)) == DVBLINK_REMOTE_STATUS_OK)
-        {
-            PlaybackItemList& playback_items = container_items_resp.GetPlaybackItems();
-            for (size_t j = 0; j<playback_items.size(); j++)
-            {
-                std::string timer_id;
-                get_timer_id_from_recording_id(playback_items.at(j)->GetObjectID(), timer_id);
-                rec_id_to_series_name[timer_id] = series_containers.at(i)->GetName();
-            }
-        }
-        else
-        {
-            std::string error;
-            m_dvblinkRemoteCommunication->GetLastError(error);
-            XBMC->Log(LOG_ERROR, "Could not get recording items for container %s (Error code : %d Description : %s)", series_containers.at(i)->GetObjectID().c_str(), (int)status, error.c_str());
-        }
-    }
-
-    return true;
-}
-
 PVR_ERROR DVBLinkClient::GetRecordings(ADDON_HANDLE handle)
 {
     PLATFORM::CLockObject critsec(m_mutex);
@@ -643,11 +691,22 @@ PVR_ERROR DVBLinkClient::GetRecordings(ADDON_HANDLE handle)
         XBMC->QueueNotification(QUEUE_INFO, XBMC->GetLocalizedString(32009), getPlaybackObjectResponse.GetPlaybackItems().size());
     }
 
-    //get a map of recording per series
-    std::map<std::string, std::string> rec_id_to_series_name;
+    std::map<std::string, int> schedule_to_num_map;
+    if (no_group_single_rec_)
+    {
+        //build a map with scheule id -> number of recordings
+        for (std::vector<PlaybackItem*>::iterator it = getPlaybackObjectResponse.GetPlaybackItems().begin(); it < getPlaybackObjectResponse.GetPlaybackItems().end(); it++)
+        {
+            RecordedTvItem * tvitem = (RecordedTvItem *)*it;
+            if (tvitem->ScheduleId.size() > 0 && tvitem->SeriesSchedule)
+            {
+                if (schedule_to_num_map.find(tvitem->ScheduleId) == schedule_to_num_map.end())
+                    schedule_to_num_map[tvitem->ScheduleId] = 0;
 
-    if (m_group_recordings_by_series)
-        build_recording_series_map(rec_id_to_series_name);
+                schedule_to_num_map[tvitem->ScheduleId] = schedule_to_num_map[tvitem->ScheduleId] + 1;
+            }
+        }
+    }
 
     for (std::vector<PlaybackItem*>::iterator it = getPlaybackObjectResponse.GetPlaybackItems().begin(); it < getPlaybackObjectResponse.GetPlaybackItems().end(); it++)
     {
@@ -689,13 +748,15 @@ PVR_ERROR DVBLinkClient::GetRecordings(ADDON_HANDLE handle)
 
         if (m_group_recordings_by_series)
         {
-            //compare timer_ids
-            std::string timer_id;
-            get_timer_id_from_recording_id(tvitem->GetObjectID(), timer_id);
-
-            if (rec_id_to_series_name.find(timer_id) != rec_id_to_series_name.end())
+            if (tvitem->ScheduleId.size() > 0 && tvitem->SeriesSchedule && tvitem->ScheduleName.size() > 0)
             {
-                PVR_STRCPY(xbmcRecording.strDirectory, rec_id_to_series_name[timer_id].c_str());
+                bool b = true;
+
+                if (no_group_single_rec_ && schedule_to_num_map.find(tvitem->ScheduleId) != schedule_to_num_map.end() && schedule_to_num_map[tvitem->ScheduleId] < 2)
+                    b = false;
+                
+                if (b)
+                    PVR_STRCPY(xbmcRecording.strDirectory, tvitem->ScheduleName.c_str());
             }
         }
 
@@ -764,6 +825,13 @@ bool DVBLinkClient::OpenLiveStream(const PVR_CHANNEL &channel, bool use_timeshif
 {
     bool ret_val = false;
 
+    //if transcoding is requested and no transcoder is supported return false
+    if (use_transcoder && !transcoding_supported_)
+    {
+        XBMC->QueueNotification(QUEUE_ERROR, XBMC->GetLocalizedString(32024));
+        return false;
+    }
+	
     PLATFORM::CLockObject critsec(m_mutex);
 
     if (m_live_streamer)
@@ -980,14 +1048,11 @@ PVR_ERROR DVBLinkClient::GetEPGForChannel(ADDON_HANDLE handle, const PVR_CHANNEL
         broadcast.iChannelNumber      = channel.iChannelNumber;
         broadcast.startTime           = p->GetStartTime();
         broadcast.endTime             = p->GetStartTime() + p->GetDuration();
-        broadcast.strPlotOutline      = p->SubTitle.c_str();
         broadcast.strPlot             = p->ShortDescription.c_str();
-        broadcast.strOriginalTitle    = NULL; // unused
-        broadcast.strCast             = NULL; // unused
-        broadcast.strDirector         = NULL; // unused
-        broadcast.strWriter           = NULL; // unused
-        broadcast.iYear               = 0;    // unused
-        broadcast.strIMDBNumber       = NULL; // unused
+        broadcast.strCast             = p->Actors.c_str();
+        broadcast.strDirector         = p->Directors.c_str();
+        broadcast.strWriter           = p->Writers.c_str();
+        broadcast.iYear               = p->Year;
         broadcast.strIconPath         = p->Image.c_str();
         broadcast.iGenreType          = 0;
         broadcast.iGenreSubType       = 0;
@@ -1000,6 +1065,9 @@ PVR_ERROR DVBLinkClient::GetEPGForChannel(ADDON_HANDLE handle, const PVR_CHANNEL
         broadcast.iEpisodeNumber      = p->EpisodeNumber;
         broadcast.iEpisodePartNumber  = 0;
         broadcast.strEpisodeName      = p->SubTitle.c_str();
+        broadcast.strIMDBNumber       = NULL; // unused
+        broadcast.strOriginalTitle    = NULL; // unused
+        broadcast.strPlotOutline      = NULL;
 
         int genre_type, genre_subtype;
         SetEPGGenre(*p, genre_type, genre_subtype);

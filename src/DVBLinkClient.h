@@ -49,7 +49,7 @@ class DVBLinkClient : public PLATFORM::CThread
 {
 public:
     DVBLinkClient(ADDON::CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* pvr, CHelper_libKODI_guilib* gui, std::string clientname, std::string hostname, long port, 
-        bool showinfomsg, std::string username, std::string password, bool add_episode_to_rec_title, bool group_recordings_by_series);
+        bool showinfomsg, std::string username, std::string password, bool add_episode_to_rec_title, bool group_recordings_by_series, bool no_group_single_rec);
   ~DVBLinkClient(void);
   int GetChannelsAmount();
   PVR_ERROR GetChannels(ADDON_HANDLE handle, bool bRadio);
@@ -62,6 +62,9 @@ public:
   PVR_ERROR AddTimer(const PVR_TIMER &timer);
   PVR_ERROR DeleteTimer(const PVR_TIMER &timer);
   PVR_ERROR UpdateTimer(const PVR_TIMER &timer);
+  int GetChannelGroupsAmount(void);
+  PVR_ERROR GetChannelGroups(ADDON_HANDLE handle, bool bRadio);
+  PVR_ERROR GetChannelGroupMembers(ADDON_HANDLE handle, const PVR_CHANNEL_GROUP &group);
   bool GetStatus();
   bool StartStreaming(const PVR_CHANNEL &channel, dvblinkremote::StreamRequest* streamRequest, std::string& stream_url);
   bool OpenLiveStream(const PVR_CHANNEL &channel, bool use_timeshift, bool use_transcoder, int width, int height, int bitrate, std::string audiotrack);
@@ -84,7 +87,6 @@ private:
   std::string GetRecordedTVByDateObjectID(const std::string& buildInRecoderObjectID);
   int GetInternalUniqueIdFromChannelId(const std::string& channelId);
   virtual void * Process(void);
-  bool build_recording_series_map(std::map<std::string, std::string>& rec_id_to_series_name);
   bool get_dvblink_program_id(std::string& channelId, int start_time, std::string& dvblink_program_id);
 
   std::string make_timer_hash(const std::string& timer_id, const std::string& schedule_id);
@@ -114,6 +116,12 @@ private:
   std::string m_recordingsid_by_date;
   std::string m_recordingsid_by_series;
   recording_id_to_url_map_t m_recording_id_to_url_map;
+  bool setting_margins_supported_;
+  bool favorites_supported_;
+  bool transcoding_supported_;
+  dvblinkremote::ChannelFavorites channel_favorites_;
+  std::map<std::string, int> inverse_channel_map_;
+  bool no_group_single_rec_;
 };
 
 /*!
