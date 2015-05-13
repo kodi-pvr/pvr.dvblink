@@ -9,6 +9,7 @@ SET(SOURCES channel.cpp
             dvblinkremote.cpp
             dvblinkremotehttp.cpp
             epg.cpp
+            favorites.cpp
             generic_response.cpp
             item_metadata.cpp
             m3u_playlist.cpp
@@ -20,6 +21,7 @@ SET(SOURCES channel.cpp
             recording.cpp
             recording_settings.cpp
             remove_playback_object_request.cpp
+            server_info.cpp
             scheduling.cpp
             stop_stream_request.cpp
             stream.cpp
