@@ -22,7 +22,7 @@
  ***************************************************************************/
 
 #include "curlhttpclient.h"
-#inclide <memory.h>
+#include <memory.h>
 
 using namespace dvblinkremotehttp;
 
