@@ -347,6 +347,10 @@ PVR_ERROR DVBLinkClient::GetTimers(ADDON_HANDLE handle)
 
     PVR_TIMER xbmcTimer;
     memset(&xbmcTimer, 0, sizeof(PVR_TIMER));
+
+    /* TODO: Implement own timer types to get support for the timer features introduced with PVR API 1.9.7 */
+    xbmcTimer.iTimerType = PVR_TIMER_TYPE_NONE;
+
     //fake index
     xbmcTimer.iClientIndex = i;
     //misuse strDirectory to keep id of the timer
@@ -361,8 +365,6 @@ PVR_ERROR DVBLinkClient::GetTimers(ADDON_HANDLE handle)
       xbmcTimer.state = PVR_TIMER_STATE_CONFLICT_NOK;
     if (!rec->GetProgram().IsRecord)
       xbmcTimer.state = PVR_TIMER_STATE_CANCELLED;
-
-    xbmcTimer.bIsRepeating = rec->GetProgram().IsRepeatRecord;
 
     xbmcTimer.iEpgUid = rec->GetProgram().GetStartTime();
     
@@ -470,7 +472,7 @@ PVR_ERROR DVBLinkClient::AddTimer(const PVR_TIMER &timer)
         time_t start_time = timer.startTime;
         time_t duration = timer.endTime - timer.startTime;
         long day_mask = 0;
-        if (timer.bIsRepeating)
+        if (timer.iWeekdays > 0) // repeating timer?
         {
             //change day mask to DVBLink server format (Sun - first day)
             bool bcarry = (timer.iWeekdays & 0x40) == 0x40;
@@ -519,7 +521,7 @@ PVR_ERROR DVBLinkClient::DeleteTimer(const PVR_TIMER &timer)
   parse_timer_hash(timer.strDirectory, timer_id, schedule_id);
 
   bool cancel_series = true;
-  if (timer.bIsRepeating)
+  if (timer.iWeekdays > 0) // repeating timer?
   {
       //show dialog and ask: cancel series or just this episode
       CDialogDeleteTimer vWindow(XBMC, GUI, cancel_series);
