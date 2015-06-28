@@ -25,7 +25,7 @@
  
 #pragma once
 
-#include "kodi/libXBMC_addon.h"
+#include "libXBMC_addon.h"
 #include "platform/util/StdString.h"
 #include "libdvblinkremote/dvblinkremote.h"
 #include "platform/util/util.h"

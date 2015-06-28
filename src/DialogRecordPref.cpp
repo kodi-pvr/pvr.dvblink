@@ -21,7 +21,7 @@
  */
 
 #include "DialogRecordPref.h"
-#include "kodi/libKODI_guilib.h"
+#include "libKODI_guilib.h"
 
 using namespace ADDON;
 
