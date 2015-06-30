@@ -1,3 +1,6 @@
+[B]Version 1.10.7[/B]
+Updated: libplatform dependency
+
 [B]Version 1.10.6[/B]
 Updated: language files from Transifex
 
