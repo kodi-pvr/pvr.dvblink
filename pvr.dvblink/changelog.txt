@@ -1,3 +1,6 @@
+[B]Version 1.20.0[/B]
+Fixed: Force update after libplatform dependency update
+
 [B]Version 1.10.6[/B]
 Updated: language files from Transifex
 
