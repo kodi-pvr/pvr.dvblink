@@ -621,6 +621,12 @@ bool CanSeekStream(void)
 
 //recording timers functions
 
+PVR_ERROR GetTimerTypes(PVR_TIMER_TYPE types[], int *size)
+{
+  /* TODO: Implement this to get support for the timer features introduced with PVR API 1.9.7 */
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
 int GetTimersAmount(void)
 {
   if (dvblinkclient)
@@ -631,6 +637,7 @@ int GetTimersAmount(void)
 
 PVR_ERROR GetTimers(ADDON_HANDLE handle)
 {
+  /* TODO: Change implementation to get support for the timer features introduced with PVR API 1.9.7 */
   if (dvblinkclient)
     return dvblinkclient->GetTimers(handle); 
 
@@ -645,8 +652,9 @@ PVR_ERROR AddTimer(const PVR_TIMER &timer)
   return PVR_ERROR_FAILED;
 }
 
-PVR_ERROR DeleteTimer(const PVR_TIMER &timer, bool bForceDelete)
+PVR_ERROR DeleteTimer(const PVR_TIMER &timer, bool bForceDelete, bool /*bDeleteScheduled*/)
 {
+  /* TODO: Change implementation to support bDeleteScheduled (introduced with PVR API 1.9.7 */
   if (dvblinkclient)
     return dvblinkclient->DeleteTimer(timer);
 
