@@ -25,11 +25,16 @@
  
 #pragma once
 
+#include "platform/os.h"
 #include "kodi/libXBMC_addon.h"
+#include "platform/threads/threads.h"
+#include "platform/threads/mutex.h"
+#include "platform/util/util.h"
+
 #include "libdvblinkremote/dvblinkremote.h"
 #include "HttpPostClient.h"
 
-class RecordingStreamer
+class RecordingStreamer : public dvblinkremote::DVBLinkRemoteLocker
 {
 public :
     RecordingStreamer(ADDON::CHelper_libXBMC_addon* xbmc, const std::string& client_id, const std::string& hostname, long port, const std::string& username, const std::string& password);
@@ -58,6 +63,17 @@ protected:
     long port_;
     time_t prev_check_;
     time_t check_delta_;
+    PLATFORM::CMutex m_comm_mutex;
 
     bool get_recording_info(const std::string& recording_id, long long& recording_size, bool& is_in_recording);
+
+    virtual void lock()
+    {
+        m_comm_mutex.Lock();
+    }
+
+    virtual void unlock()
+    {
+        m_comm_mutex.Unlock();
+    }
 };
