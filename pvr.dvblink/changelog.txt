@@ -1,5 +1,6 @@
 [B]Version 1.11.3[/B]
 Updated to PVR API v2.1.0
+Automatically fill in platform and library name
 
 [B]Version 1.11.2[/B]
 Debian packaging: fix library install path
