@@ -652,9 +652,8 @@ PVR_ERROR AddTimer(const PVR_TIMER &timer)
   return PVR_ERROR_FAILED;
 }
 
-PVR_ERROR DeleteTimer(const PVR_TIMER &timer, bool bForceDelete, bool /*bDeleteScheduled*/)
+PVR_ERROR DeleteTimer(const PVR_TIMER &timer, bool bForceDelete)
 {
-  /* TODO: Change implementation to support bDeleteScheduled (introduced with PVR API 1.9.7 */
   if (dvblinkclient)
     return dvblinkclient->DeleteTimer(timer);
 

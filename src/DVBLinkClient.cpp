@@ -341,7 +341,8 @@ PVR_ERROR DVBLinkClient::GetTimers(ADDON_HANDLE handle)
     XBMC->QueueNotification(QUEUE_INFO, XBMC->GetLocalizedString(32007), recordings.size());
   }
 
-  for (size_t i=0; i < recordings.size(); i++)
+  unsigned int index = PVR_TIMER_NO_CLIENT_INDEX + 1;
+  for (size_t i=0; i < recordings.size(); i++, index++)
   {
     Recording* rec = recordings[i];
 
@@ -352,7 +353,7 @@ PVR_ERROR DVBLinkClient::GetTimers(ADDON_HANDLE handle)
     xbmcTimer.iTimerType = PVR_TIMER_TYPE_NONE;
 
     //fake index
-    xbmcTimer.iClientIndex = i;
+    xbmcTimer.iClientIndex = index;
     //misuse strDirectory to keep id of the timer
     std::string timer_hash = make_timer_hash(rec->GetID(), rec->GetScheduleID());
     PVR_STRCPY(xbmcTimer.strDirectory, timer_hash.c_str());
@@ -423,7 +424,7 @@ PVR_ERROR DVBLinkClient::AddTimer(const PVR_TIMER &timer)
     DVBLinkRemoteStatusCode status;
     AddScheduleRequest * addScheduleRequest = NULL;
     std::string channelId = m_channelMap[timer.iClientChannelUid]->GetID();
-    if (timer.iEpgUid != -1)
+    if (timer.iEpgUid != PVR_TIMER_NO_EPG_UID)
     {
         bool record_series = false;
         bool newOnly = true;
