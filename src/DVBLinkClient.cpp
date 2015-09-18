@@ -1080,6 +1080,8 @@ PVR_ERROR DVBLinkClient::GetEPGForChannel(ADDON_HANDLE handle, const PVR_CHANNEL
         else
           broadcast.iGenreSubType = genre_subtype;
 
+        broadcast.iFlags              = EPG_TAG_FLAG_UNDEFINED;
+        
         PVR->TransferEpgEntry(handle, &broadcast);
       }
     }
