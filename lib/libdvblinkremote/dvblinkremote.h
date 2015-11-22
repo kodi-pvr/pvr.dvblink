@@ -334,7 +334,7 @@ namespace dvblinkremote
       * @param[in,out]  response  A ChannelList reference that will be populated with channels.
       * @return                   A DVBLinkRemoteStatusCode representing the status of the executed method.
       */
-    virtual DVBLinkRemoteStatusCode GetChannels(const GetChannelsRequest& request, ChannelList& response) = 0;
+    virtual DVBLinkRemoteStatusCode GetChannels(const GetChannelsRequest& request, ChannelList& response, std::string* err_str) = 0;
 
     /**
       * Search the electronic program guide (EPG).
@@ -342,7 +342,7 @@ namespace dvblinkremote
       * @param[in,out]  response  A EpgSearchResult reference that will be populated with ChannelEPGData objects.
       * @return                   A DVBLinkRemoteStatusCode representing the status of the executed method.
       */
-    virtual DVBLinkRemoteStatusCode SearchEpg(const EpgSearchRequest& request, EpgSearchResult& response) = 0;
+    virtual DVBLinkRemoteStatusCode SearchEpg(const EpgSearchRequest& request, EpgSearchResult& response, std::string* err_str) = 0;
 
     /**
       * Start stream of a channel.
@@ -350,21 +350,21 @@ namespace dvblinkremote
       * @param[in,out]  response  A Stream reference that will be populated with details of a playing stream.
       * @return                   A DVBLinkRemoteStatusCode representing the status of the executed method.
       */
-    virtual DVBLinkRemoteStatusCode PlayChannel(const StreamRequest& request, Stream& response) = 0;
+    virtual DVBLinkRemoteStatusCode PlayChannel(const StreamRequest& request, Stream& response, std::string* err_str) = 0;
 
     /**
       * Stop a streaming channel or channels.
       * @param[in] request A constant StopStreamRequest reference representing the stop stream request criterias.
       * @return            A DVBLinkRemoteStatusCode representing the status of the executed method.
       */
-    virtual DVBLinkRemoteStatusCode StopChannel(const StopStreamRequest& request) = 0;
+    virtual DVBLinkRemoteStatusCode StopChannel(const StopStreamRequest& request, std::string* err_str) = 0;
 
     /**
       * Add a schedule.
       * @param[in] request A constant AddScheduleRequest reference representing the add schedule request criterias.
       * @return            A DVBLinkRemoteStatusCode representing the status of the executed method.
       */
-    virtual DVBLinkRemoteStatusCode AddSchedule(const AddScheduleRequest& request) = 0;
+    virtual DVBLinkRemoteStatusCode AddSchedule(const AddScheduleRequest& request, std::string* err_str) = 0;
 
     /**
       * Gets a list of all schedules.
@@ -372,21 +372,21 @@ namespace dvblinkremote
       * @param[in,out]  response  A ScheduleList reference that will be populated with Schedule objects.
       * @return                   A DVBLinkRemoteStatusCode representing the status of the executed method.
       */
-    virtual DVBLinkRemoteStatusCode GetSchedules(const GetSchedulesRequest& request, StoredSchedules& response) = 0;
+    virtual DVBLinkRemoteStatusCode GetSchedules(const GetSchedulesRequest& request, StoredSchedules& response, std::string* err_str) = 0;
     
     /**
       * Update a schedule.
       * @param[in] request A constant UpdateScheduleReqest reference representing the update schedule request criterias.
       * @return            A DVBLinkRemoteStatusCode representing the status of the executed method.
       */
-    virtual DVBLinkRemoteStatusCode UpdateSchedule(const UpdateScheduleRequest& request) = 0;
+    virtual DVBLinkRemoteStatusCode UpdateSchedule(const UpdateScheduleRequest& request, std::string* err_str) = 0;
 
     /**
       * Remove a schedule.
       * @param[in] request A constant RemoveScheduleRequest reference representing the remove schedule request criterias.
       * @return            A DVBLinkRemoteStatusCode representing the status of the executed method.
       */
-    virtual DVBLinkRemoteStatusCode RemoveSchedule(const RemoveScheduleRequest& request) = 0;
+    virtual DVBLinkRemoteStatusCode RemoveSchedule(const RemoveScheduleRequest& request, std::string* err_str) = 0;
 
     /**
       * Gets a list of all recordings.
@@ -394,14 +394,14 @@ namespace dvblinkremote
       * @param[in,out]  response  A RecordingList reference that will be populated with Recording objects.
       * @return                   A DVBLinkRemoteStatusCode representing the status of the executed method.
       */
-    virtual DVBLinkRemoteStatusCode GetRecordings(const GetRecordingsRequest& request, RecordingList& response) = 0;
+    virtual DVBLinkRemoteStatusCode GetRecordings(const GetRecordingsRequest& request, RecordingList& response, std::string* err_str) = 0;
 
     /**
       * Removes a recording.
       * @param[in] request A constant RemoveRecordingRequest reference representing the remove recording request criterias.
       * @return            A DVBLinkRemoteStatusCode representing the status of the executed method.
       */
-    virtual DVBLinkRemoteStatusCode RemoveRecording(const RemoveRecordingRequest& request) = 0;
+    virtual DVBLinkRemoteStatusCode RemoveRecording(const RemoveRecordingRequest& request, std::string* err_str) = 0;
 
     /**
       * Get parental status.
@@ -409,7 +409,7 @@ namespace dvblinkremote
       * @param[in,out]  response  A ParentalStatus reference that will be populated with parental status details.
       * @return                   A DVBLinkRemoteStatusCode representing the status of the executed method.
       */
-    virtual DVBLinkRemoteStatusCode GetParentalStatus(const GetParentalStatusRequest& request, ParentalStatus& response) = 0;
+    virtual DVBLinkRemoteStatusCode GetParentalStatus(const GetParentalStatusRequest& request, ParentalStatus& response, std::string* err_str) = 0;
 
     /**
       * Sets the parental lock.
@@ -417,7 +417,7 @@ namespace dvblinkremote
       * @param[in,out]  response  A ParentalStatus reference that will be populated with parental status details.
       * @return                   A DVBLinkRemoteStatusCode representing the status of the executed method.
       */
-    virtual DVBLinkRemoteStatusCode SetParentalLock(const SetParentalLockRequest& request, ParentalStatus& response) = 0;
+    virtual DVBLinkRemoteStatusCode SetParentalLock(const SetParentalLockRequest& request, ParentalStatus& response, std::string* err_str) = 0;
 
     /**
       * Gets a M3U playlist with direct HTTP links to all channels.
@@ -425,7 +425,7 @@ namespace dvblinkremote
       * @param[in,out]  response  A M3uPlaylist reference that will be populated with M3U playlist file content.
       * @return                   A DVBLinkRemoteStatusCode representing the status of the executed method.
       */
-    virtual DVBLinkRemoteStatusCode GetM3uPlaylist(const GetM3uPlaylistRequest& request, M3uPlaylist& response) = 0;
+    virtual DVBLinkRemoteStatusCode GetM3uPlaylist(const GetM3uPlaylistRequest& request, M3uPlaylist& response, std::string* err_str) = 0;
 
     /**
       * Gets a playback object.
@@ -433,21 +433,21 @@ namespace dvblinkremote
       * @param[in,out]  response  A GetObjectResult reference that will be populated with playback object details.
       * @return                   A DVBLinkRemoteStatusCode representing the status of the executed method.
       */
-    virtual DVBLinkRemoteStatusCode GetPlaybackObject(const GetPlaybackObjectRequest& request, GetPlaybackObjectResponse& response ) = 0;
+    virtual DVBLinkRemoteStatusCode GetPlaybackObject(const GetPlaybackObjectRequest& request, GetPlaybackObjectResponse& response, std::string* err_str) = 0;
     
     /**
       * Remove a playback object.
       * @param[in] request A constant RemovePlaybackObjectRequest reference representing the remove playback object request criterias.
       * @return            A DVBLinkRemoteStatusCode representing the status of the executed method.
       */
-    virtual DVBLinkRemoteStatusCode RemovePlaybackObject(const RemovePlaybackObjectRequest& request) = 0;
+    virtual DVBLinkRemoteStatusCode RemovePlaybackObject(const RemovePlaybackObjectRequest& request, std::string* err_str) = 0;
 
     /**
       * Stops a recording.
       * @param[in] request A constant StopRecordingRequest reference representing the stop recording request criterias.
       * @return            A DVBLinkRemoteStatusCode representing the status of the executed method.
       */
-    virtual DVBLinkRemoteStatusCode StopRecording(const StopRecordingRequest& request) = 0;
+    virtual DVBLinkRemoteStatusCode StopRecording(const StopRecordingRequest& request, std::string* err_str) = 0;
 
     /**
       * Gets streams and protocols actually supported by a given instance of DVBLink server.
@@ -455,7 +455,7 @@ namespace dvblinkremote
       * @param[in,out]  response  A StreamingCapabilities reference that will be populated with streaming capability details.
       * @return                   A DVBLinkRemoteStatusCode representing the status of the executed method.
       */
-    virtual DVBLinkRemoteStatusCode GetStreamingCapabilities(const GetStreamingCapabilitiesRequest& request, StreamingCapabilities& response) = 0;
+    virtual DVBLinkRemoteStatusCode GetStreamingCapabilities(const GetStreamingCapabilitiesRequest& request, StreamingCapabilities& response, std::string* err_str) = 0;
 
     /**
       * Gets recording settings.
@@ -463,14 +463,14 @@ namespace dvblinkremote
       * @param[in,out]  response  A RecordingSettings reference that will be populated with recording settings details.
       * @return                   A DVBLinkRemoteStatusCode representing the status of the executed method.
       */
-    virtual DVBLinkRemoteStatusCode GetRecordingSettings(const GetRecordingSettingsRequest& request, RecordingSettings& response) = 0;
+    virtual DVBLinkRemoteStatusCode GetRecordingSettings(const GetRecordingSettingsRequest& request, RecordingSettings& response, std::string* err_str) = 0;
 
     /**
       * Sets the recording settings.
       * @param[in] request A constant SetRecordingSettingsRequest reference representing the set recording settings request criterias.
       * @return            A DVBLinkRemoteStatusCode representing the status of the executed method.
       */
-    virtual DVBLinkRemoteStatusCode SetRecordingSettings(const SetRecordingSettingsRequest& request) = 0;
+    virtual DVBLinkRemoteStatusCode SetRecordingSettings(const SetRecordingSettingsRequest& request, std::string* err_str) = 0;
 
     /**
     * Gets favorites lists.
@@ -478,7 +478,7 @@ namespace dvblinkremote
     * @param[in,out]  response  A ChannelFavorites reference that will be populated with channel favorites.
     * @return                   A DVBLinkRemoteStatusCode representing the status of the executed method.
     */
-    virtual DVBLinkRemoteStatusCode GetFavorites(const GetFavoritesRequest& request, ChannelFavorites& response) = 0;
+    virtual DVBLinkRemoteStatusCode GetFavorites(const GetFavoritesRequest& request, ChannelFavorites& response, std::string* err_str) = 0;
 
     /**
     * Gets server information - id, version and build number.
@@ -486,13 +486,24 @@ namespace dvblinkremote
     * @param[in,out]  response  A ServerInfo reference that will be populated with server information.
     * @return                   A DVBLinkRemoteStatusCode representing the status of the executed method.
     */
-    virtual DVBLinkRemoteStatusCode GetServerInfo(const GetServerInfoRequest& request, ServerInfo& response) = 0;
+    virtual DVBLinkRemoteStatusCode GetServerInfo(const GetServerInfoRequest& request, ServerInfo& response, std::string* err_str) = 0;
 
     /**
       * Gets a description of the last occured error.
       * @param[in,out] err A string reference representing the string where the description of the last error will be provided.
       */
     virtual void GetLastError(std::string& err) = 0;
+  };
+
+
+  class DVBLinkRemoteLocker
+  {
+    public:
+        DVBLinkRemoteLocker() {}
+        virtual ~DVBLinkRemoteLocker() {}
+
+        virtual void lock() {}
+        virtual void unlock() {}
   };
 
   /**
@@ -507,7 +518,7 @@ namespace dvblinkremote
       * @param[in] hostAddress  A constanst string reference representing the host address of the DVBLink Connect! server.
       * @param[in] port         A constanst long representing the base streaming port of the DVBLink Connect! server.
       */
-    static IDVBLinkRemoteConnection* Connect(dvblinkremotehttp::HttpClient& httpClient, const std::string& hostAddress, const long port);
+      static IDVBLinkRemoteConnection* Connect(dvblinkremotehttp::HttpClient& httpClient, const std::string& hostAddress, const long port, DVBLinkRemoteLocker* locker);
 
     /**
       * Connect to a DVBLink Connect! server and recieve a IDVBLinkRemoteConnection instance for executing DVBLink Remote API methods against it.
@@ -517,7 +528,7 @@ namespace dvblinkremote
       * @param[in] username     A constanst string reference representing the user name to be used for authentication towards the DVBLink Connect! server.
       * @param[in] password     A constanst string reference representing the password to be used for authentication towards the DVBLink Connect! server.
       */
-    static IDVBLinkRemoteConnection* Connect(dvblinkremotehttp::HttpClient& httpClient, const std::string& hostAddress, const long port, const std::string& username, const std::string& password);
+      static IDVBLinkRemoteConnection* Connect(dvblinkremotehttp::HttpClient& httpClient, const std::string& hostAddress, const long port, const std::string& username, const std::string& password, DVBLinkRemoteLocker* locker);
 
     /**
       * Gets the copyright notice of the DVBLink Remote API library.

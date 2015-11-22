@@ -42,7 +42,7 @@ std::string DVBLinkClient::GetBuildInRecorderObjectID()
   getPlaybackObjectRequest.RequestedItemType = GetPlaybackObjectRequest::REQUESTED_ITEM_TYPE_ALL;
   getPlaybackObjectRequest.IncludeChildrenObjectsForRequestedObject = true;
   GetPlaybackObjectResponse getPlaybackObjectResponse;
-  if ((status = m_dvblinkRemoteCommunication->GetPlaybackObject(getPlaybackObjectRequest, getPlaybackObjectResponse)) == DVBLINK_REMOTE_STATUS_OK)
+  if ((status = m_dvblinkRemoteCommunication->GetPlaybackObject(getPlaybackObjectRequest, getPlaybackObjectResponse, NULL)) == DVBLINK_REMOTE_STATUS_OK)
   {
     for (std::vector<PlaybackContainer*>::iterator it = getPlaybackObjectResponse.GetPlaybackContainers().begin(); it < getPlaybackObjectResponse.GetPlaybackContainers().end(); it++)
     {
@@ -77,7 +77,7 @@ DVBLinkClient::DVBLinkClient(CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* p
   transcoding_supported_ = false;
 
   m_httpClient = new HttpPostClient(XBMC,hostname, port, username, password);
-  m_dvblinkRemoteCommunication = DVBLinkRemote::Connect((HttpClient&)*m_httpClient, m_hostname.c_str(), port, username.c_str(), password.c_str());
+  m_dvblinkRemoteCommunication = DVBLinkRemote::Connect((HttpClient&)*m_httpClient, m_hostname.c_str(), port, username.c_str(), password.c_str(), this);
 
   DVBLinkRemoteStatusCode status;
   m_timerCount = -1;
@@ -86,7 +86,7 @@ DVBLinkClient::DVBLinkClient(CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* p
   //get server version and build
   GetServerInfoRequest server_info_request;
   ServerInfo si;
-  if ((status = m_dvblinkRemoteCommunication->GetServerInfo(server_info_request, si)) == DVBLINK_REMOTE_STATUS_OK)
+  if ((status = m_dvblinkRemoteCommunication->GetServerInfo(server_info_request, si, NULL)) == DVBLINK_REMOTE_STATUS_OK)
   {
       int server_build = atoi(si.build_.c_str());
 
@@ -96,12 +96,12 @@ DVBLinkClient::DVBLinkClient(CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* p
 
   GetStreamingCapabilitiesRequest streamin_caps_request;
   StreamingCapabilities streaming_caps;
-  status = m_dvblinkRemoteCommunication->GetStreamingCapabilities(streamin_caps_request, streaming_caps);
+  status = m_dvblinkRemoteCommunication->GetStreamingCapabilities(streamin_caps_request, streaming_caps, NULL);
   if (status == DVBLINK_REMOTE_STATUS_OK)
       transcoding_supported_ = streaming_caps.IsTranscoderSupported(dvblinkremote::StreamingCapabilities::STREAMING_TRANSCODER_H264);
 
   GetFavoritesRequest favorites_request;
-  status = m_dvblinkRemoteCommunication->GetFavorites(favorites_request, channel_favorites_);
+  status = m_dvblinkRemoteCommunication->GetFavorites(favorites_request, channel_favorites_, NULL);
   favorites_supported_ = (status == DVBLINK_REMOTE_STATUS_OK);
   
   GetChannelsRequest request;
@@ -109,7 +109,8 @@ DVBLinkClient::DVBLinkClient(CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* p
   m_stream = new Stream();
   m_live_streamer = NULL;
 
-  if ((status = m_dvblinkRemoteCommunication->GetChannels(request, *m_channels)) == DVBLINK_REMOTE_STATUS_OK)
+  std::string error;
+  if ((status = m_dvblinkRemoteCommunication->GetChannels(request, *m_channels, &error)) == DVBLINK_REMOTE_STATUS_OK)
   {
     int iChannelUnique = 0;
     for (std::vector<Channel*>::iterator it = m_channels->begin(); it < m_channels->end(); it++) 
@@ -142,8 +143,6 @@ DVBLinkClient::DVBLinkClient(CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* p
   else
   {
     XBMC->QueueNotification(QUEUE_ERROR, XBMC->GetLocalizedString(32003), m_hostname.c_str(), (int)status);
-    std::string error;
-    m_dvblinkRemoteCommunication->GetLastError(error);
     XBMC->Log(LOG_ERROR, "Could not connect to DVBLink Server '%s' on port '%i' with username '%s' (Error code : %d Description : %s)", hostname.c_str(), port, username.c_str(), (int)status,error.c_str());
   }
 }
@@ -326,10 +325,9 @@ PVR_ERROR DVBLinkClient::GetTimers(ADDON_HANDLE handle)
   RecordingList recordings;
 
   DVBLinkRemoteStatusCode status;
-  if ((status = m_dvblinkRemoteCommunication->GetRecordings(recordingsRequest, recordings)) != DVBLINK_REMOTE_STATUS_OK)
+  std::string error;
+  if ((status = m_dvblinkRemoteCommunication->GetRecordings(recordingsRequest, recordings, &error)) != DVBLINK_REMOTE_STATUS_OK)
   {
-    std::string error;
-    m_dvblinkRemoteCommunication->GetLastError(error);
     XBMC->Log(LOG_ERROR,  "Could not get timers (Error code : %d Description : %s)", (int)status, error.c_str());
     return result;
   }
@@ -493,7 +491,8 @@ PVR_ERROR DVBLinkClient::AddTimer(const PVR_TIMER &timer)
         addScheduleRequest = new AddManualScheduleRequest(channelId, start_time, duration, day_mask, timer.strTitle);
     }
   
-    if ((status = m_dvblinkRemoteCommunication->AddSchedule(*addScheduleRequest)) == DVBLINK_REMOTE_STATUS_OK)
+	std::string error;
+    if ((status = m_dvblinkRemoteCommunication->AddSchedule(*addScheduleRequest, &error)) == DVBLINK_REMOTE_STATUS_OK)
     {
         XBMC->Log(LOG_INFO, "Timer added");
         PVR->TriggerTimerUpdate();
@@ -502,8 +501,6 @@ PVR_ERROR DVBLinkClient::AddTimer(const PVR_TIMER &timer)
     else
     {
         result = PVR_ERROR_FAILED;
-        std::string error;
-        m_dvblinkRemoteCommunication->GetLastError(error);
         XBMC->Log(LOG_ERROR, "Could not add timer (Error code : %d Description : %s)", (int)status, error.c_str());
     }
     SAFE_DELETE(addScheduleRequest);
@@ -537,15 +534,16 @@ PVR_ERROR DVBLinkClient::DeleteTimer(const PVR_TIMER &timer)
       }
   }
 
+  std::string error;
   if (cancel_series)
   {
       RemoveScheduleRequest removeSchedule(schedule_id);
-      status = m_dvblinkRemoteCommunication->RemoveSchedule(removeSchedule);
+      status = m_dvblinkRemoteCommunication->RemoveSchedule(removeSchedule, &error);
   }
   else
   {
       RemoveRecordingRequest removeRecording(timer_id);
-      status = m_dvblinkRemoteCommunication->RemoveRecording(removeRecording);
+      status = m_dvblinkRemoteCommunication->RemoveRecording(removeRecording, &error);
   }
 
   if (status == DVBLINK_REMOTE_STATUS_OK)
@@ -556,8 +554,6 @@ PVR_ERROR DVBLinkClient::DeleteTimer(const PVR_TIMER &timer)
   }
   else
   {
-    std::string error;
-    m_dvblinkRemoteCommunication->GetLastError(error);
     XBMC->Log(LOG_ERROR, "Timer could not be deleted (Error code : %d Description : %s)", (int)status, error.c_str());
   }
   return result;
@@ -585,7 +581,7 @@ std::string DVBLinkClient::GetRecordedTVByDateObjectID(const std::string& buildI
   GetPlaybackObjectResponse getPlaybackObjectResponse;
 
 
-  if ((status = m_dvblinkRemoteCommunication->GetPlaybackObject(getPlaybackObjectRequest, getPlaybackObjectResponse)) == DVBLINK_REMOTE_STATUS_OK)
+  if ((status = m_dvblinkRemoteCommunication->GetPlaybackObject(getPlaybackObjectRequest, getPlaybackObjectResponse, NULL)) == DVBLINK_REMOTE_STATUS_OK)
   {
     for (std::vector<PlaybackContainer*>::iterator it = getPlaybackObjectResponse.GetPlaybackContainers().begin(); it < getPlaybackObjectResponse.GetPlaybackContainers().end(); it++)
     {
@@ -605,15 +601,14 @@ std::string DVBLinkClient::GetRecordedTVByDateObjectID(const std::string& buildI
 
 PVR_ERROR DVBLinkClient::DeleteRecording(const PVR_RECORDING& recording)
 {
-    PLATFORM::CLockObject critsec(m_mutex);
+//  PLATFORM::CLockObject critsec(m_mutex);
   PVR_ERROR result = PVR_ERROR_FAILED;
   DVBLinkRemoteStatusCode status;
   RemovePlaybackObjectRequest remoteObj(recording.strRecordingId);
   
-  if ((status = m_dvblinkRemoteCommunication->RemovePlaybackObject(remoteObj)) != DVBLINK_REMOTE_STATUS_OK)
-{
-    std::string error;
-    m_dvblinkRemoteCommunication->GetLastError(error);
+  std::string error;
+  if ((status = m_dvblinkRemoteCommunication->RemovePlaybackObject(remoteObj, &error)) != DVBLINK_REMOTE_STATUS_OK)
+  {
     XBMC->Log(LOG_ERROR, "Recording %s could not be deleted (Error code: %d Description : %s)", recording.strTitle, (int)status, error.c_str());
     return result;
   }
@@ -678,10 +673,9 @@ PVR_ERROR DVBLinkClient::GetRecordings(ADDON_HANDLE handle)
     getPlaybackObjectRequest.IncludeChildrenObjectsForRequestedObject = true;
     GetPlaybackObjectResponse getPlaybackObjectResponse;
 
-    if ((status = m_dvblinkRemoteCommunication->GetPlaybackObject(getPlaybackObjectRequest, getPlaybackObjectResponse)) != DVBLINK_REMOTE_STATUS_OK)
+	std::string error;
+    if ((status = m_dvblinkRemoteCommunication->GetPlaybackObject(getPlaybackObjectRequest, getPlaybackObjectResponse, &error)) != DVBLINK_REMOTE_STATUS_OK)
     {
-        std::string error;
-        m_dvblinkRemoteCommunication->GetLastError(error);
         XBMC->Log(LOG_ERROR, "Could not get recordings (Error code : %d Description : %s)", (int)status, error.c_str());
         //XBMC->QueueNotification(QUEUE_ERROR, XBMC->GetLocalizedString(32004), (int)status);
         return result;
@@ -788,13 +782,13 @@ bool DVBLinkClient::GetRecordingURL(const char* recording_id, std::string& url)
 
 void DVBLinkClient::GetDriveSpace(long long *iTotal, long long *iUsed)
 {
-  PLATFORM::CLockObject critsec(m_mutex);
+//  PLATFORM::CLockObject critsec(m_mutex);
   GetRecordingSettingsRequest recordingsettingsrequest;
   *iTotal = 0;
   *iUsed = 0;
   RecordingSettings settings;
   DVBLinkRemoteStatusCode status;
-  if ((status = m_dvblinkRemoteCommunication->GetRecordingSettings(recordingsettingsrequest, settings)) == DVBLINK_REMOTE_STATUS_OK)
+  if ((status = m_dvblinkRemoteCommunication->GetRecordingSettings(recordingsettingsrequest, settings, NULL)) == DVBLINK_REMOTE_STATUS_OK)
   {
     *iTotal = settings.TotalSpace;
     *iUsed = (settings.TotalSpace - settings.AvailableSpace);
@@ -810,10 +804,9 @@ int DVBLinkClient::GetCurrentChannelId()
 bool DVBLinkClient::StartStreaming(const PVR_CHANNEL &channel, StreamRequest* streamRequest, std::string& stream_url)
 {
   DVBLinkRemoteStatusCode status;
-  if ((status = m_dvblinkRemoteCommunication->PlayChannel(*streamRequest, *m_stream)) != DVBLINK_REMOTE_STATUS_OK)
+  std::string error;
+  if ((status = m_dvblinkRemoteCommunication->PlayChannel(*streamRequest, *m_stream, &error)) != DVBLINK_REMOTE_STATUS_OK)
   {
-    std::string error;
-    m_dvblinkRemoteCommunication->GetLastError(error);
     XBMC->Log(LOG_ERROR, "Could not start streaming for channel %i (Error code : %d)", channel.iUniqueId, (int)status,error.c_str());
     XBMC->QueueNotification(QUEUE_ERROR, XBMC->GetLocalizedString(32010), channel.strChannelName, (int)status);
     return false;
@@ -948,10 +941,9 @@ void DVBLinkClient::StopStreaming(bool bUseChlHandle)
   }
 
   DVBLinkRemoteStatusCode status;
-  if ((status = m_dvblinkRemoteCommunication->StopChannel(*request)) != DVBLINK_REMOTE_STATUS_OK)
+  std::string error;
+  if ((status = m_dvblinkRemoteCommunication->StopChannel(*request, &error)) != DVBLINK_REMOTE_STATUS_OK)
   {
-    std::string error;
-    m_dvblinkRemoteCommunication->GetLastError(error);
     XBMC->Log(LOG_ERROR, "Could not stop stream (Error code : %d Description : %s)", (int)status, error.c_str());
   }
 
@@ -1020,7 +1012,7 @@ bool  DVBLinkClient::DoEPGSearch(EpgSearchResult& epgSearchResult, const std::st
 
   DVBLinkRemoteStatusCode status;
 
-  if ((status = m_dvblinkRemoteCommunication->SearchEpg(epgSearchRequest, epgSearchResult)) == DVBLINK_REMOTE_STATUS_OK)
+  if ((status = m_dvblinkRemoteCommunication->SearchEpg(epgSearchRequest, epgSearchResult, NULL)) == DVBLINK_REMOTE_STATUS_OK)
   {
     return true;
   }

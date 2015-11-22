@@ -35,7 +35,7 @@ RecordingStreamer::RecordingStreamer(ADDON::CHelper_libXBMC_addon* xbmc, const s
     : xbmc_(xbmc), playback_handle_(NULL), client_id_(client_id), hostname_(hostname), username_(username), password_(password), port_(port), check_delta_(30)
 {
     http_client_ = new HttpPostClient(xbmc_, hostname_, port_, username_, password_);
-    dvblink_remote_con_ = DVBLinkRemote::Connect((HttpClient&)*http_client_, hostname_.c_str(), port_, username_.c_str(), password_.c_str());
+	dvblink_remote_con_ = DVBLinkRemote::Connect((HttpClient&)*http_client_, hostname_.c_str(), port_, username_.c_str(), password_.c_str(), this);
 }
 
 RecordingStreamer::~RecordingStreamer()
@@ -118,10 +118,9 @@ bool RecordingStreamer::get_recording_info(const std::string& recording_id, long
     getPlaybackObjectRequest.IncludeChildrenObjectsForRequestedObject = false;
     GetPlaybackObjectResponse getPlaybackObjectResponse;
 
-    if (dvblink_remote_con_->GetPlaybackObject(getPlaybackObjectRequest, getPlaybackObjectResponse) != DVBLINK_REMOTE_STATUS_OK)
+	std::string error;
+	if (dvblink_remote_con_->GetPlaybackObject(getPlaybackObjectRequest, getPlaybackObjectResponse, &error) != DVBLINK_REMOTE_STATUS_OK)    
     {
-        std::string error;
-        dvblink_remote_con_->GetLastError(error);
         xbmc_->Log(LOG_ERROR, "RecordingStreamer::get_recording_info: Could not get recording info for recording id %s", recording_id.c_str());
     }
     else

@@ -45,7 +45,7 @@
 
 typedef std::map<std::string, std::string> recording_id_to_url_map_t;
 
-class DVBLinkClient : public PLATFORM::CThread
+class DVBLinkClient : public PLATFORM::CThread, public dvblinkremote::DVBLinkRemoteLocker
 {
 public:
     DVBLinkClient(ADDON::CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* pvr, CHelper_libKODI_guilib* gui, std::string clientname, std::string hostname, long port, 
@@ -92,6 +92,16 @@ private:
   std::string make_timer_hash(const std::string& timer_id, const std::string& schedule_id);
   bool parse_timer_hash(const char* timer_hash, std::string& timer_id, std::string& schedule_id);
 
+  virtual void lock()
+  {
+      m_comm_mutex.Lock();
+  }
+
+  virtual void unlock()
+  {
+      m_comm_mutex.Unlock();
+  }
+  
   HttpPostClient* m_httpClient; 
   dvblinkremote::IDVBLinkRemoteConnection* m_dvblinkRemoteCommunication;
   bool m_connected;
@@ -122,6 +132,7 @@ private:
   dvblinkremote::ChannelFavorites channel_favorites_;
   std::map<std::string, int> inverse_channel_map_;
   bool no_group_single_rec_;
+  PLATFORM::CMutex m_comm_mutex;
 };
 
 /*!

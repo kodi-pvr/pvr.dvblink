@@ -1,3 +1,6 @@
+[B]Version 1.11.7[/B]
+Added: Backport of 1.10.9 version fixes from Isengard tree
+
 [B]Version 1.11.6[/B]
 Updated to PVR API v4.1.0
 
