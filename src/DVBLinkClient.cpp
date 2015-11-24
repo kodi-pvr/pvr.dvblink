@@ -673,7 +673,7 @@ int DVBLinkClient::GetSchedules(ADDON_HANDLE handle)
 			timer.endTime = manual_schedules[i]->GetStartTime() + manual_schedules[i]->GetDuration();
 
 			PVR->TransferTimerEntry(handle, &timer);
-			XBMC->Log(LOG_INFO, "Added EPG schedule : %d", manual_schedules[i]->GetID());
+			XBMC->Log(LOG_INFO, "Added EPG schedule : %s", manual_schedules[i]->GetID().c_str());
 
 			added_count += 1;
 		}
@@ -712,7 +712,7 @@ int DVBLinkClient::GetSchedules(ADDON_HANDLE handle)
 			timer.iEpgUid = PVR_TIMER_NO_EPG_UID;
 
 			PVR->TransferTimerEntry(handle, &timer);
-			XBMC->Log(LOG_INFO, "Added EPG schedule : %d", epg_schedules[i]->GetID());
+			XBMC->Log(LOG_INFO, "Added EPG schedule : %s", epg_schedules[i]->GetID().c_str());
 
 			added_count += 1;
 		}
@@ -747,7 +747,7 @@ int DVBLinkClient::GetSchedules(ADDON_HANDLE handle)
 		timer.iEpgUid = PVR_TIMER_NO_EPG_UID;
 
 		PVR->TransferTimerEntry(handle, &timer);
-		XBMC->Log(LOG_INFO, "Added EPG schedule : %d", bp_schedules[i]->GetID());
+		XBMC->Log(LOG_INFO, "Added EPG schedule : %s", bp_schedules[i]->GetID().c_str());
 
 		added_count += 1;
 		total_count += 1;
