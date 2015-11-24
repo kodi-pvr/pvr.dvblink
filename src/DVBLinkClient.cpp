@@ -22,16 +22,17 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
+#include <memory>
 #include "DVBLinkClient.h"
 #include "platform/util/StdString.h"
 #include "kodi/libKODI_guilib.h"
-#include "DialogRecordPref.h"
-#include "DialogDeleteTimer.h"
 
 using namespace dvblinkremote;
 using namespace dvblinkremotehttp;
 using namespace ADDON;
+
+static int default_rec_limit_ = dcrn_keep_all;
+static int default_rec_show_type_ = dcrs_record_all;
 
 std::string DVBLinkClient::GetBuildInRecorderObjectID()
 {
@@ -103,7 +104,7 @@ DVBLinkClient::DVBLinkClient(CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* p
   GetFavoritesRequest favorites_request;
   status = m_dvblinkRemoteCommunication->GetFavorites(favorites_request, channel_favorites_, NULL);
   favorites_supported_ = (status == DVBLINK_REMOTE_STATUS_OK);
-  
+
   GetChannelsRequest request;
   m_channels = new ChannelList();
   m_stream = new Stream();
@@ -273,6 +274,294 @@ PVR_ERROR DVBLinkClient::GetChannelGroupMembers(ADDON_HANDLE handle, const PVR_C
     return PVR_ERROR_NO_ERROR;
 }
 
+namespace
+{
+struct TimerType : PVR_TIMER_TYPE
+{
+  TimerType(unsigned int id,
+			unsigned int attributes,
+			const std::string &description,
+			const std::vector< std::pair<int, std::string> > &maxRecordingsValues,
+			int maxRecordingsDefault,
+			const std::vector< std::pair<int, std::string> > &dupEpisodesValues,
+			int dupEpisodesDefault
+			)
+  {
+	memset(this, 0, sizeof(PVR_TIMER_TYPE));
+
+	iId								 = id;
+	iAttributes						 = attributes;
+	iMaxRecordingsSize				 = maxRecordingsValues.size();
+	iMaxRecordingsDefault			 = maxRecordingsDefault;
+	iPreventDuplicateEpisodesSize	 = dupEpisodesValues.size();
+	iPreventDuplicateEpisodesDefault = dupEpisodesDefault;
+	strncpy(strDescription, description.c_str(), sizeof(strDescription) - 1);
+
+	int i = 0;
+	for (auto it = maxRecordingsValues.begin(); it != maxRecordingsValues.end(); ++it, ++i)
+	{
+		maxRecordings[i].iValue = it->first;
+		strncpy(maxRecordings[i].strDescription, it->second.c_str(), sizeof(maxRecordings[i].strDescription) - 1);
+	}
+
+	i = 0;
+	for (auto it = dupEpisodesValues.begin(); it != dupEpisodesValues.end(); ++it, ++i)
+	{
+		preventDuplicateEpisodes[i].iValue = it->first;
+		strncpy(preventDuplicateEpisodes[i].strDescription, it->second.c_str(), sizeof(preventDuplicateEpisodes[i].strDescription) - 1);
+	}
+  }
+};
+
+}
+
+PVR_ERROR DVBLinkClient::GetTimerTypes(PVR_TIMER_TYPE types[], int *size)
+{
+	/* PVR_Timer.iMaxRecordings values and presentation. */
+	static std::vector< std::pair<int, std::string> > recordingLimitValues;
+	if (recordingLimitValues.size() == 0)
+	{
+		recordingLimitValues.push_back(std::make_pair(dcrn_keep_all, XBMC->GetLocalizedString(32026)));
+		recordingLimitValues.push_back(std::make_pair(dcrn_keep_1, XBMC->GetLocalizedString(32027)));
+		recordingLimitValues.push_back(std::make_pair(dcrn_keep_2, XBMC->GetLocalizedString(32028)));
+		recordingLimitValues.push_back(std::make_pair(dcrn_keep_3, XBMC->GetLocalizedString(32029)));
+		recordingLimitValues.push_back(std::make_pair(dcrn_keep_4, XBMC->GetLocalizedString(32030)));
+		recordingLimitValues.push_back(std::make_pair(dcrn_keep_5, XBMC->GetLocalizedString(32031)));
+		recordingLimitValues.push_back(std::make_pair(dcrn_keep_6, XBMC->GetLocalizedString(32032)));
+		recordingLimitValues.push_back(std::make_pair(dcrn_keep_7, XBMC->GetLocalizedString(32033)));
+		recordingLimitValues.push_back(std::make_pair(dcrn_keep_10, XBMC->GetLocalizedString(32034)));
+	}
+
+	/* PVR_Timer.iPreventDuplicateEpisodes values and presentation.*/
+	static std::vector< std::pair<int, std::string> > showTypeValues;
+	if (showTypeValues.size() == 0)
+	{
+		showTypeValues.push_back(std::make_pair(dcrs_record_all, XBMC->GetLocalizedString(32035)));
+		showTypeValues.push_back(std::make_pair(dcrs_record_new_only, XBMC->GetLocalizedString(32036)));
+	}
+
+	static std::vector< std::pair<int, std::string> > emptyList;
+
+	static const unsigned int TIMER_MANUAL_ATTRIBS
+	  =	PVR_TIMER_TYPE_IS_MANUAL							|
+	    PVR_TIMER_TYPE_FORBIDS_EPG_TAG_ON_CREATE			|
+		PVR_TIMER_TYPE_SUPPORTS_CHANNELS					|
+		PVR_TIMER_TYPE_SUPPORTS_START_TIME					|
+		PVR_TIMER_TYPE_SUPPORTS_END_TIME					|
+		PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN;
+
+	static const unsigned int TIMER_CREATED_MANUAL_ATTRIBS
+	  =	PVR_TIMER_TYPE_IS_MANUAL							|
+	    PVR_TIMER_TYPE_FORBIDS_EPG_TAG_ON_CREATE			|
+		PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN			|
+		PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES;
+
+	static const unsigned int TIMER_EPG_ATTRIBS
+	  =	PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE			|
+		PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN;
+
+	static const unsigned int TIMER_REPEATING_MANUAL_ATTRIBS
+	  = PVR_TIMER_TYPE_IS_REPEATING							|
+		PVR_TIMER_TYPE_SUPPORTS_WEEKDAYS					|
+		PVR_TIMER_TYPE_SUPPORTS_MAX_RECORDINGS;
+
+	static const unsigned int TIMER_CREATED_REPEATING_MANUAL_ATTRIBS
+	  =	PVR_TIMER_TYPE_IS_MANUAL							|
+	    PVR_TIMER_TYPE_IS_REPEATING							|
+	    PVR_TIMER_TYPE_FORBIDS_EPG_TAG_ON_CREATE			|
+		PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN			|
+		PVR_TIMER_TYPE_SUPPORTS_MAX_RECORDINGS				|
+		PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES;
+
+	static const unsigned int TIMER_REPEATING_EPG_ATTRIBS
+	  =	PVR_TIMER_TYPE_IS_REPEATING							|
+		PVR_TIMER_TYPE_SUPPORTS_START_ANYTIME				|
+		PVR_TIMER_TYPE_SUPPORTS_RECORD_ONLY_NEW_EPISODES	|
+		PVR_TIMER_TYPE_SUPPORTS_MAX_RECORDINGS;
+
+	static const unsigned int TIMER_REPEATING_KEYWORD_ATTRIBS
+	  =	PVR_TIMER_TYPE_SUPPORTS_TITLE_EPG_MATCH				|
+		PVR_TIMER_TYPE_SUPPORTS_CHANNELS					|
+		PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN			|
+		PVR_TIMER_TYPE_IS_REPEATING							|
+		PVR_TIMER_TYPE_SUPPORTS_MAX_RECORDINGS;
+
+	static const unsigned int TIMER_CREATED_REPEATING_KEYWORD_ATTRIBS
+	  =	PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN			|
+		PVR_TIMER_TYPE_IS_REPEATING							|
+		PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES				|
+		PVR_TIMER_TYPE_SUPPORTS_MAX_RECORDINGS;
+
+	static const unsigned int TIMER_MANUAL_CHILD_ATTRIBUTES
+	  =	PVR_TIMER_TYPE_IS_MANUAL							|
+	    PVR_TIMER_TYPE_FORBIDS_EPG_TAG_ON_CREATE			|
+		PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES;
+
+	static const unsigned int TIMER_EPG_CHILD_ATTRIBUTES
+	  =	PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE			|
+		PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES;
+
+	static const unsigned int TIMER_KEYWORD_CHILD_ATTRIBUTES
+	  =	PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES;
+
+	/* Timer types definition.*/
+	static std::vector< std::unique_ptr< TimerType > > timerTypes;
+	if (timerTypes.size() == 0)
+	{
+	timerTypes.push_back(
+		/* One-shot manual (time and channel based) */
+		std::unique_ptr<TimerType>(new TimerType(
+		/* Type id. */
+		TIMER_ONCE_MANUAL,
+		/* Attributes. */
+		TIMER_MANUAL_ATTRIBS,
+		/* Description. */
+		XBMC->GetLocalizedString(32037),
+		/* Values definitions for attributes. */
+		recordingLimitValues, default_rec_limit_,
+		showTypeValues, default_rec_show_type_)));
+
+	timerTypes.push_back(
+		/* One-shot manual (time and channel based) - already created, disable editing of some attributes*/
+		std::unique_ptr<TimerType>(new TimerType(
+		/* Type id. */
+		TIMER_CREATED_ONCE_MANUAL,
+		/* Attributes. */
+		TIMER_CREATED_MANUAL_ATTRIBS,
+		/* Description. */
+		XBMC->GetLocalizedString(32037),
+		/* Values definitions for attributes. */
+		recordingLimitValues, default_rec_limit_,
+		showTypeValues, default_rec_show_type_)));
+
+	timerTypes.push_back(
+		/* One-shot epg based */
+		std::unique_ptr<TimerType>(new TimerType(
+		/* Type id. */
+		TIMER_ONCE_EPG,
+		/* Attributes. */
+		TIMER_EPG_ATTRIBS,
+		/* Description. */
+		XBMC->GetLocalizedString(32038),
+		/* Values definitions for attributes. */
+		recordingLimitValues, default_rec_limit_,
+		showTypeValues, default_rec_show_type_)));
+
+	timerTypes.push_back(
+		/* Read-only one-shot for timers generated by timerec */
+		std::unique_ptr<TimerType>(new TimerType(
+		/* Type id. */
+		TIMER_ONCE_MANUAL_CHILD,
+		/* Attributes. */
+		TIMER_MANUAL_CHILD_ATTRIBUTES,
+		/* Description. */
+		XBMC->GetLocalizedString(32039),
+		/* Values definitions for attributes. */
+		recordingLimitValues, default_rec_limit_,
+		showTypeValues, default_rec_show_type_)));
+
+	timerTypes.push_back(
+		/* Read-only one-shot for timers generated by autorec */
+		std::unique_ptr<TimerType>(new TimerType(
+		/* Type id. */
+		TIMER_ONCE_EPG_CHILD,
+		/* Attributes. */
+		TIMER_EPG_CHILD_ATTRIBUTES,
+		/* Description. */
+		XBMC->GetLocalizedString(32040),
+		/* Values definitions for attributes. */
+		recordingLimitValues, default_rec_limit_,
+		showTypeValues, default_rec_show_type_)));
+
+	timerTypes.push_back(
+		/* Child Keyword based */
+		std::unique_ptr<TimerType>(new TimerType(
+		/* Type id. */
+		TIMER_ONCE_KEYWORD_CHILD,
+		/* Attributes. */
+		TIMER_KEYWORD_CHILD_ATTRIBUTES,
+		/* Description. */
+		XBMC->GetLocalizedString(32041),
+		/* Values definitions for attributes. */
+		recordingLimitValues, default_rec_limit_,
+		showTypeValues, default_rec_show_type_)));
+
+	timerTypes.push_back(
+		/* Repeating manual (time and channel based) Parent */
+		std::unique_ptr<TimerType>(new TimerType(
+		/* Type id. */
+		TIMER_REPEATING_MANUAL,
+		/* Attributes. */
+		TIMER_MANUAL_ATTRIBS | TIMER_REPEATING_MANUAL_ATTRIBS,
+		/* Description. */
+		XBMC->GetLocalizedString(32042),
+		/* Values definitions for attributes. */
+		recordingLimitValues, default_rec_limit_,
+		showTypeValues, default_rec_show_type_)));
+
+	timerTypes.push_back(
+		/* Repeating manual (time and channel based) Parent - already created, so disable editing of some attributes*/
+		std::unique_ptr<TimerType>(new TimerType(
+		/* Type id. */
+		TIMER_CREATED_REPEATING_MANUAL,
+		/* Attributes. */
+		TIMER_CREATED_REPEATING_MANUAL_ATTRIBS,
+		/* Description. */
+		XBMC->GetLocalizedString(32042),
+		/* Values definitions for attributes. */
+		recordingLimitValues, default_rec_limit_,
+		showTypeValues, default_rec_show_type_)));
+
+
+	timerTypes.push_back(
+		/* Repeating epg based Parent*/
+		std::unique_ptr<TimerType>(new TimerType(
+		/* Type id. */
+		TIMER_REPEATING_EPG,
+		/* Attributes. */
+		TIMER_EPG_ATTRIBS | TIMER_REPEATING_EPG_ATTRIBS,
+		/* Description. */
+		XBMC->GetLocalizedString(32043),
+		/* Values definitions for attributes. */
+		recordingLimitValues, default_rec_limit_,
+		showTypeValues, default_rec_show_type_)));
+
+	timerTypes.push_back(
+		/* Repeating Keyword (Generic) based */
+		std::unique_ptr<TimerType>(new TimerType(
+		/* Type id. */
+		TIMER_REPEATING_KEYWORD,
+		/* Attributes. */
+		TIMER_REPEATING_KEYWORD_ATTRIBS,
+		/* Description. */
+		XBMC->GetLocalizedString(32044),
+		/* Values definitions for attributes. */
+		recordingLimitValues, default_rec_limit_,
+		showTypeValues, default_rec_show_type_)));
+
+	timerTypes.push_back(
+		/* Repeating Keyword (Generic) based - already created, disable editing of some elements*/
+		std::unique_ptr<TimerType>(new TimerType(
+		/* Type id. */
+		TIMER_CREATED_REPEATING_KEYWORD,
+		/* Attributes. */
+		TIMER_CREATED_REPEATING_KEYWORD_ATTRIBS,
+		/* Description. */
+		XBMC->GetLocalizedString(32044),
+		/* Values definitions for attributes. */
+		recordingLimitValues, default_rec_limit_,
+		showTypeValues, default_rec_show_type_)));
+	}
+
+	/* Copy data to target array. */
+	int i = 0;
+	for (auto it = timerTypes.begin(); it != timerTypes.end(); ++it, ++i)
+		types[i] = **it;
+
+	*size = timerTypes.size();
+	return PVR_ERROR_NO_ERROR;
+}
+
 int DVBLinkClient::GetTimersAmount()
 {
   return m_timerCount;
@@ -315,11 +604,167 @@ bool DVBLinkClient::parse_timer_hash(const char* timer_hash, std::string& timer_
     return ret_val;
 }
 
+#define SCHEDULE_ID_OFFSET	10000
+
+static int get_kodi_idx_from_schedule_idx(int schedule_id)
+{
+	return schedule_id + SCHEDULE_ID_OFFSET;
+}
+
+static bool is_timer_a_schedule(int idx)
+{
+	return idx >= SCHEDULE_ID_OFFSET ? true : false;
+}
+
+int DVBLinkClient::GetSchedules(ADDON_HANDLE handle)
+{
+	int added_count = 0;
+	int total_count = 0;
+
+	schedule_map_.clear();
+
+	GetSchedulesRequest request;
+	StoredSchedules response;
+
+	DVBLinkRemoteStatusCode status;
+	std::string error;
+	if ((status = m_dvblinkRemoteCommunication->GetSchedules(request, response, &error)) != DVBLINK_REMOTE_STATUS_OK)
+	{
+		XBMC->Log(LOG_ERROR,  "Could not get Schedules (Error code : %d Description : %s)", (int)status, error.c_str());
+		return added_count;
+	}
+
+	int schedule_num = response.GetManualSchedules().size() + response.GetEpgSchedules().size();
+
+	XBMC->Log(LOG_INFO, "Found %d schedules", schedule_num);
+
+	if (m_showinfomsg)
+	{
+		XBMC->QueueNotification(QUEUE_INFO, XBMC->GetLocalizedString(32007), schedule_num);
+	}
+
+	//manual schedules
+	StoredManualScheduleList& manual_schedules = response.GetManualSchedules();
+	for (size_t i=0; i<manual_schedules.size(); i++)
+	{
+		schedule_map_[manual_schedules[i]->GetID()] = schedule_desc(-1, TIMER_CREATED_ONCE_MANUAL, manual_schedules[i]->MarginBefore, manual_schedules[i]->MarginAfter);
+
+		if (manual_schedules[i]->GetDayMask() != 0)
+		{
+			int kodi_idx = get_kodi_idx_from_schedule_idx(total_count);
+			schedule_map_[manual_schedules[i]->GetID()] = schedule_desc(kodi_idx, TIMER_CREATED_REPEATING_MANUAL, manual_schedules[i]->MarginBefore, manual_schedules[i]->MarginAfter);
+
+			PVR_TIMER timer;
+			memset(&timer, 0, sizeof(PVR_TIMER));
+			timer.iEpgUid = PVR_TIMER_NO_EPG_UID;
+
+			//misuse strDirectory to keep id of the timer
+			PVR_STRCPY(timer.strDirectory, manual_schedules[i]->GetID().c_str());
+			timer.iClientIndex = kodi_idx;
+			timer.iClientChannelUid = GetInternalUniqueIdFromChannelId(manual_schedules[i]->GetChannelID());
+		    timer.state = PVR_TIMER_STATE_SCHEDULED;
+			timer.iTimerType = TIMER_CREATED_REPEATING_MANUAL;
+			timer.iMarginStart = manual_schedules[i]->MarginBefore/60;
+			timer.iMarginEnd = manual_schedules[i]->MarginAfter/60;
+			timer.iMaxRecordings = manual_schedules[i]->RecordingsToKeep;
+
+			strncpy(timer.strTitle, manual_schedules[i]->Title.c_str(), sizeof(timer.strTitle) - 1);
+			timer.startTime = manual_schedules[i]->GetStartTime();
+			timer.endTime = manual_schedules[i]->GetStartTime() + manual_schedules[i]->GetDuration();
+
+			PVR->TransferTimerEntry(handle, &timer);
+			XBMC->Log(LOG_INFO, "Added EPG schedule : %d", manual_schedules[i]->GetID());
+
+			added_count += 1;
+		}
+		total_count += 1;
+	}
+
+	//epg based schedules
+	StoredEpgScheduleList& epg_schedules = response.GetEpgSchedules();
+	for (size_t i=0; i<epg_schedules.size(); i++)
+	{
+		schedule_map_[epg_schedules[i]->GetID()] = schedule_desc(-1, TIMER_ONCE_EPG, epg_schedules[i]->MarginBefore, epg_schedules[i]->MarginAfter);
+
+		if (epg_schedules[i]->Repeat)
+		{
+			int kodi_idx = get_kodi_idx_from_schedule_idx(total_count);
+			schedule_map_[epg_schedules[i]->GetID()] = schedule_desc(kodi_idx, TIMER_REPEATING_EPG, epg_schedules[i]->MarginBefore, epg_schedules[i]->MarginAfter);
+
+			PVR_TIMER timer;
+			memset(&timer, 0, sizeof(PVR_TIMER));
+
+			//misuse strDirectory to keep id of the timer
+			PVR_STRCPY(timer.strDirectory, epg_schedules[i]->GetID().c_str());
+			timer.iClientIndex = kodi_idx;
+			timer.iClientChannelUid = GetInternalUniqueIdFromChannelId(epg_schedules[i]->GetChannelID());
+		    timer.state = PVR_TIMER_STATE_SCHEDULED;
+			timer.iTimerType = TIMER_REPEATING_EPG;
+			timer.iMarginStart = epg_schedules[i]->MarginBefore/60;
+			timer.iMarginEnd = epg_schedules[i]->MarginAfter/60;
+
+			timer.iMaxRecordings = epg_schedules[i]->RecordingsToKeep;
+			timer.bStartAnyTime = epg_schedules[i]->RecordSeriesAnytime;
+			timer.iPreventDuplicateEpisodes = epg_schedules[i]->NewOnly ? dcrs_record_new_only : dcrs_record_all;
+			strncpy(timer.strTitle, epg_schedules[i]->program_name_.c_str(), sizeof(timer.strTitle) - 1);
+
+			//the original program, used for scheduling, can already be gone for a long time
+			timer.iEpgUid = PVR_TIMER_NO_EPG_UID;
+
+			PVR->TransferTimerEntry(handle, &timer);
+			XBMC->Log(LOG_INFO, "Added EPG schedule : %d", epg_schedules[i]->GetID());
+
+			added_count += 1;
+		}
+		total_count += 1;
+	}
+
+	//epg based schedules
+	StoredByPatternScheduleList& bp_schedules = response.GetByPatternSchedules();
+	for (size_t i=0; i<bp_schedules.size(); i++)
+	{
+		int kodi_idx = get_kodi_idx_from_schedule_idx(total_count);
+		schedule_map_[bp_schedules[i]->GetID()] = schedule_desc(kodi_idx, TIMER_CREATED_REPEATING_KEYWORD, bp_schedules[i]->MarginBefore, bp_schedules[i]->MarginAfter);
+
+		PVR_TIMER timer;
+		memset(&timer, 0, sizeof(PVR_TIMER));
+
+		//misuse strDirectory to keep id of the timer
+		PVR_STRCPY(timer.strDirectory, bp_schedules[i]->GetID().c_str());
+		timer.iClientIndex = kodi_idx;
+		if (bp_schedules[i]->GetChannelID().size() > 0)
+			timer.iClientChannelUid = GetInternalUniqueIdFromChannelId(bp_schedules[i]->GetChannelID());
+		else
+			timer.iClientChannelUid = PVR_TIMER_ANY_CHANNEL;
+
+	    timer.state = PVR_TIMER_STATE_SCHEDULED;
+		timer.iTimerType = TIMER_CREATED_REPEATING_KEYWORD;
+		timer.iMarginStart = bp_schedules[i]->MarginBefore/60;
+		timer.iMarginEnd = bp_schedules[i]->MarginAfter/60;
+		strncpy(timer.strEpgSearchString, bp_schedules[i]->GetKeyphrase().c_str(), sizeof(timer.strEpgSearchString) - 1);
+
+		strncpy(timer.strTitle, bp_schedules[i]->GetKeyphrase().c_str(), sizeof(timer.strTitle) - 1);
+		timer.iEpgUid = PVR_TIMER_NO_EPG_UID;
+
+		PVR->TransferTimerEntry(handle, &timer);
+		XBMC->Log(LOG_INFO, "Added EPG schedule : %d", bp_schedules[i]->GetID());
+
+		added_count += 1;
+		total_count += 1;
+	}
+
+	return added_count;
+}
 
 PVR_ERROR DVBLinkClient::GetTimers(ADDON_HANDLE handle)
 {
   PVR_ERROR result = PVR_ERROR_FAILED;
   PLATFORM::CLockObject critsec(m_mutex);
+
+  m_timerCount = 0;
+
+  //get schedules first
+  int schedule_count = GetSchedules(handle);
 
   GetRecordingsRequest recordingsRequest;
   RecordingList recordings;
@@ -347,8 +792,35 @@ PVR_ERROR DVBLinkClient::GetTimers(ADDON_HANDLE handle)
     PVR_TIMER xbmcTimer;
     memset(&xbmcTimer, 0, sizeof(PVR_TIMER));
 
-    /* TODO: Implement own timer types to get support for the timer features introduced with PVR API 1.9.7 */
     xbmcTimer.iTimerType = PVR_TIMER_TYPE_NONE;
+	//find parent schedule type
+	if (schedule_map_.find(rec->GetScheduleID()) != schedule_map_.end())
+	{
+		int schedule_type = schedule_map_[rec->GetScheduleID()].schedule_kodi_type;
+		switch (schedule_type)
+		{
+		case TIMER_CREATED_ONCE_MANUAL:
+		case TIMER_ONCE_EPG:
+			//for once timers - copy parent attribute (there was no separate schedule submitted to kodi)
+			xbmcTimer.iTimerType = schedule_type;
+			break;
+		case TIMER_CREATED_REPEATING_MANUAL:
+			xbmcTimer.iTimerType = TIMER_ONCE_MANUAL_CHILD;
+		    xbmcTimer.iParentClientIndex = schedule_map_[rec->GetScheduleID()].schedule_kodi_idx;
+			break;
+		case TIMER_REPEATING_EPG:
+			xbmcTimer.iTimerType = TIMER_ONCE_EPG_CHILD;
+		    xbmcTimer.iParentClientIndex = schedule_map_[rec->GetScheduleID()].schedule_kodi_idx;
+			break;
+		case TIMER_CREATED_REPEATING_KEYWORD:
+			xbmcTimer.iTimerType = TIMER_ONCE_KEYWORD_CHILD;
+		    xbmcTimer.iParentClientIndex = schedule_map_[rec->GetScheduleID()].schedule_kodi_idx;
+			break;
+		}
+		//copy margins
+		xbmcTimer.iMarginStart = schedule_map_[rec->GetScheduleID()].schedule_margin_before/60;
+		xbmcTimer.iMarginEnd = schedule_map_[rec->GetScheduleID()].schedule_margin_after/60;
+	}
 
     //fake index
     xbmcTimer.iClientIndex = index;
@@ -387,7 +859,8 @@ PVR_ERROR DVBLinkClient::GetTimers(ADDON_HANDLE handle)
     XBMC->Log(LOG_INFO, "Added EPG timer : %s", rec->GetProgram().GetTitle().c_str());
   }
 
-  m_timerCount = recordings.size();
+  m_timerCount = recordings.size() + schedule_count;
+
   result = PVR_ERROR_NO_ERROR;
   return result;
 }
@@ -421,89 +894,119 @@ PVR_ERROR DVBLinkClient::AddTimer(const PVR_TIMER &timer)
     PLATFORM::CLockObject critsec(m_mutex);
     DVBLinkRemoteStatusCode status;
     AddScheduleRequest * addScheduleRequest = NULL;
-    std::string channelId = m_channelMap[timer.iClientChannelUid]->GetID();
-    if (timer.iEpgUid != PVR_TIMER_NO_EPG_UID)
-    {
-        bool record_series = false;
-        bool newOnly = true;
-        bool anytime = true;
-        int marginBefore = CDialogRecordPref::c_default_margin;
-        int marginAfter = CDialogRecordPref::c_default_margin;
-        int numberToKeep = CDialogRecordPref::c_keep_all_recordings;
-        //do not ask if record is pressed during watching
-        if (timer.startTime != 0)
-        {
-            // ask how to record this program
-            CDialogRecordPref vWindow(XBMC, GUI);
-            int dlg_res = vWindow.DoModal();
-            if (dlg_res == 1)
-            {
-                record_series = vWindow.RecSeries;
-                newOnly = vWindow.newOnly;
-                anytime = vWindow.anytime;
-                marginBefore = vWindow.marginBefore == CDialogRecordPref::c_default_margin ? CDialogRecordPref::c_default_margin : vWindow.marginBefore * 60;
-                marginAfter = vWindow.marginAfter == CDialogRecordPref::c_default_margin ? CDialogRecordPref::c_default_margin : vWindow.marginAfter * 60;;
-                numberToKeep = vWindow.numberToKeep;
-            } else 
-            {
-                if (dlg_res == 0)
-                    return PVR_ERROR_NO_ERROR;
-            }
-        }
 
-        std::string dvblink_program_id;
-        if (get_dvblink_program_id(channelId, timer.iEpgUid, dvblink_program_id))
-        {
-            if (!setting_margins_supported_)
-            {
-                marginBefore = CDialogRecordPref::c_default_margin;
-                marginAfter = CDialogRecordPref::c_default_margin;
-            }
-            addScheduleRequest = new AddScheduleByEpgRequest(channelId, dvblink_program_id, record_series, newOnly, anytime, numberToKeep, marginBefore, marginAfter);
-        }
-        else
-        {
-            return PVR_ERROR_FAILED;
-        }
-    }
-    else
-    {
-        time_t start_time = timer.startTime;
-        time_t duration = timer.endTime - timer.startTime;
-        long day_mask = 0;
-        if (timer.iWeekdays > 0) // repeating timer?
-        {
-            //change day mask to DVBLink server format (Sun - first day)
-            bool bcarry = (timer.iWeekdays & 0x40) == 0x40;
-            day_mask = (timer.iWeekdays << 1) & 0x7F;
-            if (bcarry)
-                day_mask |= 0x01;
-            //find first now/future time, which matches the day mask
-            start_time = timer.startTime > timer.firstDay ? timer.startTime : timer.firstDay;
-            for (size_t i = 0; i < 7; i++)
-            {
-                tm* local_start_time = localtime(&start_time);
-                if (is_bit_set(local_start_time->tm_wday, (unsigned char)day_mask))
-                    break;
-                start_time += time_t(24 * 3600);
-            }
-        }
-        addScheduleRequest = new AddManualScheduleRequest(channelId, start_time, duration, day_mask, timer.strTitle);
-    }
-  
-	std::string error;
-    if ((status = m_dvblinkRemoteCommunication->AddSchedule(*addScheduleRequest, &error)) == DVBLINK_REMOTE_STATUS_OK)
-    {
-        XBMC->Log(LOG_INFO, "Timer added");
-        PVR->TriggerTimerUpdate();
-        result = PVR_ERROR_NO_ERROR;
-    }
-    else
-    {
-        result = PVR_ERROR_FAILED;
-        XBMC->Log(LOG_ERROR, "Could not add timer (Error code : %d Description : %s)", (int)status, error.c_str());
-    }
-    SAFE_DELETE(addScheduleRequest);
+	int marginBefore = -1;
+	int marginAfter = -1;
+	if (setting_margins_supported_)
+	{
+		marginBefore = timer.iMarginStart*60;
+		marginAfter = timer.iMarginEnd*60;
+	}
+
+	int numberToKeep = timer.iMaxRecordings;
+	if (numberToKeep < 0)
+		numberToKeep = dcrn_keep_all;
+
+	switch (timer.iTimerType)
+	{
+	case TIMER_ONCE_MANUAL:
+		{
+			std::string channelId = m_channelMap[timer.iClientChannelUid]->GetID();
+			time_t start_time = timer.startTime;
+			//check for instant recording
+			if (start_time == 0)
+				time(&start_time);
+
+			time_t duration = timer.endTime - start_time;
+			long day_mask = 0;
+			addScheduleRequest = new AddManualScheduleRequest(channelId, start_time, duration, day_mask, timer.strTitle, 0, marginBefore, marginAfter);
+		}
+		break;
+	case TIMER_REPEATING_MANUAL:
+		{
+			std::string channelId = m_channelMap[timer.iClientChannelUid]->GetID();
+			time_t start_time = timer.startTime;
+			time_t duration = timer.endTime - timer.startTime;
+			long day_mask = 0;
+			if (timer.iWeekdays > 0) // repeating timer?
+			{
+				//change day mask to DVBLink server format (Sun - first day)
+				bool bcarry = (timer.iWeekdays & 0x40) == 0x40;
+				day_mask = (timer.iWeekdays << 1) & 0x7F;
+				if (bcarry)
+					day_mask |= 0x01;
+				//find first now/future time, which matches the day mask
+				start_time = timer.startTime > timer.firstDay ? timer.startTime : timer.firstDay;
+				for (size_t i = 0; i < 7; i++)
+				{
+					tm* local_start_time = localtime(&start_time);
+					if (is_bit_set(local_start_time->tm_wday, (unsigned char)day_mask))
+						break;
+					start_time += time_t(24 * 3600);
+				}
+			}
+			addScheduleRequest = new AddManualScheduleRequest(channelId, start_time, duration, day_mask, timer.strTitle, numberToKeep, marginBefore, marginAfter);
+		}
+		break;
+	case TIMER_ONCE_EPG:
+		{
+			std::string channelId = m_channelMap[timer.iClientChannelUid]->GetID();
+
+			std::string dvblink_program_id;
+			if (get_dvblink_program_id(channelId, timer.iEpgUid, dvblink_program_id))
+			{
+				addScheduleRequest = new AddScheduleByEpgRequest(channelId, dvblink_program_id, false, true, true, dcrn_keep_all, marginBefore, marginAfter);
+			}
+		}
+		break;
+	case TIMER_REPEATING_EPG:
+		{
+			std::string channelId = m_channelMap[timer.iClientChannelUid]->GetID();
+			bool record_series = true;
+			bool newOnly = timer.iPreventDuplicateEpisodes == dcrs_record_all ? false : true;
+			bool anytime = timer.bStartAnyTime;
+
+			std::string dvblink_program_id;
+			if (get_dvblink_program_id(channelId, timer.iEpgUid, dvblink_program_id))
+			{
+				addScheduleRequest = new AddScheduleByEpgRequest(channelId, dvblink_program_id, record_series, newOnly, anytime, numberToKeep, marginBefore, marginAfter);
+			}
+		}
+		break;
+	case TIMER_REPEATING_KEYWORD:
+		{
+			//empty string is "any channel"
+			std::string channelId;
+			if (timer.iClientChannelUid != PVR_TIMER_ANY_CHANNEL)
+				channelId = m_channelMap[timer.iClientChannelUid]->GetID();
+
+			std::string key_phrase = timer.strEpgSearchString;
+			long genre_mask = 0;//any genre
+
+			addScheduleRequest = new AddScheduleByPatternRequest(channelId, key_phrase, genre_mask, numberToKeep, marginBefore, marginAfter);
+		}
+		break;
+	}
+
+	if (addScheduleRequest != NULL)
+	{
+		std::string error;
+		if ((status = m_dvblinkRemoteCommunication->AddSchedule(*addScheduleRequest, &error)) == DVBLINK_REMOTE_STATUS_OK)
+		{
+			XBMC->Log(LOG_INFO, "Timer added");
+			PVR->TriggerTimerUpdate();
+			result = PVR_ERROR_NO_ERROR;
+		}
+		else
+		{
+			result = PVR_ERROR_FAILED;
+			XBMC->Log(LOG_ERROR, "Could not add timer (Error code : %d Description : %s)", (int)status, error.c_str());
+		}
+		SAFE_DELETE(addScheduleRequest);
+	} else
+	{
+		result = PVR_ERROR_FAILED;
+	}
     return result;
 }
 
@@ -511,40 +1014,41 @@ PVR_ERROR DVBLinkClient::DeleteTimer(const PVR_TIMER &timer)
 {
   PVR_ERROR result = PVR_ERROR_FAILED;
   PLATFORM::CLockObject critsec(m_mutex);
-  DVBLinkRemoteStatusCode status;
-  
-  //timer id hash is kept in strDirectory!
-  std::string timer_id;
-  std::string schedule_id;
-  parse_timer_hash(timer.strDirectory, timer_id, schedule_id);
-
-  bool cancel_series = true;
-  if (timer.iWeekdays > 0) // repeating timer?
-  {
-      //show dialog and ask: cancel series or just this episode
-      CDialogDeleteTimer vWindow(XBMC, GUI, cancel_series);
-      int dlg_res = vWindow.DoModal();
-      if (dlg_res == 1)
-      {
-          cancel_series = vWindow.DeleteSeries;
-      } else 
-      {
-          if (dlg_res == 0)
-              return PVR_ERROR_NO_ERROR;
-      }
-  }
-
+  DVBLinkRemoteStatusCode status = DVBLINK_REMOTE_STATUS_ERROR;
   std::string error;
-  if (cancel_series)
-  {
-      RemoveScheduleRequest removeSchedule(schedule_id);
-      status = m_dvblinkRemoteCommunication->RemoveSchedule(removeSchedule, &error);
-  }
-  else
-  {
-      RemoveRecordingRequest removeRecording(timer_id);
-      status = m_dvblinkRemoteCommunication->RemoveRecording(removeRecording, &error);
-  }
+  
+	switch (timer.iTimerType)
+	{
+	case TIMER_CREATED_ONCE_MANUAL:
+	case TIMER_ONCE_EPG:
+	case TIMER_ONCE_MANUAL_CHILD:
+	case TIMER_ONCE_EPG_CHILD:
+	case TIMER_ONCE_KEYWORD_CHILD:
+		{
+			//this is a timer
+
+			//timer id hash is kept in strDirectory!
+			std::string timer_id;
+			std::string schedule_id;
+			parse_timer_hash(timer.strDirectory, timer_id, schedule_id);
+
+			RemoveRecordingRequest removeRecording(timer_id);
+			status = m_dvblinkRemoteCommunication->RemoveRecording(removeRecording, &error);
+		}
+		break;
+	case TIMER_CREATED_REPEATING_MANUAL:
+	case TIMER_REPEATING_EPG:
+	case TIMER_CREATED_REPEATING_KEYWORD:
+		{
+			//this is a schedule
+
+			//schedule id is in the timer.strDirectory
+			std::string schedule_id = timer.strDirectory;
+			RemoveScheduleRequest removeSchedule(schedule_id);
+			status = m_dvblinkRemoteCommunication->RemoveSchedule(removeSchedule, &error);
+		}
+		break;
+	}
 
   if (status == DVBLINK_REMOTE_STATUS_OK)
   {
@@ -561,8 +1065,64 @@ PVR_ERROR DVBLinkClient::DeleteTimer(const PVR_TIMER &timer)
 
 PVR_ERROR DVBLinkClient::UpdateTimer(const PVR_TIMER &timer)
 {
-  //DVBLink serverdoes not support timer update (e.g. delete/re-create)
-  return PVR_ERROR_FAILED;
+  PVR_ERROR result = PVR_ERROR_NO_ERROR;
+  PLATFORM::CLockObject critsec(m_mutex);
+  
+	std::string schedule_id;
+	switch (timer.iTimerType)
+	{
+	case TIMER_CREATED_ONCE_MANUAL:
+	case TIMER_ONCE_EPG:
+		{
+			//this is a timer
+
+			//timer id hash is kept in strDirectory!
+			std::string timer_id;
+			parse_timer_hash(timer.strDirectory, timer_id, schedule_id);
+		}
+		break;
+	case TIMER_CREATED_REPEATING_MANUAL:
+	case TIMER_REPEATING_EPG:
+	case TIMER_CREATED_REPEATING_KEYWORD:
+		{
+			//this is a schedule
+
+			//schedule id is in the timer.strDirectory
+			schedule_id = timer.strDirectory;
+		}
+		break;
+	case TIMER_ONCE_MANUAL_CHILD:
+	case TIMER_ONCE_EPG_CHILD:
+	case TIMER_ONCE_KEYWORD_CHILD:
+		//children entities are not editable
+		break;
+	}
+
+  if (schedule_id.size() > 0)
+  {
+	bool new_only = timer.iPreventDuplicateEpisodes == dcrs_record_new_only;
+	bool recordSeriesAnytime = timer.bStartAnyTime;
+	int recordingsToKeep = timer.iMaxRecordings;
+	int margin_before = timer.iMarginStart*60;
+	int margin_after = timer.iMarginEnd*60;
+
+	UpdateScheduleRequest update_request(schedule_id, new_only, recordSeriesAnytime, recordingsToKeep, margin_before, margin_after);
+
+	std::string error;
+	DVBLinkRemoteStatusCode status = m_dvblinkRemoteCommunication->UpdateSchedule(update_request, &error);
+
+	if (status == DVBLINK_REMOTE_STATUS_OK)
+	{
+		XBMC->Log(LOG_INFO, "Schedule %s was updated", schedule_id.c_str());
+		PVR->TriggerTimerUpdate();
+		result = PVR_ERROR_NO_ERROR;
+	}
+	else
+	{
+		XBMC->Log(LOG_ERROR, "Schedule %s update failed (Error code : %d Description : %s)", schedule_id.c_str(), (int)status, error.c_str());
+	}
+  }
+  return result;
 }
 
 int DVBLinkClient::GetRecordingsAmount()
@@ -722,6 +1282,17 @@ PVR_ERROR DVBLinkClient::GetRecordings(ADDON_HANDLE handle)
                 title += " - " + se_str;
         }
         PVR_STRCPY(xbmcRecording.strTitle, title.c_str());
+        PVR_STRCPY(xbmcRecording.strEpisodeName, tvitem->GetMetadata().SubTitle.c_str());
+		if (tvitem->GetMetadata().SeasonNumber > 0)
+			xbmcRecording.iSeriesNumber = tvitem->GetMetadata().SeasonNumber;
+		else
+			xbmcRecording.iSeriesNumber = -1;
+
+		if (tvitem->GetMetadata().EpisodeNumber > 0)
+			xbmcRecording.iEpisodeNumber = tvitem->GetMetadata().EpisodeNumber;
+		else
+			xbmcRecording.iEpisodeNumber = -1;
+		xbmcRecording.iYear = tvitem->GetMetadata().Year;
 
         xbmcRecording.recordingTime = tvitem->GetMetadata().GetStartTime();
         PVR_STRCPY(xbmcRecording.strPlot, tvitem->GetMetadata().ShortDescription.c_str());
@@ -794,7 +1365,6 @@ void DVBLinkClient::GetDriveSpace(long long *iTotal, long long *iUsed)
     *iUsed = (settings.TotalSpace - settings.AvailableSpace);
   }
 }
-
 
 int DVBLinkClient::GetCurrentChannelId()
 {

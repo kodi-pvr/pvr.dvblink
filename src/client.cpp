@@ -623,7 +623,9 @@ bool CanSeekStream(void)
 
 PVR_ERROR GetTimerTypes(PVR_TIMER_TYPE types[], int *size)
 {
-  /* TODO: Implement this to get support for the timer features introduced with PVR API 1.9.7 */
+  if (dvblinkclient)
+    return dvblinkclient->GetTimerTypes(types, size);
+
   return PVR_ERROR_NOT_IMPLEMENTED;
 }
 
