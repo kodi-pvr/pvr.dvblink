@@ -1,5 +1,8 @@
 [B]Version 1.11.7[/B]
 Added: Backport of 1.10.9 version fixes from Isengard tree
+Added: Native Kodi series timer support
+Added: Support for keyword-based recording timers
+Added: episode/season/year info to recording metadata
 
 [B]Version 1.11.6[/B]
 Updated to PVR API v4.1.0
