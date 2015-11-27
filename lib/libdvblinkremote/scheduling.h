@@ -39,7 +39,8 @@ namespace dvblinkremote {
     enum DVBLinkScheduleType
     {
       SCHEDULE_TYPE_MANUAL = 0, /**< Used for manual schedules. */ 
-      SCHEDULE_TYPE_BY_EPG = 1 /**< Used for electronic program guide (EPG) schedules. */ 
+      SCHEDULE_TYPE_BY_EPG = 1, /**< Used for electronic program guide (EPG) schedules. */ 
+      SCHEDULE_TYPE_BY_PATTERN = 2 /**< Used for by-pattern schedules. */ 
     };
 
     /**
@@ -252,7 +253,7 @@ namespace dvblinkremote {
       * Default value is <tt>false</tt>.
       * @param recordingsToKeep defines a number of recordings to keep in case of series recordings (0 - keep all).
       */
-      EpgSchedule(const std::string& channelId, const std::string& programId, const bool repeat = false, const bool newOnly = false, const bool recordSeriesAnytime = false, const int recordingsToKeep = 0, const int marginBefore = -1, const int marginAfter = -1);
+      EpgSchedule(const std::string& channelId, const std::string& programId, const bool repeat = false, const bool newOnly = false, const bool recordSeriesAnytime = true, const int recordingsToKeep = 0, const int marginBefore = -1, const int marginAfter = -1);
 
     /**
       * Initializes a new instance of the dvblinkremote::EpgSchedule class.
@@ -268,7 +269,7 @@ namespace dvblinkremote {
       * Default value is <tt>false</tt>.
       * @param recordingsToKeep defines a number of recordings to keep in case of series recordings (0 - keep all).
       */
-      EpgSchedule(const std::string& id, const std::string& channelId, const std::string& programId, const bool repeat = false, const bool newOnly = false, const bool recordSeriesAnytime = false, const int recordingsToKeep = 0, const int marginBefore = -1, const int marginAfter = -1);
+      EpgSchedule(const std::string& id, const std::string& channelId, const std::string& programId, const bool repeat = false, const bool newOnly = false, const bool recordSeriesAnytime = true, const int recordingsToKeep = 0, const int marginBefore = -1, const int marginAfter = -1);
 
     /**
       * Pure virtual destructor for cleaning up allocated memory.
@@ -297,10 +298,82 @@ namespace dvblinkremote {
       */
     bool RecordSeriesAnytime;
 
+    /**
+      * Read-only field (e.g. filled on get), which describes original program, used for making a schedule
+      */
+	std::string program_name_;
+
   private:
     /**
       * The program identifier for the schedule.
       */
     std::string m_programId;
   };
+
+  /**
+    * Abstract base class for "by pattern" schedules. 
+    */
+  class ByPatternSchedule :  public virtual Schedule
+  {
+  public:
+    /**
+      * An enum to be used for constructing a genre search bitflag field
+      */
+    enum DVBLinkByPatternScheduleGenreMask 
+    {
+		DRGC_ANY                                    = 0x00000000,
+		DRGC_NEWS                                   = 0x00000001,
+		DRGC_KIDS                                   = 0x00000002,
+		DRGC_MOVIE                                  = 0x00000004,
+		DRGC_SPORT                                  = 0x00000008,
+		DRGC_DOCUMENTARY                            = 0x00000010,
+		DRGC_ACTION                                 = 0x00000020,
+		DRGC_COMEDY                                 = 0x00000040,
+		DRGC_DRAMA                                  = 0x00000080,
+		DRGC_EDU                                    = 0x00000100,
+		DRGC_HORROR                                 = 0x00000200,
+		DRGC_MUSIC                                  = 0x00000400,
+		DRGC_REALITY                                = 0x00000800,
+		DRGC_ROMANCE                                = 0x00001000,
+		DRGC_SCIFI                                  = 0x00002000,
+		DRGC_SERIAL                                 = 0x00004000,
+		DRGC_SOAP                                   = 0x00008000,
+		DRGC_SPECIAL                                = 0x00010000,
+		DRGC_THRILLER                               = 0x00020000,
+		DRGC_ADULT                                  = 0x00040000
+	};
+
+    ByPatternSchedule(const std::string& id, const std::string& channelId, const std::string& keyphrase, const long genreMask, const int recordingsToKeep = 0, const int marginBefore = -1, const int marginAfter = -1);
+    ByPatternSchedule(const std::string& channelId, const std::string& keyphrase, const long genreMask, const int recordingsToKeep = 0, const int marginBefore = -1, const int marginAfter = -1);
+
+    /**
+      * Pure virtual destructor for cleaning up allocated memory.
+      */
+    virtual ~ByPatternSchedule() = 0;
+
+    /**
+      * Gets the genre bitmask
+      * @return genre bitmask
+      */
+    long GetGenreMask();
+
+    /**
+      * Gets the keyphrase
+      * @return keyphrase
+      */
+	std::string& GetKeyphrase();
+
+  private:
+
+    /**
+      * The genre bitmask
+      */
+    long m_genreMask;
+
+	/**
+      * The search keyphrase.
+      */
+    std::string m_keyphrase;
+  };
+
 };

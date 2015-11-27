@@ -45,7 +45,59 @@
 
 typedef std::map<std::string, std::string> recording_id_to_url_map_t;
 
-class DVBLinkClient : public PLATFORM::CThread
+/* timer type ids */
+#define TIMER_ONCE_MANUAL			(PVR_TIMER_TYPE_NONE + 1)
+#define TIMER_ONCE_EPG				(PVR_TIMER_TYPE_NONE + 2)
+#define TIMER_ONCE_MANUAL_CHILD		(PVR_TIMER_TYPE_NONE + 3)
+#define TIMER_ONCE_EPG_CHILD		(PVR_TIMER_TYPE_NONE + 4)
+#define TIMER_ONCE_KEYWORD_CHILD	(PVR_TIMER_TYPE_NONE + 5)
+#define TIMER_REPEATING_MANUAL		(PVR_TIMER_TYPE_NONE + 6)
+#define TIMER_REPEATING_EPG			(PVR_TIMER_TYPE_NONE + 7)
+#define TIMER_REPEATING_KEYWORD		(PVR_TIMER_TYPE_NONE + 8)
+#define TIMER_CREATED_ONCE_MANUAL	(PVR_TIMER_TYPE_NONE + 9)
+#define TIMER_CREATED_REPEATING_MANUAL		(PVR_TIMER_TYPE_NONE + 10)
+#define TIMER_CREATED_REPEATING_KEYWORD		(PVR_TIMER_TYPE_NONE + 11)
+
+enum dvblink_client_rec_num_e
+{
+		dcrn_keep_all = 0,
+		dcrn_keep_1 = 1,
+		dcrn_keep_2 = 2,
+		dcrn_keep_3 = 3,
+		dcrn_keep_4 = 4,
+		dcrn_keep_5 = 5,
+		dcrn_keep_6 = 6,
+		dcrn_keep_7 = 7,
+		dcrn_keep_10 = 10
+};
+
+enum dvblink_client_rec_showtype_e
+{
+		dcrs_record_all = 0,
+		dcrs_record_new_only = 1
+};
+
+struct schedule_desc
+{
+	schedule_desc(int idx, int type, int margin_before, int margin_after)
+	{
+		schedule_kodi_idx = idx;
+		schedule_kodi_type = type;
+		schedule_margin_before = margin_before;
+		schedule_margin_after = margin_after;
+	}
+
+	schedule_desc()
+	{
+	}
+
+	int schedule_kodi_idx;
+	int schedule_kodi_type;
+	int schedule_margin_before;
+	int schedule_margin_after;
+};
+
+class DVBLinkClient : public PLATFORM::CThread, public dvblinkremote::DVBLinkRemoteLocker
 {
 public:
     DVBLinkClient(ADDON::CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* pvr, CHelper_libKODI_guilib* gui, std::string clientname, std::string hostname, long port, 
@@ -57,6 +109,7 @@ public:
   int GetRecordingsAmount();
   PVR_ERROR GetRecordings(ADDON_HANDLE handle);
   PVR_ERROR DeleteRecording(const PVR_RECORDING& recording);
+  PVR_ERROR GetTimerTypes(PVR_TIMER_TYPE types[], int *size);
   int GetTimersAmount();
   PVR_ERROR GetTimers(ADDON_HANDLE handle);
   PVR_ERROR AddTimer(const PVR_TIMER &timer);
@@ -88,10 +141,21 @@ private:
   int GetInternalUniqueIdFromChannelId(const std::string& channelId);
   virtual void * Process(void);
   bool get_dvblink_program_id(std::string& channelId, int start_time, std::string& dvblink_program_id);
+  int GetSchedules(ADDON_HANDLE handle);
 
   std::string make_timer_hash(const std::string& timer_id, const std::string& schedule_id);
   bool parse_timer_hash(const char* timer_hash, std::string& timer_id, std::string& schedule_id);
 
+  virtual void lock()
+  {
+      m_comm_mutex.Lock();
+  }
+
+  virtual void unlock()
+  {
+      m_comm_mutex.Unlock();
+  }
+  
   HttpPostClient* m_httpClient; 
   dvblinkremote::IDVBLinkRemoteConnection* m_dvblinkRemoteCommunication;
   bool m_connected;
@@ -122,6 +186,8 @@ private:
   dvblinkremote::ChannelFavorites channel_favorites_;
   std::map<std::string, int> inverse_channel_map_;
   bool no_group_single_rec_;
+  PLATFORM::CMutex m_comm_mutex;
+  std::map<std::string, schedule_desc> schedule_map_;
 };
 
 /*!

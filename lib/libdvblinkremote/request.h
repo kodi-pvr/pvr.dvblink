@@ -780,12 +780,35 @@ namespace dvblinkremote {
       * Default value is <tt>false</tt>.
       * @param recordingsToKeep defines anumbr of recordings to keep in case of series recordings (0 - keep all).
       */
-      AddScheduleByEpgRequest(const std::string& channelId, const std::string& programId, const bool repeat = false, const bool newOnly = false, const bool recordSeriesAnytime = false, const int recordingsToKeep = 0, const int marginBefore = -1, const int marginAfter = -1);
+      AddScheduleByEpgRequest(const std::string& channelId, const std::string& programId, const bool repeat = false, const bool newOnly = false, const bool recordSeriesAnytime = true, const int recordingsToKeep = 0, const int marginBefore = -1, const int marginAfter = -1);
 
     /**
       * Destructor for cleaning up allocated memory.
       */
     ~AddScheduleByEpgRequest();
+  };
+
+  /**
+    * Class for add schedule by pattern. 
+    * This is used as input parameter for the IDVBLinkRemoteConnection::AddSchedule method.
+    * @see IDVBLinkRemoteConnection::AddSchedule m()
+    */
+  class AddScheduleByPatternRequest : public ByPatternSchedule, public AddScheduleRequest
+  {
+  public:
+    /**
+      * Initializes a new instance of the dvblinkremote::AddScheduleByPatternRequest class.
+      * @param channelId a constant string reference representing the channel identifier or "" to match all channels.
+      * @param keyphrase a phrase to search for
+      * @param genremask - OR'ed combination of DVBLinkByPatternScheduleGenreMask constants
+      * @param recordingsToKeep defines a number of recordings to keep in case of series recordings (0 - keep all).
+      */
+      AddScheduleByPatternRequest(const std::string& channelId, const std::string& keyphrase, const long genremask, const int recordingsToKeep = 0, const int marginBefore = -1, const int marginAfter = -1);
+
+    /**
+      * Destructor for cleaning up allocated memory.
+      */
+    ~AddScheduleByPatternRequest();
   };
 
   /**
@@ -827,7 +850,7 @@ namespace dvblinkremote {
       * keep for a repeated recording. Default value is <tt>0</tt>, i.e. keep all recordings.
       * \remark \p recordingsToKeep accepted values (1, 2, 3, 4, 5, 6, 7, 10; 0 - keep all)
       */
-    UpdateScheduleRequest(const std::string& scheduleId, const bool newOnly, const bool recordSeriesAnytime, const int recordingsToKeep);
+    UpdateScheduleRequest(const std::string& scheduleId, const bool newOnly, const bool recordSeriesAnytime, const int recordingsToKeep, const int margin_before, const int margin_after);
 
     /**
       * Destructor for cleaning up allocated memory.
@@ -859,11 +882,25 @@ namespace dvblinkremote {
       */
     int GetRecordingsToKeep();
 
+    /**
+      * Gets pre-recording margin in seconds
+      * @return integer value
+      */
+    int GetMarginBefore();
+
+    /**
+      * Gets post-recording margin in seconds
+      * @return integer value
+      */
+    int GetMarginAfter();
+
   private:
     std::string m_scheduleId;
     bool m_newOnly;
     bool m_recordSeriesAnytime;
     int m_recordingsToKeep;
+	int m_margin_before;
+	int m_margin_after;
   };
 
   /**

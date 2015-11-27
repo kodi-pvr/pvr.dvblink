@@ -146,6 +146,40 @@ std::string& EpgSchedule::GetProgramID()
 { 
   return m_programId; 
 }
+////
+
+ByPatternSchedule::ByPatternSchedule(const std::string& id, const std::string& channelId, const std::string& keyphrase, const long genreMask, 
+									 const int recordingsToKeep, const int marginBefore, const int marginAfter)
+    : Schedule(SCHEDULE_TYPE_BY_PATTERN, id, channelId, recordingsToKeep, marginBefore, marginAfter),
+    m_genreMask(genreMask), 
+    m_keyphrase(keyphrase)
+{
+
+}
+
+ByPatternSchedule::ByPatternSchedule(const std::string& channelId, const std::string& keyphrase, const long genreMask, 
+									 const int recordingsToKeep, const int marginBefore, const int marginAfter)
+    : Schedule(SCHEDULE_TYPE_BY_PATTERN, channelId, recordingsToKeep, marginBefore, marginAfter),
+    m_genreMask(genreMask), 
+    m_keyphrase(keyphrase)
+{
+
+}
+
+ByPatternSchedule::~ByPatternSchedule()
+{
+
+}
+
+long ByPatternSchedule::GetGenreMask() 
+{ 
+  return m_genreMask; 
+}
+
+std::string& ByPatternSchedule::GetKeyphrase() 
+{ 
+  return m_keyphrase; 
+}
 
 AddScheduleRequest::AddScheduleRequest()
 {
@@ -177,6 +211,18 @@ AddScheduleByEpgRequest::AddScheduleByEpgRequest(const std::string& channelId, c
 }
 
 AddScheduleByEpgRequest::~AddScheduleByEpgRequest()
+{
+
+}
+
+AddScheduleByPatternRequest::AddScheduleByPatternRequest(const std::string& channelId, const std::string& keyphrase, const long genremask, 
+														 const int recordingsToKeep, const int marginBefore, const int marginAfter)
+    : ByPatternSchedule(channelId, keyphrase, genremask, recordingsToKeep, marginBefore, marginAfter), AddScheduleRequest(), Schedule(Schedule::SCHEDULE_TYPE_BY_PATTERN, channelId, recordingsToKeep, marginBefore, marginAfter)
+{
+
+}
+
+AddScheduleByPatternRequest::~AddScheduleByPatternRequest()
 {
 
 }
@@ -230,12 +276,25 @@ bool AddScheduleRequestSerializer::WriteObject(std::string& serializedData, AddS
       byEpgElement->InsertEndChild(Util::CreateXmlElementWithText(&GetXmlDocument(), "new_only", addScheduleByEpgRequest.NewOnly));
     }
 
-    if (addScheduleByEpgRequest.RecordSeriesAnytime) {
+    if (!addScheduleByEpgRequest.RecordSeriesAnytime) {
       byEpgElement->InsertEndChild(Util::CreateXmlElementWithText(&GetXmlDocument(), "record_series_anytime", addScheduleByEpgRequest.RecordSeriesAnytime));
     }
 
     byEpgElement->InsertEndChild(Util::CreateXmlElementWithText(&GetXmlDocument(), "recordings_to_keep", addScheduleByEpgRequest.RecordingsToKeep));
   }    
+
+  if (objectGraph.GetScheduleType() == objectGraph.SCHEDULE_TYPE_BY_PATTERN) {
+    AddScheduleByPatternRequest& addByPatternScheduleRequest = (AddScheduleByPatternRequest&)objectGraph;
+
+    tinyxml2::XMLElement* manualElement = GetXmlDocument().NewElement("by_pattern");
+    rootElement->InsertEndChild(manualElement);
+
+    manualElement->InsertEndChild(Util::CreateXmlElementWithText(&GetXmlDocument(), "channel_id", addByPatternScheduleRequest.GetChannelID()));
+
+    manualElement->InsertEndChild(Util::CreateXmlElementWithText(&GetXmlDocument(), "recordings_to_keep", addByPatternScheduleRequest.RecordingsToKeep));
+    manualElement->InsertEndChild(Util::CreateXmlElementWithText(&GetXmlDocument(), "genre_mask", addByPatternScheduleRequest.GetGenreMask()));
+	manualElement->InsertEndChild(Util::CreateXmlElementWithText(&GetXmlDocument(), "key_phrase", addByPatternScheduleRequest.GetKeyphrase()));
+  }
 
   tinyxml2::XMLPrinter* printer = new tinyxml2::XMLPrinter();    
   GetXmlDocument().Accept(printer);
@@ -298,10 +357,28 @@ StoredEpgScheduleList::~StoredEpgScheduleList()
   }
 }
 
+StoredByPatternSchedule::StoredByPatternSchedule(const std::string& id, const std::string& channelId, const std::string& keyPhrase, const long genreMask)
+  : ByPatternSchedule(id, channelId, keyPhrase, genreMask), Schedule(Schedule::SCHEDULE_TYPE_BY_PATTERN, id, channelId)
+{
+
+}
+
+StoredByPatternSchedule::~StoredByPatternSchedule()
+{ }
+
+StoredByPatternScheduleList::~StoredByPatternScheduleList()
+{
+  for (std::vector<StoredByPatternSchedule*>::const_iterator it = begin(); it < end(); it++) 
+  {
+    delete (*it);
+  }
+}
+
 StoredSchedules::StoredSchedules()
 {
   m_manualScheduleList = new StoredManualScheduleList();
   m_epgScheduleList = new StoredEpgScheduleList();
+  m_bypatternScheduleList = new StoredByPatternScheduleList();
 }
 
 StoredSchedules::~StoredSchedules() 
@@ -313,6 +390,10 @@ StoredSchedules::~StoredSchedules()
   if (m_epgScheduleList) {
     delete m_epgScheduleList;
   }
+
+  if (m_bypatternScheduleList) {
+    delete m_bypatternScheduleList;
+  }
 }
 
 StoredManualScheduleList& StoredSchedules::GetManualSchedules() 
@@ -323,6 +404,11 @@ StoredManualScheduleList& StoredSchedules::GetManualSchedules()
 StoredEpgScheduleList& StoredSchedules::GetEpgSchedules() 
 {
   return *m_epgScheduleList;
+}
+
+StoredByPatternScheduleList& StoredSchedules::GetByPatternSchedules()
+{
+  return *m_bypatternScheduleList;
 }
 
 bool GetSchedulesResponseSerializer::ReadObject(StoredSchedules& object, const std::string& xml)
@@ -357,33 +443,50 @@ bool GetSchedulesResponseSerializer::GetSchedulesResponseXmlDataDeserializer::Vi
     std::string userParam = Util::GetXmlFirstChildElementText(&element, "user_param");
     bool forceadd = Util::GetXmlFirstChildElementTextAsBoolean(&element, "force_add");
 
+	int margin_before = Util::GetXmlFirstChildElementTextAsInt(&element, "margine_before");
+	int margin_after = Util::GetXmlFirstChildElementTextAsInt(&element, "margine_after");
+
     if (m_parent.HasChildElement(element, "by_epg")) {
       tinyxml2::XMLElement* epg = (tinyxml2::XMLElement*)(&element)->FirstChildElement("by_epg");
 
       std::string channelid = Util::GetXmlFirstChildElementText(epg, "channel_id");
       std::string programid = Util::GetXmlFirstChildElementText(epg, "program_id");		  
       
-      StoredEpgSchedule* s = new StoredEpgSchedule(scheduleId, channelid, programid);
-      s->ForceAdd = forceadd;
-      s->UserParameter = userParam;
-      
-      if (m_parent.HasChildElement(*epg, "repeat")) {
-        s->Repeat = Util::GetXmlFirstChildElementTextAsBoolean(epg, "repeat");
-      }
+	  if (programid.size() > 0)
+	  {
+		  StoredEpgSchedule* s = new StoredEpgSchedule(scheduleId, channelid, programid);
+		  s->ForceAdd = forceadd;
+		  s->UserParameter = userParam;
+		  s->MarginBefore = margin_before;
+		  s->MarginAfter = margin_after;
+	      
+		  if (m_parent.HasChildElement(*epg, "repeat")) {
+			s->Repeat = Util::GetXmlFirstChildElementTextAsBoolean(epg, "repeat");
+		  }
 
-      if (m_parent.HasChildElement(*epg, "new_only")) {
-        s->NewOnly = Util::GetXmlFirstChildElementTextAsBoolean(epg, "new_only");
-      }
+		  if (m_parent.HasChildElement(*epg, "new_only")) {
+			s->NewOnly = Util::GetXmlFirstChildElementTextAsBoolean(epg, "new_only");
+		  }
 
-      if (m_parent.HasChildElement(*epg, "record_series_anytime")) {
-        s->RecordSeriesAnytime = Util::GetXmlFirstChildElementTextAsBoolean(epg, "record_series_anytime");
-      }
+		  if (m_parent.HasChildElement(*epg, "record_series_anytime")) {
+			s->RecordSeriesAnytime = Util::GetXmlFirstChildElementTextAsBoolean(epg, "record_series_anytime");
+		  }
 
-      s->RecordingsToKeep = Util::GetXmlFirstChildElementTextAsInt(epg, "recordings_to_keep");
+		  s->RecordingsToKeep = Util::GetXmlFirstChildElementTextAsInt(epg, "recordings_to_keep");
 
-      m_storedSchedules.GetEpgSchedules().push_back(s);
+		  tinyxml2::XMLElement* program_el = epg->FirstChildElement("program");
+  		  if (program_el != NULL)
+		  {    
+			Program* p = new Program();
+			ProgramSerializer::Deserialize((XmlObjectSerializer<Response>&)m_parent, *program_el, *p);
+			s->program_name_ = p->GetTitle();
+			delete p;
+		  }
+
+		  m_storedSchedules.GetEpgSchedules().push_back(s);
+	  }
     }
-    else if (m_parent.HasChildElement(element, "manual")) {
+    if (m_parent.HasChildElement(element, "manual")) {
       tinyxml2::XMLElement* manual = (tinyxml2::XMLElement*)(&element)->FirstChildElement("manual");
 
       std::string channelId = Util::GetXmlFirstChildElementText(manual, "channel_id");
@@ -392,16 +495,39 @@ bool GetSchedulesResponseSerializer::GetSchedulesResponseXmlDataDeserializer::Vi
       int duration = Util::GetXmlFirstChildElementTextAsLong(manual, "duration");
       long dayMask = Util::GetXmlFirstChildElementTextAsLong(manual, "day_mask");
 
-      StoredManualSchedule* s = new StoredManualSchedule(scheduleId, channelId, startTime, duration, dayMask, title);
-      s->ForceAdd = forceadd;
-      s->UserParameter = userParam;
+	  if (channelId.size() > 0)
+	  {
+		  StoredManualSchedule* s = new StoredManualSchedule(scheduleId, channelId, startTime, duration, dayMask, title);
+		  s->ForceAdd = forceadd;
+		  s->UserParameter = userParam;
+		  s->MarginBefore = margin_before;
+		  s->MarginAfter = margin_after;
 
-      s->RecordingsToKeep = Util::GetXmlFirstChildElementTextAsInt(manual, "recordings_to_keep");
+		  s->RecordingsToKeep = Util::GetXmlFirstChildElementTextAsInt(manual, "recordings_to_keep");
 
-      m_storedSchedules.GetManualSchedules().push_back(s);
+		  m_storedSchedules.GetManualSchedules().push_back(s);
+	  }
     }
-    else {
-      return false;
+
+    if (m_parent.HasChildElement(element, "by_pattern")) {
+      tinyxml2::XMLElement* manual = (tinyxml2::XMLElement*)(&element)->FirstChildElement("by_pattern");
+
+      std::string channelId = Util::GetXmlFirstChildElementText(manual, "channel_id");
+      std::string keyphrase = Util::GetXmlFirstChildElementText(manual, "key_phrase");
+      long genreMask = Util::GetXmlFirstChildElementTextAsLong(manual, "genre_mask");
+
+	  if (keyphrase.size() > 0 || genreMask != 0)
+	  {
+		  StoredByPatternSchedule* s = new StoredByPatternSchedule(scheduleId, channelId, keyphrase, genreMask);
+		  s->ForceAdd = forceadd;
+		  s->UserParameter = userParam;
+		  s->MarginBefore = margin_before;
+		  s->MarginAfter = margin_after;
+
+		  s->RecordingsToKeep = Util::GetXmlFirstChildElementTextAsInt(manual, "recordings_to_keep");
+
+		  m_storedSchedules.GetByPatternSchedules().push_back(s);
+	  }
     }
 
     return false;
@@ -410,11 +536,13 @@ bool GetSchedulesResponseSerializer::GetSchedulesResponseXmlDataDeserializer::Vi
   return true;
 }
 
-UpdateScheduleRequest::UpdateScheduleRequest(const std::string& scheduleId, const bool newOnly, const bool recordSeriesAnytime, const int recordingsToKeep) 
+UpdateScheduleRequest::UpdateScheduleRequest(const std::string& scheduleId, const bool newOnly, const bool recordSeriesAnytime, const int recordingsToKeep, const int margin_before, const int margin_after) 
   : m_scheduleId(scheduleId),
     m_newOnly(newOnly),
     m_recordSeriesAnytime(recordSeriesAnytime),
-    m_recordingsToKeep(recordingsToKeep)
+    m_recordingsToKeep(recordingsToKeep),
+	m_margin_before(margin_before),
+	m_margin_after(margin_after)
 {
 
 }
@@ -444,6 +572,16 @@ int UpdateScheduleRequest::GetRecordingsToKeep()
   return m_recordingsToKeep; 
 }
 
+int UpdateScheduleRequest::GetMarginBefore()
+{
+	return m_margin_before;
+}
+
+int UpdateScheduleRequest::GetMarginAfter()
+{
+	return m_margin_after;
+}
+
 bool UpdateScheduleRequestSerializer::WriteObject(std::string& serializedData, UpdateScheduleRequest& objectGraph)
 {
   tinyxml2::XMLElement* rootElement = PrepareXmlDocumentForObjectSerialization("update_schedule");
@@ -451,6 +589,8 @@ bool UpdateScheduleRequestSerializer::WriteObject(std::string& serializedData, U
   rootElement->InsertEndChild(Util::CreateXmlElementWithText(&GetXmlDocument(), "new_only", objectGraph.IsNewOnly()));
   rootElement->InsertEndChild(Util::CreateXmlElementWithText(&GetXmlDocument(), "record_series_anytime", objectGraph.WillRecordSeriesAnytime()));
   rootElement->InsertEndChild(Util::CreateXmlElementWithText(&GetXmlDocument(), "recordings_to_keep", objectGraph.GetRecordingsToKeep()));
+  rootElement->InsertEndChild(Util::CreateXmlElementWithText(&GetXmlDocument(), "margine_before", objectGraph.GetMarginBefore()));
+  rootElement->InsertEndChild(Util::CreateXmlElementWithText(&GetXmlDocument(), "margine_after", objectGraph.GetMarginAfter()));
 
   tinyxml2::XMLPrinter* printer = new tinyxml2::XMLPrinter();    
   GetXmlDocument().Accept(printer);
