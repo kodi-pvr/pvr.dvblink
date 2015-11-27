@@ -22,42 +22,58 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #pragma once
 
+#include "platform/os.h"
 #include "kodi/libXBMC_addon.h"
+#include "platform/threads/threads.h"
+#include "platform/threads/mutex.h"
+#include "platform/util/util.h"
 #include "libdvblinkremote/dvblinkremote.h"
 #include "HttpPostClient.h"
 
-class RecordingStreamer
+class RecordingStreamer: public dvblinkremote::DVBLinkRemoteLocker
 {
-public :
-    RecordingStreamer(ADDON::CHelper_libXBMC_addon* xbmc, const std::string& client_id, const std::string& hostname, long port, const std::string& username, const std::string& password);
-    virtual ~RecordingStreamer();
+public:
+  RecordingStreamer(ADDON::CHelper_libXBMC_addon* xbmc, const std::string& client_id, const std::string& hostname,
+      long port, const std::string& username, const std::string& password);
+  virtual ~RecordingStreamer();
 
-    bool OpenRecordedStream(const char* recording_id, std::string& url);
-    void CloseRecordedStream(void);
-    int ReadRecordedStream(unsigned char *pBuffer, unsigned int iBufferSize);
-    long long SeekRecordedStream(long long iPosition, int iWhence /* = SEEK_SET */);
-    long long PositionRecordedStream(void);
-    long long LengthRecordedStream(void);
+  bool OpenRecordedStream(const char* recording_id, std::string& url);
+  void CloseRecordedStream(void);
+  int ReadRecordedStream(unsigned char *pBuffer, unsigned int iBufferSize);
+  long long SeekRecordedStream(long long iPosition, int iWhence /* = SEEK_SET */);
+  long long PositionRecordedStream(void);
+  long long LengthRecordedStream(void);
 protected:
-    ADDON::CHelper_libXBMC_addon* xbmc_;
-    std::string recording_id_;
-    std::string url_;
-    long long recording_size_;
-    bool is_in_recording_;
-    void* playback_handle_;
-    long long cur_pos_;
-    std::string client_id_;
-    std::string hostname_;
-    std::string username_;
-    std::string password_;
-    HttpPostClient* http_client_;
-    dvblinkremote::IDVBLinkRemoteConnection* dvblink_remote_con_;
-    long port_;
-    time_t prev_check_;
-    time_t check_delta_;
+  ADDON::CHelper_libXBMC_addon* xbmc_;
+  std::string recording_id_;
+  std::string url_;
+  long long recording_size_;
+  bool is_in_recording_;
+  void* playback_handle_;
+  long long cur_pos_;
+  std::string client_id_;
+  std::string hostname_;
+  std::string username_;
+  std::string password_;
+  HttpPostClient* http_client_;
+  dvblinkremote::IDVBLinkRemoteConnection* dvblink_remote_con_;
+  long port_;
+  time_t prev_check_;
+  time_t check_delta_;
+  PLATFORM::CMutex m_comm_mutex;
 
-    bool get_recording_info(const std::string& recording_id, long long& recording_size, bool& is_in_recording);
+  bool get_recording_info(const std::string& recording_id, long long& recording_size, bool& is_in_recording);
+
+  virtual void lock()
+  {
+    m_comm_mutex.Lock();
+  }
+
+  virtual void unlock()
+  {
+    m_comm_mutex.Unlock();
+  }
 };

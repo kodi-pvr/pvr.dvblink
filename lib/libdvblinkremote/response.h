@@ -598,7 +598,7 @@ namespace dvblinkremote {
       * record only series starting around original program start time or any of them. 
       * Default value is <tt>false</tt>.
     */
-    StoredEpgSchedule(const std::string& id, const std::string& channelId, const std::string& programId, const bool repeat = false, const bool newOnly = false, const bool recordSeriesAnytime = false);
+    StoredEpgSchedule(const std::string& id, const std::string& channelId, const std::string& programId, const bool repeat = false, const bool newOnly = false, const bool recordSeriesAnytime = true);
 
     /**
       * Destructor for cleaning up allocated memory.
@@ -617,6 +617,42 @@ namespace dvblinkremote {
       * Destructor for cleaning up allocated memory.
       */
     ~StoredEpgScheduleList();
+  };
+
+  /**
+    * Class for stored by pattern schedules.
+    */
+  class StoredByPatternSchedule : public ByPatternSchedule 
+  {
+  public:
+    /**
+      * Initializes a new instance of the dvblinkremote::StoredByPatternSchedule class.
+      * @param id a constant string reference representing the schedule identifier.
+      * @param channelId a constant string reference representing the channel identifier.
+      * @param keyPhrase a constant string representing pattern keyphrase
+      * @param genreMask a constant long representing the genre bitflag
+      * \remark Construct the \p genreMask parameter by using bitwize operations on the DVBLinkByPatternScheduleGenreMask.
+      * @see DVBLinkByPatternScheduleGenreMask
+      */
+    StoredByPatternSchedule(const std::string& id, const std::string& channelId, const std::string& keyPhrase, const long genreMask);
+
+    /**
+      * Destructor for cleaning up allocated memory.
+      */
+    ~StoredByPatternSchedule();
+  };
+
+  /**
+    * Represent a strongly typed list of stored by pattern schedules.
+    * @see StoredByPatternSchedule::StoredByPatternSchedule()
+    */
+  class StoredByPatternScheduleList : public std::vector<StoredByPatternSchedule*>
+  {
+  public:
+    /**
+      * Destructor for cleaning up allocated memory.
+      */
+    ~StoredByPatternScheduleList();
   };
 
   /**
@@ -646,9 +682,16 @@ namespace dvblinkremote {
       */
     StoredEpgScheduleList& GetEpgSchedules();
 
+    /**
+      * Gets a list of stored by_pattern schedules.
+      * @return A list of stored by_pattern schedules
+      */
+    StoredByPatternScheduleList& GetByPatternSchedules();
+
   private:
     StoredManualScheduleList* m_manualScheduleList;
     StoredEpgScheduleList* m_epgScheduleList;
+	StoredByPatternScheduleList* m_bypatternScheduleList;
   };  
 
   /**

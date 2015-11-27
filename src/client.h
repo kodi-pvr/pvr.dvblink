@@ -22,7 +22,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #pragma once
 #include "kodi/libXBMC_addon.h"
 #include "kodi/libXBMC_pvr.h"
@@ -42,4 +42,3 @@
 #define DEFAULT_ADDRECEPISODE2TITLE true
 #define DEFAULT_GROUPRECBYSERIES    true
 #define DEFAULT_NOGROUP_SINGLE_REC  false
-

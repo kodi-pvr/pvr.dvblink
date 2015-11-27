@@ -30,14 +30,14 @@ IDVBLinkRemoteConnection::~IDVBLinkRemoteConnection()
 {
 }
 
-IDVBLinkRemoteConnection* DVBLinkRemote::Connect(dvblinkremotehttp::HttpClient& httpClient, const std::string& hostAddress, const long port) 
+IDVBLinkRemoteConnection* DVBLinkRemote::Connect(dvblinkremotehttp::HttpClient& httpClient, const std::string& hostAddress, const long port, DVBLinkRemoteLocker* locker)
 {
-  return new DVBLinkRemoteCommunication(httpClient, hostAddress, port);
+    return new DVBLinkRemoteCommunication(httpClient, hostAddress, port, locker);
 }
 
-IDVBLinkRemoteConnection* DVBLinkRemote::Connect(dvblinkremotehttp::HttpClient& httpClient, const std::string& hostAddress, const long port, const std::string& username, const std::string& password) 
+IDVBLinkRemoteConnection* DVBLinkRemote::Connect(dvblinkremotehttp::HttpClient& httpClient, const std::string& hostAddress, const long port, const std::string& username, const std::string& password, DVBLinkRemoteLocker* locker)
 {
-  return new DVBLinkRemoteCommunication(httpClient, hostAddress, port, username, password);
+    return new DVBLinkRemoteCommunication(httpClient, hostAddress, port, username, password, locker);
 }
 
 void DVBLinkRemote::GetCopyrightNotice(std::string& copyright) 
