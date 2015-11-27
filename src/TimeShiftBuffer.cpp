@@ -22,45 +22,44 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "TimeShiftBuffer.h"
 using namespace ADDON;
 using namespace dvblinkremote;
 
 //base live streaming class
 
-LiveStreamerBase::LiveStreamerBase(CHelper_libXBMC_addon  * XBMC)
-    : m_streamHandle(NULL)
+LiveStreamerBase::LiveStreamerBase(CHelper_libXBMC_addon * XBMC) :
+    m_streamHandle(NULL)
 {
-    this->XBMC = XBMC;
+  this->XBMC = XBMC;
 }
 
 LiveStreamerBase::~LiveStreamerBase(void)
 {
-    Stop();
+  Stop();
 }
 
 int LiveStreamerBase::ReadData(unsigned char *pBuffer, unsigned int iBufferSize)
 {
-    return XBMC->ReadFile(m_streamHandle, pBuffer, iBufferSize);
+  return XBMC->ReadFile(m_streamHandle, pBuffer, iBufferSize);
 }
 
 bool LiveStreamerBase::Start(std::string& streampath)
 {
-    streampath_ = streampath;
-    m_streamHandle = XBMC->OpenFile(streampath_.c_str(), 0);
-    return m_streamHandle != NULL;
+  streampath_ = streampath;
+  m_streamHandle = XBMC->OpenFile(streampath_.c_str(), 0);
+  return m_streamHandle != NULL;
 }
 
 void LiveStreamerBase::Stop()
 {
-    if (m_streamHandle != NULL)
-    {
-        XBMC->CloseFile(m_streamHandle);
-        m_streamHandle = NULL;
-    }
+  if (m_streamHandle != NULL)
+  {
+    XBMC->CloseFile(m_streamHandle);
+    m_streamHandle = NULL;
+  }
 }
-
 
 //live streaming class
 LiveTVStreamer::LiveTVStreamer(CHelper_libXBMC_addon* XBMC) :
@@ -68,25 +67,25 @@ LiveTVStreamer::LiveTVStreamer(CHelper_libXBMC_addon* XBMC) :
 {
 }
 
-StreamRequest* LiveTVStreamer::GetStreamRequest(long dvblink_channel_id, const std::string& client_id, const std::string& host_name,
-    bool use_transcoder, int width, int height, int bitrate, std::string audiotrack)
+StreamRequest* LiveTVStreamer::GetStreamRequest(long dvblink_channel_id, const std::string& client_id,
+    const std::string& host_name, bool use_transcoder, int width, int height, int bitrate, std::string audiotrack)
 {
-    StreamRequest* streamRequest = NULL;
+  StreamRequest* streamRequest = NULL;
 
-    TranscodingOptions options(width, height);
-    options.SetBitrate(bitrate);
-    options.SetAudioTrack(audiotrack);
+  TranscodingOptions options(width, height);
+  options.SetBitrate(bitrate);
+  options.SetAudioTrack(audiotrack);
 
-    if (use_transcoder)
-    {
-        streamRequest = new H264TSStreamRequest(host_name.c_str(), dvblink_channel_id, client_id.c_str(), options);
-    }
-    else
-    {
-        streamRequest = new RawHttpStreamRequest(host_name.c_str(), dvblink_channel_id, client_id.c_str());
-    }
+  if (use_transcoder)
+  {
+    streamRequest = new H264TSStreamRequest(host_name.c_str(), dvblink_channel_id, client_id.c_str(), options);
+  }
+  else
+  {
+    streamRequest = new RawHttpStreamRequest(host_name.c_str(), dvblink_channel_id, client_id.c_str());
+  }
 
-    return streamRequest;
+  return streamRequest;
 }
 
 //timeshifted live streaming class
@@ -102,25 +101,25 @@ TimeShiftBuffer::~TimeShiftBuffer(void)
 {
 }
 
-StreamRequest* TimeShiftBuffer::GetStreamRequest(long dvblink_channel_id, const std::string& client_id, const std::string& host_name,
-    bool use_transcoder, int width, int height, int bitrate, std::string audiotrack)
+StreamRequest* TimeShiftBuffer::GetStreamRequest(long dvblink_channel_id, const std::string& client_id,
+    const std::string& host_name, bool use_transcoder, int width, int height, int bitrate, std::string audiotrack)
 {
-    StreamRequest* streamRequest = NULL;
+  StreamRequest* streamRequest = NULL;
 
-    TranscodingOptions options(width, height);
-    options.SetBitrate(bitrate);
-    options.SetAudioTrack(audiotrack);
+  TranscodingOptions options(width, height);
+  options.SetBitrate(bitrate);
+  options.SetAudioTrack(audiotrack);
 
-    if (use_transcoder)
-    {
-        streamRequest = new H264TSTimeshiftStreamRequest(host_name.c_str(), dvblink_channel_id, client_id.c_str(), options);
-    }
-    else
-    {
-        streamRequest = new RawHttpTimeshiftStreamRequest(host_name.c_str(), dvblink_channel_id, client_id.c_str());
-    }
+  if (use_transcoder)
+  {
+    streamRequest = new H264TSTimeshiftStreamRequest(host_name.c_str(), dvblink_channel_id, client_id.c_str(), options);
+  }
+  else
+  {
+    streamRequest = new RawHttpTimeshiftStreamRequest(host_name.c_str(), dvblink_channel_id, client_id.c_str());
+  }
 
-    return streamRequest;
+  return streamRequest;
 }
 
 long long TimeShiftBuffer::Seek(long long iPosition, int iWhence)
@@ -179,8 +178,8 @@ bool TimeShiftBuffer::ExecuteServerRequest(const std::string& url, std::vector<s
     {
       //add zero at the end to turn response into string
       resp_buf[read] = '\0';
-      char* token = strtok( resp_buf, ",");
-      while( token != NULL )
+      char* token = strtok(resp_buf, ",");
+      while (token != NULL)
       {
         response_values.push_back(token);
         /* Get next token: */
@@ -214,11 +213,10 @@ bool TimeShiftBuffer::GetBufferParams(long long& length, time_t& duration, long 
   req_url += "&get_stats=1";
 
   std::vector<std::string> response_values;
-  if (ExecuteServerRequest(req_url, response_values) &&
-    response_values.size() == 3)
+  if (ExecuteServerRequest(req_url, response_values) && response_values.size() == 3)
   {
     length = atoll(response_values[0].c_str());
-    duration = (time_t)atoll(response_values[1].c_str());
+    duration = (time_t) atoll(response_values[1].c_str());
     cur_pos = atoll(response_values[2].c_str());
     ret_val = true;
   }
@@ -239,10 +237,10 @@ time_t TimeShiftBuffer::GetPlayingTime()
     time_t duration;
     if (GetBufferParams(length, duration, cur_pos))
     {
-        if (length > 0)
-            ret_val = now - (time_t)((length - cur_pos) * duration / length);
-        else
-            ret_val = now;
+      if (length > 0)
+        ret_val = now - (time_t) ((length - cur_pos) * duration / length);
+      else
+        ret_val = now;
     }
 
     last_pos_ = ret_val;

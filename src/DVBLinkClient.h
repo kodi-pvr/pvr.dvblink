@@ -22,7 +22,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #pragma once
 
 #include "platform/os.h"
@@ -60,48 +60,48 @@ typedef std::map<std::string, std::string> recording_id_to_url_map_t;
 
 enum dvblink_client_rec_num_e
 {
-		dcrn_keep_all = 0,
-		dcrn_keep_1 = 1,
-		dcrn_keep_2 = 2,
-		dcrn_keep_3 = 3,
-		dcrn_keep_4 = 4,
-		dcrn_keep_5 = 5,
-		dcrn_keep_6 = 6,
-		dcrn_keep_7 = 7,
-		dcrn_keep_10 = 10
+  dcrn_keep_all = 0,
+  dcrn_keep_1 = 1,
+  dcrn_keep_2 = 2,
+  dcrn_keep_3 = 3,
+  dcrn_keep_4 = 4,
+  dcrn_keep_5 = 5,
+  dcrn_keep_6 = 6,
+  dcrn_keep_7 = 7,
+  dcrn_keep_10 = 10
 };
 
 enum dvblink_client_rec_showtype_e
 {
-		dcrs_record_all = 0,
-		dcrs_record_new_only = 1
+  dcrs_record_all = 0, dcrs_record_new_only = 1
 };
 
 struct schedule_desc
 {
-	schedule_desc(int idx, int type, int margin_before, int margin_after)
-	{
-		schedule_kodi_idx = idx;
-		schedule_kodi_type = type;
-		schedule_margin_before = margin_before;
-		schedule_margin_after = margin_after;
-	}
+  schedule_desc(int idx, int type, int margin_before, int margin_after)
+  {
+    schedule_kodi_idx = idx;
+    schedule_kodi_type = type;
+    schedule_margin_before = margin_before;
+    schedule_margin_after = margin_after;
+  }
 
-	schedule_desc()
-	{
-	}
+  schedule_desc()
+  {
+  }
 
-	int schedule_kodi_idx;
-	int schedule_kodi_type;
-	int schedule_margin_before;
-	int schedule_margin_after;
+  int schedule_kodi_idx;
+  int schedule_kodi_type;
+  int schedule_margin_before;
+  int schedule_margin_after;
 };
 
-class DVBLinkClient : public PLATFORM::CThread, public dvblinkremote::DVBLinkRemoteLocker
+class DVBLinkClient: public PLATFORM::CThread, public dvblinkremote::DVBLinkRemoteLocker
 {
 public:
-    DVBLinkClient(ADDON::CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* pvr, CHelper_libKODI_guilib* gui, std::string clientname, std::string hostname, long port, 
-        bool showinfomsg, std::string username, std::string password, bool add_episode_to_rec_title, bool group_recordings_by_series, bool no_group_single_rec);
+  DVBLinkClient(ADDON::CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* pvr, CHelper_libKODI_guilib* gui,
+      std::string clientname, std::string hostname, long port, bool showinfomsg, std::string username,
+      std::string password, bool add_episode_to_rec_title, bool group_recordings_by_series, bool no_group_single_rec);
   ~DVBLinkClient(void);
   int GetChannelsAmount();
   PVR_ERROR GetChannels(ADDON_HANDLE handle, bool bRadio);
@@ -120,7 +120,8 @@ public:
   PVR_ERROR GetChannelGroupMembers(ADDON_HANDLE handle, const PVR_CHANNEL_GROUP &group);
   bool GetStatus();
   bool StartStreaming(const PVR_CHANNEL &channel, dvblinkremote::StreamRequest* streamRequest, std::string& stream_url);
-  bool OpenLiveStream(const PVR_CHANNEL &channel, bool use_timeshift, bool use_transcoder, int width, int height, int bitrate, std::string audiotrack);
+  bool OpenLiveStream(const PVR_CHANNEL &channel, bool use_timeshift, bool use_transcoder, int width, int height,
+      int bitrate, std::string audiotrack);
   void StopStreaming(bool bUseChlHandle);
   int GetCurrentChannelId();
   void GetDriveSpace(long long *iTotal, long long *iUsed);
@@ -134,7 +135,8 @@ public:
   bool GetRecordingURL(const char* recording_id, std::string& url);
 
 private:
-  bool DoEPGSearch(dvblinkremote::EpgSearchResult& epgSearchResult, const std::string& channelId, const long startTime, const long endTime, const std::string & programId = "");
+  bool DoEPGSearch(dvblinkremote::EpgSearchResult& epgSearchResult, const std::string& channelId, const long startTime,
+      const long endTime, const std::string & programId = "");
   void SetEPGGenre(dvblinkremote::ItemMetadata& metadata, int& genre_type, int& genre_subtype);
   std::string GetBuildInRecorderObjectID();
   std::string GetRecordedTVByDateObjectID(const std::string& buildInRecoderObjectID);
@@ -148,27 +150,27 @@ private:
 
   virtual void lock()
   {
-      m_comm_mutex.Lock();
+    m_comm_mutex.Lock();
   }
 
   virtual void unlock()
   {
-      m_comm_mutex.Unlock();
+    m_comm_mutex.Unlock();
   }
-  
-  HttpPostClient* m_httpClient; 
+
+  HttpPostClient* m_httpClient;
   dvblinkremote::IDVBLinkRemoteConnection* m_dvblinkRemoteCommunication;
   bool m_connected;
-  std::map<int,dvblinkremote::Channel *> m_channelMap;
+  std::map<int, dvblinkremote::Channel *> m_channelMap;
   dvblinkremote::Stream * m_stream;
   int m_currentChannelId;
   dvblinkremote::ChannelList* m_channels;
   long m_timerCount;
   long m_recordingCount;
-  PLATFORM::CMutex        m_mutex;
+  PLATFORM::CMutex m_mutex;
   CHelper_libXBMC_pvr *PVR;
-  ADDON::CHelper_libXBMC_addon  *XBMC; 
-  CHelper_libKODI_guilib   *GUI;
+  ADDON::CHelper_libXBMC_addon *XBMC;
+  CHelper_libKODI_guilib *GUI;
   std::string m_clientname;
   std::string m_hostname;
   LiveStreamerBase* m_live_streamer;

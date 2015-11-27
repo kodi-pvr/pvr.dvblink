@@ -22,7 +22,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #pragma once
 
 #include "kodi/libXBMC_addon.h"
@@ -33,41 +33,61 @@
 class LiveStreamerBase
 {
 public:
-    LiveStreamerBase(ADDON::CHelper_libXBMC_addon * XBMC);
-    virtual ~LiveStreamerBase();
+  LiveStreamerBase(ADDON::CHelper_libXBMC_addon * XBMC);
+  virtual ~LiveStreamerBase();
 
-    virtual bool Start(std::string& streampath);
-    virtual void Stop();
-    virtual int ReadData(unsigned char *pBuffer, unsigned int iBufferSize);
+  virtual bool Start(std::string& streampath);
+  virtual void Stop();
+  virtual int ReadData(unsigned char *pBuffer, unsigned int iBufferSize);
 
-    virtual long long Seek(long long iPosition, int iWhence){ return -1; }
-    virtual long long Position(){ return -1; }
-    virtual long long Length(){ return -1; }
+  virtual long long Seek(long long iPosition, int iWhence)
+  {
+    return -1;
+  }
+  virtual long long Position()
+  {
+    return -1;
+  }
+  virtual long long Length()
+  {
+    return -1;
+  }
 
-    virtual time_t GetPlayingTime(){ return 0; }
-    virtual time_t GetBufferTimeStart(){ return 0; }
-    virtual time_t GetBufferTimeEnd(){ return 0; }
+  virtual time_t GetPlayingTime()
+  {
+    return 0;
+  }
+  virtual time_t GetBufferTimeStart()
+  {
+    return 0;
+  }
+  virtual time_t GetBufferTimeEnd()
+  {
+    return 0;
+  }
 
-    virtual dvblinkremote::StreamRequest* GetStreamRequest(long dvblink_channel_id, const std::string& client_id, const std::string& host_name,
-        bool use_transcoder, int width, int height, int bitrate, std::string audiotrack) {return NULL;}
+  virtual dvblinkremote::StreamRequest* GetStreamRequest(long dvblink_channel_id, const std::string& client_id,
+      const std::string& host_name, bool use_transcoder, int width, int height, int bitrate, std::string audiotrack)
+  {
+    return NULL;
+  }
 
 protected:
-    void * m_streamHandle;
-    ADDON::CHelper_libXBMC_addon * XBMC;
-    std::string streampath_;
+  void * m_streamHandle;
+  ADDON::CHelper_libXBMC_addon * XBMC;
+  std::string streampath_;
 };
 
-class LiveTVStreamer : public LiveStreamerBase
+class LiveTVStreamer: public LiveStreamerBase
 {
 public:
-    LiveTVStreamer(ADDON::CHelper_libXBMC_addon * XBMC);
+  LiveTVStreamer(ADDON::CHelper_libXBMC_addon * XBMC);
 
-    virtual dvblinkremote::StreamRequest* GetStreamRequest(long dvblink_channel_id, const std::string& client_id, const std::string& host_name,
-        bool use_transcoder, int width, int height, int bitrate, std::string audiotrack);
+  virtual dvblinkremote::StreamRequest* GetStreamRequest(long dvblink_channel_id, const std::string& client_id,
+      const std::string& host_name, bool use_transcoder, int width, int height, int bitrate, std::string audiotrack);
 };
 
-
-class TimeShiftBuffer : public LiveStreamerBase
+class TimeShiftBuffer: public LiveStreamerBase
 {
 public:
   TimeShiftBuffer(ADDON::CHelper_libXBMC_addon * XBMC);
@@ -81,8 +101,8 @@ public:
   virtual time_t GetBufferTimeStart();
   virtual time_t GetBufferTimeEnd();
 
-  virtual dvblinkremote::StreamRequest* GetStreamRequest(long dvblink_channel_id, const std::string& client_id, const std::string& host_name,
-      bool use_transcoder, int width, int height, int bitrate, std::string audiotrack);
+  virtual dvblinkremote::StreamRequest* GetStreamRequest(long dvblink_channel_id, const std::string& client_id,
+      const std::string& host_name, bool use_transcoder, int width, int height, int bitrate, std::string audiotrack);
 
 protected:
   bool ExecuteServerRequest(const std::string& url, std::vector<std::string>& response_values);
