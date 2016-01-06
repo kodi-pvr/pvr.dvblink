@@ -25,7 +25,7 @@
 
 #pragma once
 
-#include "platform/os.h"
+#include "p8-platform/os.h"
 #include "libdvblinkremote/dvblinkremote.h"
 #include "HttpPostClient.h"
 #include "TimeShiftBuffer.h"
@@ -34,9 +34,9 @@
 #include "kodi/libXBMC_pvr.h"
 #include "kodi/libKODI_guilib.h"
 #include "client.h"
-#include "platform/threads/threads.h"
-#include "platform/threads/mutex.h"
-#include "platform/util/util.h"
+#include "p8-platform/threads/threads.h"
+#include "p8-platform/threads/mutex.h"
+#include "p8-platform/util/util.h"
 #include <map>
 
 #define DVBLINK_BUILD_IN_RECORDER_SOURCE_ID   "8F94B459-EFC0-4D91-9B29-EC3D72E92677"
@@ -96,7 +96,7 @@ struct schedule_desc
   int schedule_margin_after;
 };
 
-class DVBLinkClient: public PLATFORM::CThread, public dvblinkremote::DVBLinkRemoteLocker
+class DVBLinkClient: public P8PLATFORM::CThread, public dvblinkremote::DVBLinkRemoteLocker
 {
 public:
   DVBLinkClient(ADDON::CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* pvr, CHelper_libKODI_guilib* gui,
@@ -167,7 +167,7 @@ private:
   dvblinkremote::ChannelList* m_channels;
   long m_timerCount;
   long m_recordingCount;
-  PLATFORM::CMutex m_mutex;
+  P8PLATFORM::CMutex m_mutex;
   CHelper_libXBMC_pvr *PVR;
   ADDON::CHelper_libXBMC_addon *XBMC;
   CHelper_libKODI_guilib *GUI;
@@ -188,7 +188,7 @@ private:
   dvblinkremote::ChannelFavorites channel_favorites_;
   std::map<std::string, int> inverse_channel_map_;
   bool no_group_single_rec_;
-  PLATFORM::CMutex m_comm_mutex;
+  P8PLATFORM::CMutex m_comm_mutex;
   std::map<std::string, schedule_desc> schedule_map_;
 };
 
