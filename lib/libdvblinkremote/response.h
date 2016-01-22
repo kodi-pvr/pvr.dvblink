@@ -93,7 +93,7 @@ namespace dvblinkremote {
     /**
       * Gets the logo url of the channel.
       * @return logo url
-      */
+    */
     std::string& GetLogoUrl();
 
     /**

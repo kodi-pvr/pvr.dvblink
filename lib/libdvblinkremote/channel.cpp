@@ -37,7 +37,7 @@ Channel::Channel(const std::string& id, const long dvbLinkId, const std::string&
     Number(number), 
     SubNumber(subNumber),
     ChildLock(false),
-	m_logo_url(logo_url)
+    m_logo_url(logo_url)
 {
   
 }
@@ -50,7 +50,7 @@ Channel::Channel(Channel& channel)
     Number(channel.Number), 
     SubNumber(channel.SubNumber),
     ChildLock(channel.ChildLock),
-	m_logo_url(channel.GetLogoUrl())
+    m_logo_url(channel.GetLogoUrl())
 {
 
 }
