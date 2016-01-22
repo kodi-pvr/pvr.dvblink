@@ -37,7 +37,7 @@ Channel::Channel(const std::string& id, const long dvbLinkId, const std::string&
     Number(number), 
     SubNumber(subNumber),
     ChildLock(false),
-	m_logo_url(logo_url)
+    m_logo_url(logo_url)
 {
   
 }
@@ -50,7 +50,7 @@ Channel::Channel(Channel& channel)
     Number(channel.Number), 
     SubNumber(channel.SubNumber),
     ChildLock(channel.ChildLock),
-	m_logo_url(channel.GetLogoUrl())
+    m_logo_url(channel.GetLogoUrl())
 {
 
 }
@@ -156,7 +156,7 @@ bool GetChannelsResponseSerializer::GetChannelsResponseXmlDataDeserializer::Visi
     int channelNumber = Util::GetXmlFirstChildElementTextAsInt(&element, "channel_number");
     int channelSubNumber = Util::GetXmlFirstChildElementTextAsInt(&element, "channel_subnumber");
     Channel::DVBLinkChannelType channelType = (Channel::DVBLinkChannelType)Util::GetXmlFirstChildElementTextAsInt(&element, "channel_type");
-	std::string channelLogoUrl = Util::GetXmlFirstChildElementText(&element, "channel_logo");
+    std::string channelLogoUrl = Util::GetXmlFirstChildElementText(&element, "channel_logo");
 
     Channel* channel = new Channel(channelId, channelDvbLinkId, channelName, channelType, channelLogoUrl, channelNumber, channelSubNumber);
 

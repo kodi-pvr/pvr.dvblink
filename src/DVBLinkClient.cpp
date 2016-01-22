@@ -209,8 +209,8 @@ PVR_ERROR DVBLinkClient::GetChannels(ADDON_HANDLE handle, bool bRadio)
 
       PVR_STRCPY(xbmcChannel.strChannelName, channel->GetName().c_str());
 
-	  if (channel->GetLogoUrl().size() > 0)
-	      PVR_STRCPY(xbmcChannel.strIconPath, channel->GetLogoUrl().c_str());
+      if (channel->GetLogoUrl().size() > 0)
+        PVR_STRCPY(xbmcChannel.strIconPath, channel->GetLogoUrl().c_str());
 	  
       CStdString stream;
 
