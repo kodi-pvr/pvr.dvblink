@@ -28,14 +28,16 @@
 using namespace dvblinkremote;
 using namespace dvblinkremoteserialization;
 
-Channel::Channel(const std::string& id, const long dvbLinkId, const std::string& name, const DVBLinkChannelType type, const int number, const int subNumber) 
+Channel::Channel(const std::string& id, const long dvbLinkId, const std::string& name, const DVBLinkChannelType type, const std::string& logo_url,
+				 const int number, const int subNumber) 
   : m_id(id), 
     m_dvbLinkId(dvbLinkId), 
     m_name(name),
     m_type(type),
     Number(number), 
     SubNumber(subNumber),
-    ChildLock(false)
+    ChildLock(false),
+    m_logo_url(logo_url)
 {
   
 }
@@ -47,7 +49,8 @@ Channel::Channel(Channel& channel)
     m_type(channel.GetChannelType()),
     Number(channel.Number), 
     SubNumber(channel.SubNumber),
-    ChildLock(channel.ChildLock)
+    ChildLock(channel.ChildLock),
+    m_logo_url(channel.GetLogoUrl())
 {
 
 }
@@ -70,6 +73,11 @@ long Channel::GetDvbLinkID()
 std::string& Channel::GetName() 
 {
   return m_name;
+}
+
+std::string& Channel::GetLogoUrl() 
+{
+  return m_logo_url;
 }
 
 Channel::DVBLinkChannelType& Channel::GetChannelType() 
@@ -148,8 +156,9 @@ bool GetChannelsResponseSerializer::GetChannelsResponseXmlDataDeserializer::Visi
     int channelNumber = Util::GetXmlFirstChildElementTextAsInt(&element, "channel_number");
     int channelSubNumber = Util::GetXmlFirstChildElementTextAsInt(&element, "channel_subnumber");
     Channel::DVBLinkChannelType channelType = (Channel::DVBLinkChannelType)Util::GetXmlFirstChildElementTextAsInt(&element, "channel_type");
+    std::string channelLogoUrl = Util::GetXmlFirstChildElementText(&element, "channel_logo");
 
-    Channel* channel = new Channel(channelId, channelDvbLinkId, channelName, channelType, channelNumber, channelSubNumber);
+    Channel* channel = new Channel(channelId, channelDvbLinkId, channelName, channelType, channelLogoUrl, channelNumber, channelSubNumber);
 
     if (m_parent.HasChildElement(*&element, "channel_child_lock"))
     {

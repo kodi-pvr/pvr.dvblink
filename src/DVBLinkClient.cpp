@@ -208,6 +208,10 @@ PVR_ERROR DVBLinkClient::GetChannels(ADDON_HANDLE handle, bool bRadio)
       xbmcChannel.iUniqueId = (*it).first;
 
       PVR_STRCPY(xbmcChannel.strChannelName, channel->GetName().c_str());
+
+      if (channel->GetLogoUrl().size() > 0)
+        PVR_STRCPY(xbmcChannel.strIconPath, channel->GetLogoUrl().c_str());
+
       CStdString stream;
 
       //PVR_STRCPY(xbmcChannel.strIconPath, "special://userdata/addon_data/pvr.dvblink/channel.png");
