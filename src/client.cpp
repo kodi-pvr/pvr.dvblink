@@ -27,8 +27,8 @@
 #include "kodi/xbmc_pvr_dll.h"
 #include "kodi/libKODI_guilib.h"
 #include "DVBLinkClient.h"
-#include "platform/util/util.h"
-#include "platform/util/timeutils.h"
+#include "p8-platform/util/util.h"
+#include "p8-platform/util/timeutils.h"
 #include "RecordingStreamer.h"
 
 using namespace std;
@@ -71,7 +71,7 @@ extern "C"
 
 static void generate_uuid(std::string& uuid)
 {
-  int64_t seed_value = PLATFORM::GetTimeMs();
+  int64_t seed_value = P8PLATFORM::GetTimeMs();
   seed_value = seed_value % 1000000000;
   srand((unsigned int) seed_value);
 

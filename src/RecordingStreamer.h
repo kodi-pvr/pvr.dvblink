@@ -25,11 +25,11 @@
 
 #pragma once
 
-#include "platform/os.h"
+#include "p8-platform/os.h"
 #include "kodi/libXBMC_addon.h"
-#include "platform/threads/threads.h"
-#include "platform/threads/mutex.h"
-#include "platform/util/util.h"
+#include "p8-platform/threads/threads.h"
+#include "p8-platform/threads/mutex.h"
+#include "p8-platform/util/util.h"
 #include "libdvblinkremote/dvblinkremote.h"
 #include "HttpPostClient.h"
 
@@ -63,7 +63,7 @@ protected:
   long port_;
   time_t prev_check_;
   time_t check_delta_;
-  PLATFORM::CMutex m_comm_mutex;
+  P8PLATFORM::CMutex m_comm_mutex;
 
   bool get_recording_info(const std::string& recording_id, long long& recording_size, bool& is_in_recording);
 

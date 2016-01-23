@@ -24,7 +24,7 @@
  */
 #include <memory>
 #include "DVBLinkClient.h"
-#include "platform/util/StdString.h"
+#include "p8-platform/util/StdString.h"
 #include "kodi/libKODI_guilib.h"
 
 using namespace dvblinkremote;
@@ -729,7 +729,7 @@ int DVBLinkClient::GetSchedules(ADDON_HANDLE handle)
 PVR_ERROR DVBLinkClient::GetTimers(ADDON_HANDLE handle)
 {
   PVR_ERROR result = PVR_ERROR_FAILED;
-  PLATFORM::CLockObject critsec(m_mutex);
+  P8PLATFORM::CLockObject critsec(m_mutex);
 
   m_timerCount = 0;
 
@@ -863,7 +863,7 @@ static bool is_bit_set(int bit_num, unsigned char bit_field)
 PVR_ERROR DVBLinkClient::AddTimer(const PVR_TIMER &timer)
 {
   PVR_ERROR result = PVR_ERROR_FAILED;
-  PLATFORM::CLockObject critsec(m_mutex);
+  P8PLATFORM::CLockObject critsec(m_mutex);
   DVBLinkRemoteStatusCode status;
   AddScheduleRequest * addScheduleRequest = NULL;
 
@@ -991,7 +991,7 @@ PVR_ERROR DVBLinkClient::AddTimer(const PVR_TIMER &timer)
 PVR_ERROR DVBLinkClient::DeleteTimer(const PVR_TIMER &timer)
 {
   PVR_ERROR result = PVR_ERROR_FAILED;
-  PLATFORM::CLockObject critsec(m_mutex);
+  P8PLATFORM::CLockObject critsec(m_mutex);
   DVBLinkRemoteStatusCode status = DVBLINK_REMOTE_STATUS_ERROR;
   std::string error;
 
@@ -1044,7 +1044,7 @@ PVR_ERROR DVBLinkClient::DeleteTimer(const PVR_TIMER &timer)
 PVR_ERROR DVBLinkClient::UpdateTimer(const PVR_TIMER &timer)
 {
   PVR_ERROR result = PVR_ERROR_NO_ERROR;
-  PLATFORM::CLockObject critsec(m_mutex);
+  P8PLATFORM::CLockObject critsec(m_mutex);
 
   std::string schedule_id;
   switch (timer.iTimerType)
@@ -1141,7 +1141,7 @@ std::string DVBLinkClient::GetRecordedTVByDateObjectID(const std::string& buildI
 
 PVR_ERROR DVBLinkClient::DeleteRecording(const PVR_RECORDING& recording)
 {
-//  PLATFORM::CLockObject critsec(m_mutex);
+//  P8PLATFORM::CLockObject critsec(m_mutex);
   PVR_ERROR result = PVR_ERROR_FAILED;
   DVBLinkRemoteStatusCode status;
   RemovePlaybackObjectRequest remoteObj(recording.strRecordingId);
@@ -1205,7 +1205,7 @@ static std::string get_subtitle(int season, int episode, const std::string& epis
 
 PVR_ERROR DVBLinkClient::GetRecordings(ADDON_HANDLE handle)
 {
-  PLATFORM::CLockObject critsec(m_mutex);
+  P8PLATFORM::CLockObject critsec(m_mutex);
   PVR_ERROR result = PVR_ERROR_FAILED;
   DVBLinkRemoteStatusCode status;
   m_recording_id_to_url_map.clear();
@@ -1340,7 +1340,7 @@ bool DVBLinkClient::GetRecordingURL(const char* recording_id, std::string& url)
 
 void DVBLinkClient::GetDriveSpace(long long *iTotal, long long *iUsed)
 {
-//  PLATFORM::CLockObject critsec(m_mutex);
+//  P8PLATFORM::CLockObject critsec(m_mutex);
   GetRecordingSettingsRequest recordingsettingsrequest;
   *iTotal = 0;
   *iUsed = 0;
@@ -1389,7 +1389,7 @@ bool DVBLinkClient::OpenLiveStream(const PVR_CHANNEL &channel, bool use_timeshif
     return false;
   }
 
-  PLATFORM::CLockObject critsec(m_mutex);
+  P8PLATFORM::CLockObject critsec(m_mutex);
 
   if (m_live_streamer)
   {
@@ -1483,7 +1483,7 @@ time_t DVBLinkClient::GetBufferTimeEnd()
 
 void DVBLinkClient::StopStreaming(bool bUseChlHandle)
 {
-  PLATFORM::CLockObject critsec(m_mutex);
+  P8PLATFORM::CLockObject critsec(m_mutex);
   StopStreamRequest * request;
 
   if (m_live_streamer != NULL)
@@ -1566,7 +1566,7 @@ void DVBLinkClient::SetEPGGenre(dvblinkremote::ItemMetadata& metadata, int& genr
 bool DVBLinkClient::DoEPGSearch(EpgSearchResult& epgSearchResult, const std::string& channelId, const long startTime,
     const long endTime, const std::string& programId)
 {
-  PLATFORM::CLockObject critsec(m_mutex);
+  P8PLATFORM::CLockObject critsec(m_mutex);
   EpgSearchRequest epgSearchRequest(channelId, startTime, endTime);
   if (programId.compare("") != 0)
   {
@@ -1586,7 +1586,7 @@ bool DVBLinkClient::DoEPGSearch(EpgSearchResult& epgSearchResult, const std::str
 PVR_ERROR DVBLinkClient::GetEPGForChannel(ADDON_HANDLE handle, const PVR_CHANNEL& channel, time_t iStart, time_t iEnd)
 {
   PVR_ERROR result = PVR_ERROR_FAILED;
-  PLATFORM::CLockObject critsec(m_mutex);
+  P8PLATFORM::CLockObject critsec(m_mutex);
   Channel * c = m_channelMap[channel.iUniqueId];
   EpgSearchResult epgSearchResult;
 
