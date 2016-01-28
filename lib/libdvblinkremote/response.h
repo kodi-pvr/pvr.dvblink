@@ -57,7 +57,8 @@ namespace dvblinkremote {
       * @param number an optional constant integer representing the number of the channel.
       * @param subNumber an optional constant integer representing the sub-number of the channel.
       */
-    Channel(const std::string& id, const long dvbLinkId, const std::string& name, const DVBLinkChannelType type, const int number = -1, const int subNumber = -1);
+    Channel(const std::string& id, const long dvbLinkId, const std::string& name, const DVBLinkChannelType type, const std::string& logo_url, 
+		const int number = -1, const int subNumber = -1);
 
     /**
       * Initializes a new instance of the dvblinkremote::Channel class by coping another 
@@ -90,6 +91,12 @@ namespace dvblinkremote {
     std::string& GetName();
 
     /**
+      * Gets the logo url of the channel.
+      * @return logo url
+    */
+    std::string& GetLogoUrl();
+
+    /**
       * Gets the type of the channel.
       * @return ChannelType instance reference
       */
@@ -115,6 +122,7 @@ namespace dvblinkremote {
     long m_dvbLinkId;
     std::string m_name;
     DVBLinkChannelType m_type;
+    std::string m_logo_url;
   };
 
   /**
