@@ -1315,6 +1315,9 @@ PVR_ERROR DVBLinkClient::GetRecordings(ADDON_HANDLE handle)
       }
     }
 
+    // TODO?
+    xbmcRecording.iChannelUid = PVR_CHANNEL_INVALID_UID;
+
     PVR->TransferRecordingEntry(handle, &xbmcRecording);
 
   }
