@@ -708,14 +708,6 @@ PVR_ERROR GetRecordingEdl(const PVR_RECORDING&, PVR_EDL_ENTRY[], int*)
   return PVR_ERROR_NOT_IMPLEMENTED;
 }
 
-int GetCurrentClientChannel(void)
-{
-  if (dvblinkclient)
-    return dvblinkclient->GetCurrentChannelId();
-
-  return 0;
-}
-
 bool SwitchChannel(const PVR_CHANNEL &channel)
 {
   CloseLiveStream();
@@ -868,6 +860,11 @@ void DemuxFlush(void)
 {
 }
 
+bool IsRealTimeStream(void)
+{
+  return true;
+}
+
 PVR_ERROR RenameRecording(const PVR_RECORDING &recording)
 {
   return PVR_ERROR_NOT_IMPLEMENTED;
@@ -924,6 +921,11 @@ bool SeekTime(int, bool, double*)
 
 void SetSpeed(int)
 {
+}
+
+PVR_ERROR SetEPGTimeFrame(int)
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
 }
 
 }
