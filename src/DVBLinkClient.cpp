@@ -208,9 +208,10 @@ PVR_ERROR DVBLinkClient::GetChannels(ADDON_HANDLE handle, bool bRadio)
       xbmcChannel.iUniqueId = (*it).first;
 
       PVR_STRCPY(xbmcChannel.strChannelName, channel->GetName().c_str());
-      CStdString stream;
 
-      //PVR_STRCPY(xbmcChannel.strIconPath, "special://userdata/addon_data/pvr.dvblink/channel.png");
+      if (channel->GetLogoUrl().size() > 0)
+        PVR_STRCPY(xbmcChannel.strIconPath, channel->GetLogoUrl().c_str());
+
       PVR->TransferChannelEntry(handle, &xbmcChannel);
     }
   }
@@ -581,8 +582,19 @@ static bool is_timer_a_schedule(int idx)
   return idx >= SCHEDULE_ID_OFFSET ? true : false;
 }
 
-int DVBLinkClient::GetSchedules(ADDON_HANDLE handle)
+int DVBLinkClient::GetSchedules(ADDON_HANDLE handle, const RecordingList& recordings)
 {
+  //make a map of schedule id->recording list
+  std::map<std::string, std::vector<Recording*> > schedule_to_timer_map;
+  for (size_t i = 0; i < recordings.size(); i++)
+  {
+    Recording* rec = recordings[i];
+    if (schedule_to_timer_map.find(rec->GetScheduleID()) == schedule_to_timer_map.end())
+      schedule_to_timer_map[rec->GetScheduleID()] = std::vector<Recording*>();
+
+    schedule_to_timer_map[rec->GetScheduleID()].push_back(rec);
+  }
+
   int added_count = 0;
   int total_count = 0;
 
@@ -677,6 +689,13 @@ int DVBLinkClient::GetSchedules(ADDON_HANDLE handle)
       timer.iPreventDuplicateEpisodes = epg_schedules[i]->NewOnly ? dcrs_record_new_only : dcrs_record_all;
       strncpy(timer.strTitle, epg_schedules[i]->program_name_.c_str(), sizeof(timer.strTitle) - 1);
 
+      if (schedule_to_timer_map.find(epg_schedules[i]->GetID()) != schedule_to_timer_map.end() &&
+        schedule_to_timer_map[epg_schedules[i]->GetID()].size() > 0)
+      {
+        timer.startTime = schedule_to_timer_map[epg_schedules[i]->GetID()].at(0)->GetProgram().GetStartTime();
+        timer.endTime = timer.startTime + schedule_to_timer_map[epg_schedules[i]->GetID()].at(0)->GetProgram().GetDuration();
+      }
+
       //the original program, used for scheduling, can already be gone for a long time
       timer.iEpgUid = PVR_TIMER_NO_EPG_UID;
 
@@ -713,6 +732,13 @@ int DVBLinkClient::GetSchedules(ADDON_HANDLE handle)
     timer.iMarginEnd = bp_schedules[i]->MarginAfter / 60;
     strncpy(timer.strEpgSearchString, bp_schedules[i]->GetKeyphrase().c_str(), sizeof(timer.strEpgSearchString) - 1);
 
+    if (schedule_to_timer_map.find(epg_schedules[i]->GetID()) != schedule_to_timer_map.end() &&
+      schedule_to_timer_map[epg_schedules[i]->GetID()].size() > 0)
+    {
+      timer.startTime = schedule_to_timer_map[epg_schedules[i]->GetID()].at(0)->GetProgram().GetStartTime();
+      timer.endTime = timer.startTime + schedule_to_timer_map[epg_schedules[i]->GetID()].at(0)->GetProgram().GetDuration();
+    }
+
     strncpy(timer.strTitle, bp_schedules[i]->GetKeyphrase().c_str(), sizeof(timer.strTitle) - 1);
     timer.iEpgUid = PVR_TIMER_NO_EPG_UID;
 
@@ -733,9 +759,6 @@ PVR_ERROR DVBLinkClient::GetTimers(ADDON_HANDLE handle)
 
   m_timerCount = 0;
 
-  //get schedules first
-  int schedule_count = GetSchedules(handle);
-
   GetRecordingsRequest recordingsRequest;
   RecordingList recordings;
 
@@ -754,6 +777,9 @@ PVR_ERROR DVBLinkClient::GetTimers(ADDON_HANDLE handle)
   {
     XBMC->QueueNotification(QUEUE_INFO, XBMC->GetLocalizedString(32007), recordings.size());
   }
+
+  //get and process schedules first
+  int schedule_count = GetSchedules(handle, recordings);
 
   unsigned int index = PVR_TIMER_NO_CLIENT_INDEX + 1;
   for (size_t i = 0; i < recordings.size(); i++, index++)
