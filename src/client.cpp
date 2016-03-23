@@ -632,7 +632,7 @@ static bool dvblink_is_live()
 {
   if (dvblinkclient)
   {
-    return (dvblinkclient->GetBufferTimeEnd() - dvblinkclient->GetPlayingTime()) > 3; //add a margin of 3 seconds to the definition of "live"
+    return (dvblinkclient->GetBufferTimeEnd() - dvblinkclient->GetPlayingTime()) < 3; //add a margin of 3 seconds to the definition of "live"
   }
   return true;
 }
