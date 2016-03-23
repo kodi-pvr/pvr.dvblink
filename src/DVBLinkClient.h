@@ -143,7 +143,7 @@ private:
   int GetInternalUniqueIdFromChannelId(const std::string& channelId);
   virtual void * Process(void);
   bool get_dvblink_program_id(std::string& channelId, int start_time, std::string& dvblink_program_id);
-  int GetSchedules(ADDON_HANDLE handle);
+  int GetSchedules(ADDON_HANDLE handle, const dvblinkremote::RecordingList& recordings);
 
   std::string make_timer_hash(const std::string& timer_id, const std::string& schedule_id);
   bool parse_timer_hash(const char* timer_hash, std::string& timer_id, std::string& schedule_id);

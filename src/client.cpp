@@ -628,6 +628,31 @@ bool CanSeekStream(void)
   return g_bUseTimeshift;
 }
 
+static bool dvblink_is_live()
+{
+  if (dvblinkclient)
+  {
+    return (dvblinkclient->GetBufferTimeEnd() - dvblinkclient->GetPlayingTime()) < 3; //add a margin of 3 seconds to the definition of "live"
+  }
+  return true;
+}
+
+bool IsRealTimeStream()
+{
+  return !g_bUseTimeshift || dvblink_is_live();
+}
+
+bool IsTimeshifting(void)
+{
+  return g_bUseTimeshift && !dvblink_is_live();
+}
+
+PVR_ERROR SetEPGTimeFrame(int iDays)
+{
+  //add support for async epg update later
+  return PVR_ERROR_NO_ERROR;
+}
+
 //recording timers functions
 
 PVR_ERROR GetTimerTypes(PVR_TIMER_TYPE types[], int *size)
@@ -706,14 +731,6 @@ PVR_ERROR DeleteRecording(const PVR_RECORDING &recording)
 PVR_ERROR GetRecordingEdl(const PVR_RECORDING&, PVR_EDL_ENTRY[], int*)
 {
   return PVR_ERROR_NOT_IMPLEMENTED;
-}
-
-int GetCurrentClientChannel(void)
-{
-  if (dvblinkclient)
-    return dvblinkclient->GetCurrentChannelId();
-
-  return 0;
 }
 
 bool SwitchChannel(const PVR_CHANNEL &channel)
@@ -910,11 +927,6 @@ DemuxPacket* DemuxRead(void)
 unsigned int GetChannelSwitchDelay(void)
 {
   return 0;
-}
-
-bool IsTimeshifting(void)
-{
-  return false;
 }
 
 bool SeekTime(int, bool, double*)
