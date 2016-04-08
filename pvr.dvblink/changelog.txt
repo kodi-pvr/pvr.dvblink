@@ -1,3 +1,6 @@
+[B]Version 3.1.1[/B]
+Added: Playback of transcoded recordings in DVBLink v6
+
 [B]Version 3.1.0[/B]
 Fixed: Compatibility with Kodi Krypton PVR API
 Added: Support for the upcoming channel logos
