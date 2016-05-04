@@ -132,7 +132,8 @@ public:
   time_t GetPlayingTime();
   time_t GetBufferTimeStart();
   time_t GetBufferTimeEnd();
-  bool GetRecordingURL(const char* recording_id, std::string& url);
+  bool GetRecordingURL(const char* recording_id, std::string& url, bool use_transcoder, int width,
+    int height, int bitrate, std::string audiotrack);
 
 private:
   bool DoEPGSearch(dvblinkremote::EpgSearchResult& epgSearchResult, const std::string& channelId, const long startTime,
@@ -185,6 +186,7 @@ private:
   bool setting_margins_supported_;
   bool favorites_supported_;
   bool transcoding_supported_;
+  bool transcoding_recordings_supported_;
   dvblinkremote::ChannelFavorites channel_favorites_;
   std::map<std::string, int> inverse_channel_map_;
   bool no_group_single_rec_;
