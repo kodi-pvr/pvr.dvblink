@@ -765,7 +765,7 @@ bool OpenRecordedStream(const PVR_RECORDING &recording)
 
   bool ret_val = false;
   std::string url;
-  if (dvblinkclient->GetRecordingURL(recording.strRecordingId, url))
+  if (dvblinkclient->GetRecordingURL(recording.strRecordingId, url, g_bUseTranscoding, g_iWidth, g_iHeight, g_iBitrate, g_szAudiotrack))
   {
     recording_streamer = new RecordingStreamer(XBMC, g_szClientname, g_szHostname, g_lPort, g_szUsername, g_szPassword);
     if (recording_streamer->OpenRecordedStream(recording.strRecordingId, url))
