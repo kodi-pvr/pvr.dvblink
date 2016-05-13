@@ -26,7 +26,7 @@
 #pragma once
 
 #include "p8-platform/os.h"
-#include "kodi/libXBMC_addon.h"
+#include "libXBMC_addon.h"
 #include "p8-platform/threads/threads.h"
 #include "p8-platform/threads/mutex.h"
 #include "p8-platform/util/util.h"
