@@ -736,11 +736,11 @@ int DVBLinkClient::GetSchedules(ADDON_HANDLE handle, const RecordingList& record
     timer.iMarginEnd = bp_schedules[i]->MarginAfter / 60;
     strncpy(timer.strEpgSearchString, bp_schedules[i]->GetKeyphrase().c_str(), sizeof(timer.strEpgSearchString) - 1);
 
-    if (schedule_to_timer_map.find(epg_schedules[i]->GetID()) != schedule_to_timer_map.end() &&
-      schedule_to_timer_map[epg_schedules[i]->GetID()].size() > 0)
+    if (schedule_to_timer_map.find(bp_schedules[i]->GetID()) != schedule_to_timer_map.end() &&
+      schedule_to_timer_map[bp_schedules[i]->GetID()].size() > 0)
     {
-      timer.startTime = schedule_to_timer_map[epg_schedules[i]->GetID()].at(0)->GetProgram().GetStartTime();
-      timer.endTime = timer.startTime + schedule_to_timer_map[epg_schedules[i]->GetID()].at(0)->GetProgram().GetDuration();
+      timer.startTime = schedule_to_timer_map[bp_schedules[i]->GetID()].at(0)->GetProgram().GetStartTime();
+      timer.endTime = timer.startTime + schedule_to_timer_map[bp_schedules[i]->GetID()].at(0)->GetProgram().GetDuration();
     }
 
     strncpy(timer.strTitle, bp_schedules[i]->GetKeyphrase().c_str(), sizeof(timer.strTitle) - 1);

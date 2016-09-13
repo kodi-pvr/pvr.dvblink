@@ -86,8 +86,8 @@ bool RecordingSettingsSerializer::ReadObject(RecordingSettings& object, const st
     object.TimeMarginBeforeScheduledRecordings = Util::GetXmlFirstChildElementTextAsInt(elRoot, "before_margin");
     object.TimeMarginAfterScheduledRecordings = Util::GetXmlFirstChildElementTextAsInt(elRoot, "after_margin");
     object.RecordingPath = Util::GetXmlFirstChildElementText(elRoot, "recording_path");
-    object.TotalSpace = Util::GetXmlFirstChildElementTextAsLong(elRoot, "total_space");
-    object.AvailableSpace = Util::GetXmlFirstChildElementTextAsLong(elRoot, "avail_space");
+    object.TotalSpace = Util::GetXmlFirstChildElementTextAsLongLong(elRoot, "total_space");
+    object.AvailableSpace = Util::GetXmlFirstChildElementTextAsLongLong(elRoot, "avail_space");
     return true;
   }
 

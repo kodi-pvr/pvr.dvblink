@@ -1,3 +1,7 @@
+[B]Version 3.3.5[/B]
+Fixed: Crash on startup with search timers
+Fixed: Incorrect disk space display if disk size is more than 2TB
+
 [B]Version 3.3.4[/B]
 Updated: language files from Transifex
 
