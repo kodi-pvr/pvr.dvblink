@@ -21,6 +21,7 @@
  *
  ***************************************************************************/
 
+#include <cstdarg>
 #include "dvblinkremoteconnection.h"
 #include "xml_object_serializer.h"
 #include "generic_response.h"
