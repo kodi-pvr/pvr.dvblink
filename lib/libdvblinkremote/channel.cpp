@@ -122,7 +122,7 @@ bool GetChannelsResponseSerializer::ReadObject(ChannelList& object, const std::s
 {
   tinyxml2::XMLDocument& doc = GetXmlDocument();
     
-  if (doc.Parse(xml.c_str()) == tinyxml2::XML_NO_ERROR) {
+  if (doc.Parse(xml.c_str()) == tinyxml2::XML_SUCCESS) {
     tinyxml2::XMLElement* elRoot = doc.FirstChildElement("channels");
     GetChannelsResponseXmlDataDeserializer* xmlDataDeserializer = new GetChannelsResponseXmlDataDeserializer(*this, object);
     elRoot->Accept(xmlDataDeserializer);

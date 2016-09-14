@@ -1350,12 +1350,12 @@ namespace dvblinkremote {
     /**
       * The total space in KB.
       */
-    long TotalSpace;
+    long long TotalSpace;
 
     /**
       * The available space in KB. 
       */
-    long AvailableSpace;
+    long long AvailableSpace;
   };
 
   class ChannelFavorite

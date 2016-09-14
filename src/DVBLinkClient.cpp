@@ -79,6 +79,7 @@ DVBLinkClient::DVBLinkClient(CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* p
   setting_margins_supported_ = false;
   favorites_supported_ = false;
   transcoding_supported_ = false;
+  transcoding_recordings_supported_ = false;
 
   m_httpClient = new HttpPostClient(XBMC, hostname, port, username, password);
   m_dvblinkRemoteCommunication = DVBLinkRemote::Connect((HttpClient&) *m_httpClient, m_hostname.c_str(), port,
@@ -97,6 +98,9 @@ DVBLinkClient::DVBLinkClient(CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* p
 
     //server with build earlier than 11410 does not support setting margins
     setting_margins_supported_ = (server_build >= 11405);
+
+    //server with build earlier than 12700 does not support playing transcoded recordings
+    transcoding_recordings_supported_ = (server_build >= 12700);
   }
 
   GetStreamingCapabilitiesRequest streamin_caps_request;
@@ -733,11 +737,11 @@ int DVBLinkClient::GetSchedules(ADDON_HANDLE handle, const RecordingList& record
     timer.iMarginEnd = bp_schedules[i]->MarginAfter / 60;
     strncpy(timer.strEpgSearchString, bp_schedules[i]->GetKeyphrase().c_str(), sizeof(timer.strEpgSearchString) - 1);
 
-    if (schedule_to_timer_map.find(epg_schedules[i]->GetID()) != schedule_to_timer_map.end() &&
-      schedule_to_timer_map[epg_schedules[i]->GetID()].size() > 0)
+    if (schedule_to_timer_map.find(bp_schedules[i]->GetID()) != schedule_to_timer_map.end() &&
+      schedule_to_timer_map[bp_schedules[i]->GetID()].size() > 0)
     {
-      timer.startTime = schedule_to_timer_map[epg_schedules[i]->GetID()].at(0)->GetProgram().GetStartTime();
-      timer.endTime = timer.startTime + schedule_to_timer_map[epg_schedules[i]->GetID()].at(0)->GetProgram().GetDuration();
+      timer.startTime = schedule_to_timer_map[bp_schedules[i]->GetID()].at(0)->GetProgram().GetStartTime();
+      timer.endTime = timer.startTime + schedule_to_timer_map[bp_schedules[i]->GetID()].at(0)->GetProgram().GetDuration();
     }
 
     strncpy(timer.strTitle, bp_schedules[i]->GetKeyphrase().c_str(), sizeof(timer.strTitle) - 1);
@@ -1350,12 +1354,35 @@ PVR_ERROR DVBLinkClient::GetRecordings(ADDON_HANDLE handle)
   return result;
 }
 
-bool DVBLinkClient::GetRecordingURL(const char* recording_id, std::string& url)
+bool DVBLinkClient::GetRecordingURL(const char* recording_id, std::string& url, bool use_transcoder, int width,
+                                    int height, int bitrate, std::string audiotrack)
 {
   bool ret_val = false;
+
+  //if transcoding is requested and no transcoder is supported return false
+  if ((use_transcoder && !transcoding_supported_) || (use_transcoder && !transcoding_recordings_supported_))
+  {
+    XBMC->QueueNotification(QUEUE_ERROR, XBMC->GetLocalizedString(32024));
+    return false;
+  }
+
   if (m_recording_id_to_url_map.find(recording_id) != m_recording_id_to_url_map.end())
   {
     url = m_recording_id_to_url_map[recording_id];
+
+    if (use_transcoder)
+    {
+      int w = width == 0 ? GUI->GetScreenWidth() : width;
+      int h = height == 0 ? GUI->GetScreenHeight() : height;
+
+      char buf[1024];
+      sprintf(buf, "%s&transcoder=hls&client_id=%s&width=%d&height=%d&bitrate=%d", url.c_str(), m_clientname.c_str(), w, h, bitrate);
+      url = buf;
+
+      if (audiotrack.size() > 0)
+        url += "&lng=" + audiotrack;
+    }
+
     ret_val = true;
   }
   else

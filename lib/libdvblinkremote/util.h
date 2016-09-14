@@ -34,6 +34,7 @@ namespace dvblinkremote {
   public:
     static bool ConvertToInt(const std::string& s, int& value);
     static bool ConvertToLong(const std::string& s, long& value);
+    static bool ConvertToLongLong(const std::string& s, long long& value);
     static bool ConvertToString(const int& value, std::string&);
     static bool ConvertToString(const unsigned int& value, std::string&);
     static bool ConvertToString(const long& value, std::string&);
@@ -47,6 +48,7 @@ namespace dvblinkremote {
     static const char* GetXmlFirstChildElementText(const tinyxml2::XMLElement* parentElement, const char* name);
     static int GetXmlFirstChildElementTextAsInt(const tinyxml2::XMLElement* parentElement, const char* name);
     static long GetXmlFirstChildElementTextAsLong(const tinyxml2::XMLElement* parentElement, const char* name);
+    static long long GetXmlFirstChildElementTextAsLongLong(const tinyxml2::XMLElement* parentElement, const char* name);
     static bool GetXmlFirstChildElementTextAsBoolean(const tinyxml2::XMLElement* parentElement, const char* name);
 
   private:

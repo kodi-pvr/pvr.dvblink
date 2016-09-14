@@ -1,3 +1,9 @@
+[B]Version 2.2.0[/B]
+Fixed: Crash on startup with search timers
+Fixed: Incorrect disk space display if disk size is more than 2TB
+Fixed: Doesn't build with tinyxml2 4.x
+Added: transcoded recordings playback in DVBLink v6
+ 
 [B]Version 2.1.10[/B]
 Updated: language files from Transifex
 

@@ -189,7 +189,7 @@ bool EpgSearchResponseSerializer::ReadObject(EpgSearchResult& object, const std:
 {
   tinyxml2::XMLDocument& doc = GetXmlDocument();
     
-  if (doc.Parse(xml.c_str()) == tinyxml2::XML_NO_ERROR) {
+  if (doc.Parse(xml.c_str()) == tinyxml2::XML_SUCCESS) {
     tinyxml2::XMLElement* elRoot = doc.FirstChildElement("epg_searcher");
     ChannelEpgXmlDataDeserializer* xmlDataDeserializer = new ChannelEpgXmlDataDeserializer(*this, object);
     elRoot->Accept(xmlDataDeserializer);

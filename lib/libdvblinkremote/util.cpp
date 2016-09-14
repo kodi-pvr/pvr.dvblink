@@ -34,6 +34,7 @@ bool Util::from_string(T& t, const std::string& s, std::ios_base& (*f)(std::ios_
 
 template bool Util::from_string<int>(int& t, const std::string& s, std::ios_base& (*f)(std::ios_base&));
 template bool Util::from_string<long>(long& t, const std::string& s, std::ios_base& (*f)(std::ios_base&));
+template bool Util::from_string<long long>(long long& t, const std::string& s, std::ios_base& (*f)(std::ios_base&));
 
 template <class T>
 bool Util::to_string(const T& t, std::string& s)
@@ -57,6 +58,11 @@ bool Util::ConvertToInt(const std::string& s, int& value)
 bool Util::ConvertToLong(const std::string& s, long& value) 
 {
   return from_string<long>(value, s, std::dec);
+}
+
+bool Util::ConvertToLongLong(const std::string& s, long long& value) 
+{
+  return from_string<long long>(value, s, std::dec);
 }
 
 bool Util::ConvertToString(const int& value, std::string& s) 
@@ -185,6 +191,24 @@ long Util::GetXmlFirstChildElementTextAsLong(const tinyxml2::XMLElement* parentE
   }
 
   if (s && !Util::ConvertToLong(s, value))
+  {
+    value = -1;
+  }
+
+  return value;
+}
+
+long long Util::GetXmlFirstChildElementTextAsLongLong(const tinyxml2::XMLElement* parentElement, const char* name) 
+{
+  const tinyxml2::XMLElement* el = parentElement->FirstChildElement(name);
+  const char* s = "-1";
+  long long value;
+
+  if (el != NULL && el->GetText()) {
+    s = el->GetText();
+  }
+
+  if (s && !Util::ConvertToLongLong(s, value))
   {
     value = -1;
   }

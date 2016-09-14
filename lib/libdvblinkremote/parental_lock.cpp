@@ -95,7 +95,7 @@ bool ParentalStatusSerializer::ReadObject(ParentalStatus& object, const std::str
 {
   tinyxml2::XMLDocument& doc = GetXmlDocument();
     
-  if (doc.Parse(xml.c_str()) == tinyxml2::XML_NO_ERROR) {
+  if (doc.Parse(xml.c_str()) == tinyxml2::XML_SUCCESS) {
     tinyxml2::XMLElement* elRoot = doc.FirstChildElement("parental_status");
     object.IsEnabled = Util::GetXmlFirstChildElementTextAsBoolean(elRoot, "is_enabled");
     return true;
