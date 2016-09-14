@@ -81,7 +81,7 @@ bool RecordingSettingsSerializer::ReadObject(RecordingSettings& object, const st
 {
   tinyxml2::XMLDocument& doc = GetXmlDocument();
     
-  if (doc.Parse(xml.c_str()) == tinyxml2::XML_NO_ERROR) {
+  if (doc.Parse(xml.c_str()) == tinyxml2::XML_SUCCESS) {
     tinyxml2::XMLElement* elRoot = doc.FirstChildElement("recording_settings");
     object.TimeMarginBeforeScheduledRecordings = Util::GetXmlFirstChildElementTextAsInt(elRoot, "before_margin");
     object.TimeMarginAfterScheduledRecordings = Util::GetXmlFirstChildElementTextAsInt(elRoot, "after_margin");

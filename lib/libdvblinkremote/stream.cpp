@@ -74,7 +74,7 @@ bool StreamResponseSerializer::ReadObject(Stream& object, const std::string& xml
 {
   tinyxml2::XMLDocument& doc = GetXmlDocument();
     
-  if (doc.Parse(xml.c_str()) == tinyxml2::XML_NO_ERROR) {
+  if (doc.Parse(xml.c_str()) == tinyxml2::XML_SUCCESS) {
     tinyxml2::XMLElement* elRoot = doc.FirstChildElement("stream");
     long channelHandle = Util::GetXmlFirstChildElementTextAsLong(elRoot, "channel_handle");
     std::string url = Util::GetXmlFirstChildElementText(elRoot, "url");

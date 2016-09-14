@@ -415,7 +415,7 @@ bool GetSchedulesResponseSerializer::ReadObject(StoredSchedules& object, const s
 {
   tinyxml2::XMLDocument& doc = GetXmlDocument();
     
-  if (doc.Parse(xml.c_str()) == tinyxml2::XML_NO_ERROR) {
+  if (doc.Parse(xml.c_str()) == tinyxml2::XML_SUCCESS) {
     tinyxml2::XMLElement* elRoot = doc.FirstChildElement("schedules");
     GetSchedulesResponseXmlDataDeserializer* xmlDataDeserializer = new GetSchedulesResponseXmlDataDeserializer(*this, object);
     elRoot->Accept(xmlDataDeserializer);
