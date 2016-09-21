@@ -694,7 +694,7 @@ int DVBLinkClient::GetSchedules(ADDON_HANDLE handle, const RecordingList& record
       strncpy(timer.strTitle, epg_schedules[i]->program_name_.c_str(), sizeof(timer.strTitle) - 1);
 
       if (schedule_to_timer_map.find(epg_schedules[i]->GetID()) != schedule_to_timer_map.end() &&
-        schedule_to_timer_map[epg_schedules[i]->GetID()].size() > 0)
+        !schedule_to_timer_map[epg_schedules[i]->GetID()].empty())
       {
         timer.startTime = schedule_to_timer_map[epg_schedules[i]->GetID()].at(0)->GetProgram().GetStartTime();
         timer.endTime = timer.startTime + schedule_to_timer_map[epg_schedules[i]->GetID()].at(0)->GetProgram().GetDuration();
@@ -725,7 +725,7 @@ int DVBLinkClient::GetSchedules(ADDON_HANDLE handle, const RecordingList& record
     //misuse strDirectory to keep id of the timer
     PVR_STRCPY(timer.strDirectory, bp_schedules[i]->GetID().c_str());
     timer.iClientIndex = kodi_idx;
-    if (bp_schedules[i]->GetChannelID().size() > 0)
+    if (!bp_schedules[i]->GetChannelID().empty())
       timer.iClientChannelUid = GetInternalUniqueIdFromChannelId(bp_schedules[i]->GetChannelID());
     else
       timer.iClientChannelUid = PVR_TIMER_ANY_CHANNEL;
@@ -736,11 +736,11 @@ int DVBLinkClient::GetSchedules(ADDON_HANDLE handle, const RecordingList& record
     timer.iMarginEnd = bp_schedules[i]->MarginAfter / 60;
     strncpy(timer.strEpgSearchString, bp_schedules[i]->GetKeyphrase().c_str(), sizeof(timer.strEpgSearchString) - 1);
 
-    if (schedule_to_timer_map.find(epg_schedules[i]->GetID()) != schedule_to_timer_map.end() &&
-      schedule_to_timer_map[epg_schedules[i]->GetID()].size() > 0)
+    if (schedule_to_timer_map.find(bp_schedules[i]->GetID()) != schedule_to_timer_map.end() &&
+      !schedule_to_timer_map[bp_schedules[i]->GetID()].empty())
     {
-      timer.startTime = schedule_to_timer_map[epg_schedules[i]->GetID()].at(0)->GetProgram().GetStartTime();
-      timer.endTime = timer.startTime + schedule_to_timer_map[epg_schedules[i]->GetID()].at(0)->GetProgram().GetDuration();
+      timer.startTime = schedule_to_timer_map[bp_schedules[i]->GetID()].at(0)->GetProgram().GetStartTime();
+      timer.endTime = timer.startTime + schedule_to_timer_map[bp_schedules[i]->GetID()].at(0)->GetProgram().GetDuration();
     }
 
     strncpy(timer.strTitle, bp_schedules[i]->GetKeyphrase().c_str(), sizeof(timer.strTitle) - 1);

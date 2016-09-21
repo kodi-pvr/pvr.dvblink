@@ -63,7 +63,7 @@ bool ServerInfoSerializer::ReadObject(ServerInfo& object, const std::string& xml
 {
   tinyxml2::XMLDocument& doc = GetXmlDocument();
     
-  if (doc.Parse(xml.c_str()) == tinyxml2::XML_NO_ERROR) {
+  if (doc.Parse(xml.c_str()) == tinyxml2::XML_SUCCESS) {
     tinyxml2::XMLElement* elRoot = doc.FirstChildElement("server_info");
     object.install_id_ = Util::GetXmlFirstChildElementText(elRoot, "install_id");
     object.server_id_ = Util::GetXmlFirstChildElementText(elRoot, "server_id");

@@ -106,7 +106,7 @@ bool GetRecordingsResponseSerializer::ReadObject(RecordingList& object, const st
 {
   tinyxml2::XMLDocument& doc = GetXmlDocument();
     
-  if (doc.Parse(xml.c_str()) == tinyxml2::XML_NO_ERROR) {
+  if (doc.Parse(xml.c_str()) == tinyxml2::XML_SUCCESS) {
     tinyxml2::XMLElement* elRoot = doc.FirstChildElement("recordings");
     GetRecordingsResponseXmlDataDeserializer* xmlDataDeserializer = new GetRecordingsResponseXmlDataDeserializer(*this, object);
     elRoot->Accept(xmlDataDeserializer);
