@@ -74,7 +74,7 @@ bool GenericResponseSerializer::ReadObject(GenericResponse& object, const std::s
 {
   tinyxml2::XMLDocument& doc = GetXmlDocument();
     
-  if (doc.Parse(xml.c_str()) == tinyxml2::XML_NO_ERROR) {
+  if (doc.Parse(xml.c_str()) == tinyxml2::XML_SUCCESS) {
     tinyxml2::XMLElement* elRoot = doc.FirstChildElement("response");
     int statusCode = Util::GetXmlFirstChildElementTextAsInt(elRoot, "status_code");
 
