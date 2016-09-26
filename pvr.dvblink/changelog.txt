@@ -1,3 +1,6 @@
+[B]Version 2.2.1[/B]
+Fixed: Did not build
+
 [B]Version 2.2.0[/B]
 Fixed: Crash on startup with search timers
 Fixed: Incorrect disk space display if disk size is more than 2TB
