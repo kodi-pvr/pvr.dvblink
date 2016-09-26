@@ -726,7 +726,7 @@ int DVBLinkClient::GetSchedules(ADDON_HANDLE handle, const RecordingList& record
     //misuse strDirectory to keep id of the timer
     PVR_STRCPY(timer.strDirectory, bp_schedules[i]->GetID().c_str());
     timer.iClientIndex = kodi_idx;
-    if (!bp_schedules[i]->GetChannelID().size().empty())
+    if (!bp_schedules[i]->GetChannelID().empty())
       timer.iClientChannelUid = GetInternalUniqueIdFromChannelId(bp_schedules[i]->GetChannelID());
     else
       timer.iClientChannelUid = PVR_TIMER_ANY_CHANNEL;
