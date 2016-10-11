@@ -577,10 +577,10 @@ bool DVBLinkClient::parse_timer_hash(const char* timer_hash, std::string& timer_
 
 unsigned int DVBLinkClient::get_kodi_timer_idx_from_dvblink(const std::string& id)
 {
-  if (trimer_idx_map_.find(id) == trimer_idx_map_.end())
-    trimer_idx_map_[id] = timer_idx_seed_++;
+  if (timer_idx_map_.find(id) == timer_idx_map_.end())
+    timer_idx_map_[id] = timer_idx_seed_++;
 
-  return trimer_idx_map_[id];
+  return timer_idx_map_[id];
 }
 
 int DVBLinkClient::GetSchedules(ADDON_HANDLE handle, const RecordingList& recordings)

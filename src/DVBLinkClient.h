@@ -194,7 +194,7 @@ private:
   bool no_group_single_rec_;
   P8PLATFORM::CMutex m_comm_mutex;
   std::map<std::string, schedule_desc> schedule_map_;
-  std::map<std::string, unsigned int> trimer_idx_map_;
+  std::map<std::string, unsigned int> timer_idx_map_;
   unsigned int timer_idx_seed_;
 };
 
