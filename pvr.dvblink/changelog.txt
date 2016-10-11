@@ -1,3 +1,6 @@
+[B]Version 3.3.6[/B]
+Fixed: PVR_TIMER.iClientIndex handling bug
+
 [B]Version 3.3.5[/B]
 Fixed: Crash on startup with search timers
 Fixed: Incorrect disk space display if disk size is more than 2TB
