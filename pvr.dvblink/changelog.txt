@@ -1,3 +1,6 @@
+[B]Version 2.2.2[/B]
+Fixed: PVR_TIMER.iClientIndex handling bug
+
 [B]Version 2.2.1[/B]
 Fixed: Did not build
 

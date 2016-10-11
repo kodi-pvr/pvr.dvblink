@@ -80,6 +80,7 @@ DVBLinkClient::DVBLinkClient(CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* p
   favorites_supported_ = false;
   transcoding_supported_ = false;
   transcoding_recordings_supported_ = false;
+  timer_idx_seed_ = PVR_TIMER_NO_CLIENT_INDEX + 10; //arbitrary seed number, greater than PVR_TIMER_NO_CLIENT_INDEX
 
   m_httpClient = new HttpPostClient(XBMC, hostname, port, username, password);
   m_dvblinkRemoteCommunication = DVBLinkRemote::Connect((HttpClient&) *m_httpClient, m_hostname.c_str(), port,
@@ -574,16 +575,12 @@ bool DVBLinkClient::parse_timer_hash(const char* timer_hash, std::string& timer_
   return ret_val;
 }
 
-#define SCHEDULE_ID_OFFSET	10000
-
-static int get_kodi_idx_from_schedule_idx(int schedule_id)
+unsigned int DVBLinkClient::get_kodi_timer_idx_from_dvblink(const std::string& id)
 {
-  return schedule_id + SCHEDULE_ID_OFFSET;
-}
+  if (timer_idx_map_.find(id) == timer_idx_map_.end())
+    timer_idx_map_[id] = timer_idx_seed_++;
 
-static bool is_timer_a_schedule(int idx)
-{
-  return idx >= SCHEDULE_ID_OFFSET ? true : false;
+  return timer_idx_map_[id];
 }
 
 int DVBLinkClient::GetSchedules(ADDON_HANDLE handle, const RecordingList& recordings)
@@ -634,7 +631,7 @@ int DVBLinkClient::GetSchedules(ADDON_HANDLE handle, const RecordingList& record
 
     if (manual_schedules[i]->GetDayMask() != 0)
     {
-      int kodi_idx = get_kodi_idx_from_schedule_idx(total_count);
+      unsigned int kodi_idx = get_kodi_timer_idx_from_dvblink(manual_schedules[i]->GetID());
       schedule_map_[manual_schedules[i]->GetID()] = schedule_desc(kodi_idx, TIMER_CREATED_REPEATING_MANUAL,
           manual_schedules[i]->MarginBefore, manual_schedules[i]->MarginAfter);
 
@@ -673,7 +670,7 @@ int DVBLinkClient::GetSchedules(ADDON_HANDLE handle, const RecordingList& record
 
     if (epg_schedules[i]->Repeat)
     {
-      int kodi_idx = get_kodi_idx_from_schedule_idx(total_count);
+      unsigned int kodi_idx = get_kodi_timer_idx_from_dvblink(epg_schedules[i]->GetID());
       schedule_map_[epg_schedules[i]->GetID()] = schedule_desc(kodi_idx, TIMER_REPEATING_EPG,
           epg_schedules[i]->MarginBefore, epg_schedules[i]->MarginAfter);
 
@@ -716,7 +713,7 @@ int DVBLinkClient::GetSchedules(ADDON_HANDLE handle, const RecordingList& record
   StoredByPatternScheduleList& bp_schedules = response.GetByPatternSchedules();
   for (size_t i = 0; i < bp_schedules.size(); i++)
   {
-    int kodi_idx = get_kodi_idx_from_schedule_idx(total_count);
+    unsigned int kodi_idx = get_kodi_timer_idx_from_dvblink(bp_schedules[i]->GetID());
     schedule_map_[bp_schedules[i]->GetID()] = schedule_desc(kodi_idx, TIMER_CREATED_REPEATING_KEYWORD,
         bp_schedules[i]->MarginBefore, bp_schedules[i]->MarginAfter);
 
@@ -808,15 +805,15 @@ PVR_ERROR DVBLinkClient::GetTimers(ADDON_HANDLE handle)
         break;
         case TIMER_CREATED_REPEATING_MANUAL:
           xbmcTimer.iTimerType = TIMER_ONCE_MANUAL_CHILD;
-          xbmcTimer.iParentClientIndex = schedule_map_[rec->GetScheduleID()].schedule_kodi_idx;
+          xbmcTimer.iParentClientIndex = get_kodi_timer_idx_from_dvblink(rec->GetScheduleID());
         break;
         case TIMER_REPEATING_EPG:
           xbmcTimer.iTimerType = TIMER_ONCE_EPG_CHILD;
-          xbmcTimer.iParentClientIndex = schedule_map_[rec->GetScheduleID()].schedule_kodi_idx;
+          xbmcTimer.iParentClientIndex = get_kodi_timer_idx_from_dvblink(rec->GetScheduleID());
         break;
         case TIMER_CREATED_REPEATING_KEYWORD:
           xbmcTimer.iTimerType = TIMER_ONCE_KEYWORD_CHILD;
-          xbmcTimer.iParentClientIndex = schedule_map_[rec->GetScheduleID()].schedule_kodi_idx;
+          xbmcTimer.iParentClientIndex = get_kodi_timer_idx_from_dvblink(rec->GetScheduleID());
         break;
       }
       //copy margins
@@ -824,8 +821,7 @@ PVR_ERROR DVBLinkClient::GetTimers(ADDON_HANDLE handle)
       xbmcTimer.iMarginEnd = schedule_map_[rec->GetScheduleID()].schedule_margin_after / 60;
     }
 
-    //fake index
-    xbmcTimer.iClientIndex = index;
+    xbmcTimer.iClientIndex = get_kodi_timer_idx_from_dvblink(rec->GetID());
     //misuse strDirectory to keep id of the timer
     std::string timer_hash = make_timer_hash(rec->GetID(), rec->GetScheduleID());
     PVR_STRCPY(xbmcTimer.strDirectory, timer_hash.c_str());
