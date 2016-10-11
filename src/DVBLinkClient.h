@@ -78,7 +78,7 @@ enum dvblink_client_rec_showtype_e
 
 struct schedule_desc
 {
-  schedule_desc(int idx, int type, int margin_before, int margin_after)
+  schedule_desc(unsigned int idx, int type, int margin_before, int margin_after)
   {
     schedule_kodi_idx = idx;
     schedule_kodi_type = type;
@@ -86,11 +86,12 @@ struct schedule_desc
     schedule_margin_after = margin_after;
   }
 
-  schedule_desc()
+  schedule_desc() :
+    schedule_kodi_idx(PVR_TIMER_NO_CLIENT_INDEX), schedule_kodi_type(PVR_TIMER_TYPE_NONE), schedule_margin_before(0), schedule_margin_after(0)
   {
   }
 
-  int schedule_kodi_idx;
+  unsigned int schedule_kodi_idx;
   int schedule_kodi_type;
   int schedule_margin_before;
   int schedule_margin_after;
@@ -148,6 +149,7 @@ private:
 
   std::string make_timer_hash(const std::string& timer_id, const std::string& schedule_id);
   bool parse_timer_hash(const char* timer_hash, std::string& timer_id, std::string& schedule_id);
+  unsigned int get_kodi_timer_idx_from_dvblink(const std::string& id);
 
   virtual void lock()
   {
@@ -192,6 +194,8 @@ private:
   bool no_group_single_rec_;
   PLATFORM::CMutex m_comm_mutex;
   std::map<std::string, schedule_desc> schedule_map_;
+  std::map<std::string, unsigned int> timer_idx_map_;
+  unsigned int timer_idx_seed_;
 };
 
 /*!
