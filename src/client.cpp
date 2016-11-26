@@ -941,7 +941,7 @@ unsigned int GetChannelSwitchDelay(void)
   return 0;
 }
 
-bool SeekTime(int, bool, double*)
+bool SeekTime(double, bool, double*)
 {
   return false;
 }
