@@ -1,3 +1,6 @@
+[B]Version 4.0.0[/B]
+- Initial Kodi v18 version
+
 [B]Version 3.3.6[/B]
 Fixed: PVR_TIMER.iClientIndex handling bug
 
