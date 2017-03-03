@@ -25,7 +25,7 @@
 
 using namespace dvblinkremote;
 
-TranscodedVideoStreamRequest::TranscodedVideoStreamRequest(const std::string& serverAddress, const long channelDvbLinkId, const std::string& clientId, TranscodingOptions& transcodingOptions, const std::string& streamType)
+TranscodedVideoStreamRequest::TranscodedVideoStreamRequest(const std::string& serverAddress, const std::string& channelDvbLinkId, const std::string& clientId, TranscodingOptions& transcodingOptions, const std::string& streamType)
   : m_transcodingOptions(transcodingOptions), StreamRequest(serverAddress, channelDvbLinkId, clientId, streamType)
 { 
 

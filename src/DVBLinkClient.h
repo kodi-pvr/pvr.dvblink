@@ -26,6 +26,9 @@
 #pragma once
 
 #include "p8-platform/os.h"
+#include "p8-platform/threads/threads.h"
+#include "p8-platform/threads/mutex.h"
+#include "p8-platform/util/util.h"
 #include "libdvblinkremote/dvblinkremote.h"
 #include "HttpPostClient.h"
 #include "TimeShiftBuffer.h"
@@ -33,10 +36,8 @@
 #include "libXBMC_addon.h"
 #include "libXBMC_pvr.h"
 #include "libKODI_guilib.h"
+#include "dvblink_connection.h"
 #include "client.h"
-#include "p8-platform/threads/threads.h"
-#include "p8-platform/threads/mutex.h"
-#include "p8-platform/util/util.h"
 #include <map>
 
 #define DVBLINK_BUILD_IN_RECORDER_SOURCE_ID   "8F94B459-EFC0-4D91-9B29-EC3D72E92677"
@@ -97,13 +98,40 @@ struct schedule_desc
   int schedule_margin_after;
 };
 
-class DVBLinkClient: public P8PLATFORM::CThread, public dvblinkremote::DVBLinkRemoteLocker
+struct dvblink_server_caps
+{
+  dvblink_server_caps() :
+    setting_margins_supported_(false),
+    favorites_supported_(false),
+    transcoding_supported_(false),
+    transcoding_recordings_supported_(false),
+    recordings_supported_(false),
+    timeshifting_supported_(false),
+    device_management_supported_(false),
+    timeshift_commands_supported_(false)
+  {}
+
+  std::string server_version_;
+  std::string server_build_;
+  bool setting_margins_supported_;
+  bool favorites_supported_;
+  bool transcoding_supported_;
+  bool transcoding_recordings_supported_;
+  bool recordings_supported_;
+  bool timeshifting_supported_;
+  bool device_management_supported_;
+  bool timeshift_commands_supported_;
+};
+
+class DVBLinkClient: public P8PLATFORM::CThread
 {
 public:
   DVBLinkClient(ADDON::CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* pvr, CHelper_libKODI_guilib* gui,
       std::string clientname, std::string hostname, long port, bool showinfomsg, std::string username,
       std::string password, bool add_episode_to_rec_title, bool group_recordings_by_series, bool no_group_single_rec);
   ~DVBLinkClient(void);
+  const char *GetBackendVersion();
+  void GetAddonCapabilities(PVR_ADDON_CAPABILITIES* pCapabilities);
   int GetChannelsAmount();
   PVR_ERROR GetChannels(ADDON_HANDLE handle, bool bRadio);
   PVR_ERROR GetEPGForChannel(ADDON_HANDLE handle, const PVR_CHANNEL& channel, time_t iStart, time_t iEnd);
@@ -120,10 +148,9 @@ public:
   PVR_ERROR GetChannelGroups(ADDON_HANDLE handle, bool bRadio);
   PVR_ERROR GetChannelGroupMembers(ADDON_HANDLE handle, const PVR_CHANNEL_GROUP &group);
   bool GetStatus();
-  bool StartStreaming(const PVR_CHANNEL &channel, dvblinkremote::StreamRequest* streamRequest, std::string& stream_url);
   bool OpenLiveStream(const PVR_CHANNEL &channel, bool use_timeshift, bool use_transcoder, int width, int height,
-      int bitrate, std::string audiotrack);
-  void StopStreaming(bool bUseChlHandle);
+      int bitrate, const std::string& audiotrack);
+  void StopStreaming();
   int GetCurrentChannelId();
   void GetDriveSpace(long long *iTotal, long long *iUsed);
   long long SeekLiveStream(long long iPosition, int iWhence);
@@ -146,36 +173,24 @@ private:
   virtual void * Process(void);
   bool get_dvblink_program_id(std::string& channelId, int start_time, std::string& dvblink_program_id);
   int GetSchedules(ADDON_HANDLE handle, const dvblinkremote::RecordingList& recordings);
+  void get_server_caps();
 
   std::string make_timer_hash(const std::string& timer_id, const std::string& schedule_id);
   bool parse_timer_hash(const char* timer_hash, std::string& timer_id, std::string& schedule_id);
   unsigned int get_kodi_timer_idx_from_dvblink(const std::string& id);
+  bool is_valid_ch_idx(int ch_idx);
 
-  virtual void lock()
-  {
-    m_comm_mutex.Lock();
-  }
-
-  virtual void unlock()
-  {
-    m_comm_mutex.Unlock();
-  }
-
-  HttpPostClient* m_httpClient;
-  dvblinkremote::IDVBLinkRemoteConnection* m_dvblinkRemoteCommunication;
   bool m_connected;
-  std::map<int, dvblinkremote::Channel *> m_channelMap;
-  dvblinkremote::Stream * m_stream;
+  dvblinkremote::ChannelList m_channels;
   int m_currentChannelId;
-  dvblinkremote::ChannelList* m_channels;
   long m_timerCount;
   long m_recordingCount;
   P8PLATFORM::CMutex m_mutex;
+  P8PLATFORM::CMutex live_mutex_;
   CHelper_libXBMC_pvr *PVR;
   ADDON::CHelper_libXBMC_addon *XBMC;
   CHelper_libKODI_guilib *GUI;
-  std::string m_clientname;
-  std::string m_hostname;
+  server_connection_properties connection_props_;
   LiveStreamerBase* m_live_streamer;
   bool m_add_episode_to_rec_title;
   bool m_group_recordings_by_series;
@@ -185,14 +200,10 @@ private:
   std::string m_recordingsid_by_date;
   std::string m_recordingsid_by_series;
   recording_id_to_url_map_t m_recording_id_to_url_map;
-  bool setting_margins_supported_;
-  bool favorites_supported_;
-  bool transcoding_supported_;
-  bool transcoding_recordings_supported_;
+  dvblink_server_caps server_caps_;
   dvblinkremote::ChannelFavorites channel_favorites_;
   std::map<std::string, int> inverse_channel_map_;
   bool no_group_single_rec_;
-  P8PLATFORM::CMutex m_comm_mutex;
   std::map<std::string, schedule_desc> schedule_map_;
   std::map<std::string, unsigned int> timer_idx_map_;
   unsigned int timer_idx_seed_;

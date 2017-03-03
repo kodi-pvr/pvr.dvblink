@@ -467,15 +467,15 @@ const char* GetMininumGUIAPIVersion(void)
 
 PVR_ERROR GetAddonCapabilities(PVR_ADDON_CAPABILITIES* pCapabilities)
 {
-  pCapabilities->bSupportsEPG = true;
-  pCapabilities->bSupportsRecordings = true;
-  pCapabilities->bSupportsRecordingsUndelete = false;
-  pCapabilities->bSupportsTimers = true;
-  pCapabilities->bSupportsTV = true;
-  pCapabilities->bSupportsRadio = true;
-  pCapabilities->bHandlesInputStream = true;
-  pCapabilities->bSupportsChannelGroups = true;
-  return PVR_ERROR_NO_ERROR;
+  if (dvblinkclient)
+  {
+    if (dvblinkclient->GetStatus())
+    {
+      dvblinkclient->GetAddonCapabilities(pCapabilities);
+      return PVR_ERROR_NO_ERROR;
+    }
+  }
+  return PVR_ERROR_SERVER_ERROR;
 }
 
 const char *GetBackendName(void)
@@ -486,8 +486,14 @@ const char *GetBackendName(void)
 
 const char *GetBackendVersion(void)
 {
-  static const char * strBackendVersion = "5.x";
-  return strBackendVersion;
+  if (dvblinkclient)
+  {
+    if (dvblinkclient->GetStatus())
+    {
+      return dvblinkclient->GetBackendVersion();
+    }
+  }
+  return "";
 }
 
 const char *GetConnectionString(void)
@@ -568,7 +574,7 @@ bool OpenLiveStream(const PVR_CHANNEL &channel)
 void CloseLiveStream(void)
 {
   if (dvblinkclient)
-    dvblinkclient->StopStreaming(true);
+    dvblinkclient->StopStreaming();
 }
 
 const char * GetLiveStreamURL(const PVR_CHANNEL &channel)
@@ -644,7 +650,7 @@ static bool dvblink_is_live()
 {
   if (dvblinkclient)
   {
-    return (dvblinkclient->GetBufferTimeEnd() - dvblinkclient->GetPlayingTime()) < 3; //add a margin of 3 seconds to the definition of "live"
+    return (dvblinkclient->GetBufferTimeEnd() - dvblinkclient->GetPlayingTime()) < 10; //add a margin of 10 seconds to the definition of "live"
   }
   return true;
 }

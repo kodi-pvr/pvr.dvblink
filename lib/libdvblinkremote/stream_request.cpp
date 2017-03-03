@@ -28,7 +28,7 @@
 using namespace dvblinkremote;
 using namespace dvblinkremoteserialization;
 
-StreamRequest::StreamRequest(const std::string& serverAddress, const long dvbLinkChannelId, const std::string& clientId, const std::string& streamType)
+StreamRequest::StreamRequest(const std::string& serverAddress, const std::string& dvbLinkChannelId, const std::string& clientId, const std::string& streamType)
   : m_serverAddress(serverAddress), 
     m_dvbLinkChannelId(dvbLinkChannelId), 
     m_clientId(clientId), 
@@ -47,7 +47,7 @@ std::string& StreamRequest::GetServerAddress()
   return m_serverAddress; 
 }
 
-long StreamRequest::GetDVBLinkChannelID() 
+std::string& StreamRequest::GetDVBLinkChannelID() 
 { 
   return m_dvbLinkChannelId; 
 }
@@ -62,7 +62,7 @@ std::string& StreamRequest::GetStreamType()
   return m_streamType; 
 }
 
-RawHttpStreamRequest::RawHttpStreamRequest(const std::string& serverAddress, const long channelDvbLinkId, const std::string& clientId)
+RawHttpStreamRequest::RawHttpStreamRequest(const std::string& serverAddress, const std::string& channelDvbLinkId, const std::string& clientId)
   : StreamRequest(serverAddress, channelDvbLinkId, clientId, DVBLINK_REMOTE_STREAM_TYPE_RAW_HTTP)
 {
 
@@ -73,7 +73,7 @@ RawHttpStreamRequest::~RawHttpStreamRequest()
 
 }
 
-RawHttpTimeshiftStreamRequest::RawHttpTimeshiftStreamRequest(const std::string& serverAddress, const long channelDvbLinkId, const std::string& clientId)
+RawHttpTimeshiftStreamRequest::RawHttpTimeshiftStreamRequest(const std::string& serverAddress, const std::string& channelDvbLinkId, const std::string& clientId)
   : StreamRequest(serverAddress, channelDvbLinkId, clientId, DVBLINK_REMOTE_STREAM_TYPE_RAW_HTTP_TIMESHIFT)
 {
 
@@ -84,7 +84,7 @@ RawHttpTimeshiftStreamRequest::~RawHttpTimeshiftStreamRequest()
 
 }
 
-RawUdpStreamRequest::RawUdpStreamRequest(const std::string& serverAddress, const long channelDvbLinkId, const std::string& clientId, const std::string& clientAddress, const unsigned short int streamingPort)
+RawUdpStreamRequest::RawUdpStreamRequest(const std::string& serverAddress, const std::string& channelDvbLinkId, const std::string& clientId, const std::string& clientAddress, const unsigned short int streamingPort)
   : m_clientAddress(clientAddress), m_streamingPort(streamingPort), StreamRequest(serverAddress, channelDvbLinkId, clientId, DVBLINK_REMOTE_STREAM_TYPE_RAW_UDP)
 { }
 
@@ -103,7 +103,7 @@ long RawUdpStreamRequest::GetStreamingPort()
   return m_streamingPort; 
 }
 
-MP4StreamRequest::MP4StreamRequest(const std::string& serverAddress, const long channelDvbLinkId, const std::string& clientId, TranscodingOptions& transcodingOptions)
+MP4StreamRequest::MP4StreamRequest(const std::string& serverAddress, const std::string& channelDvbLinkId, const std::string& clientId, TranscodingOptions& transcodingOptions)
 	: TranscodedVideoStreamRequest(serverAddress, channelDvbLinkId, clientId, transcodingOptions, DVBLINK_REMOTE_STREAM_TYPE_MP4)
 {
 
@@ -114,7 +114,7 @@ MP4StreamRequest::~MP4StreamRequest()
 
 }
 
-H264TSStreamRequest::H264TSStreamRequest(const std::string& serverAddress, const long channelDvbLinkId, const std::string& clientId, TranscodingOptions& transcodingOptions)
+H264TSStreamRequest::H264TSStreamRequest(const std::string& serverAddress, const std::string& channelDvbLinkId, const std::string& clientId, TranscodingOptions& transcodingOptions)
     : TranscodedVideoStreamRequest(serverAddress, channelDvbLinkId, clientId, transcodingOptions, DVBLINK_REMOTE_STREAM_TYPE_H264TS)
 {
 
@@ -125,7 +125,7 @@ H264TSStreamRequest::~H264TSStreamRequest()
 
 }
 
-H264TSTimeshiftStreamRequest::H264TSTimeshiftStreamRequest(const std::string& serverAddress, const long channelDvbLinkId, const std::string& clientId, TranscodingOptions& transcodingOptions)
+H264TSTimeshiftStreamRequest::H264TSTimeshiftStreamRequest(const std::string& serverAddress, const std::string& channelDvbLinkId, const std::string& clientId, TranscodingOptions& transcodingOptions)
     : TranscodedVideoStreamRequest(serverAddress, channelDvbLinkId, clientId, transcodingOptions, DVBLINK_REMOTE_STREAM_TYPE_H264TS_HTTP_TIMESHIFT)
 {
 
@@ -136,7 +136,7 @@ H264TSTimeshiftStreamRequest::~H264TSTimeshiftStreamRequest()
 
 }
 
-HttpLiveStreamRequest::HttpLiveStreamRequest(const std::string& serverAddress, const long channelDvbLinkId, const std::string& clientId, TranscodingOptions& transcodingOptions)
+HttpLiveStreamRequest::HttpLiveStreamRequest(const std::string& serverAddress, const std::string& channelDvbLinkId, const std::string& clientId, TranscodingOptions& transcodingOptions)
   : TranscodedVideoStreamRequest(serverAddress, channelDvbLinkId, clientId, transcodingOptions, DVBLINK_REMOTE_STREAM_TYPE_IPHONE)
 { 
 
@@ -147,7 +147,7 @@ HttpLiveStreamRequest::~HttpLiveStreamRequest()
 
 }
 
-RealTimeTransportProtocolStreamRequest::RealTimeTransportProtocolStreamRequest(const std::string& serverAddress, const long channelDvbLinkId, const std::string& clientId, TranscodingOptions& transcodingOptions)
+RealTimeTransportProtocolStreamRequest::RealTimeTransportProtocolStreamRequest(const std::string& serverAddress, const std::string& channelDvbLinkId, const std::string& clientId, TranscodingOptions& transcodingOptions)
   : TranscodedVideoStreamRequest(serverAddress, channelDvbLinkId, clientId, transcodingOptions, DVBLINK_REMOTE_STREAM_TYPE_ANDROID)
 { 
 
@@ -158,7 +158,7 @@ RealTimeTransportProtocolStreamRequest::~RealTimeTransportProtocolStreamRequest(
 
 }
 
-WindowsMediaStreamRequest::WindowsMediaStreamRequest(const std::string& serverAddress, const long channelDvbLinkId, const std::string& clientId, TranscodingOptions& transcodingOptions)
+WindowsMediaStreamRequest::WindowsMediaStreamRequest(const std::string& serverAddress, const std::string& channelDvbLinkId, const std::string& clientId, TranscodingOptions& transcodingOptions)
   : TranscodedVideoStreamRequest(serverAddress, channelDvbLinkId, clientId, transcodingOptions, DVBLINK_REMOTE_STREAM_TYPE_WINPHONE)
 { 
   
