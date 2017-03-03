@@ -197,6 +197,16 @@ namespace dvblinkremote
   const std::string DVBLINK_REMOTE_GET_SERVER_INFO_CMD = "get_server_info";
 
   /**
+  * A constant string representing the DVBLink command for getting timeshift statistics.
+  */
+  const std::string DVBLINK_REMOTE_GET_TIMESHIFT_STATS_CMD = "timeshift_get_stats";
+
+  /**
+  * A constant string representing the DVBLink command for timeshift seek.
+  */
+  const std::string DVBLINK_REMOTE_TIMESHIFT_SEEK_CMD = "timeshift_seek";
+
+  /**
     * A constant string representing a Real Time Transport Protocol stream type for Android devices.
     */
   const std::string DVBLINK_REMOTE_STREAM_TYPE_ANDROID = "rtp";
@@ -487,6 +497,21 @@ namespace dvblinkremote
     * @return                   A DVBLinkRemoteStatusCode representing the status of the executed method.
     */
     virtual DVBLinkRemoteStatusCode GetServerInfo(const GetServerInfoRequest& request, ServerInfo& response, std::string* err_str) = 0;
+
+    /**
+    * Gets timeshift buffer statistics for a playing stream
+    * @param[in]      request   A constant GetTimeshiftStatsRequest reference representing the playing channel handle.
+    * @param[in,out]  response  A TimeshiftStats reference that will be populated with timeshift stats.
+    * @return                   A DVBLinkRemoteStatusCode representing the status of the executed method.
+    */
+    virtual DVBLinkRemoteStatusCode GetTimeshiftStats(const GetTimeshiftStatsRequest& request, TimeshiftStats& response, std::string* err_str) = 0;
+
+    /**
+    * Seeks in timeshift buffer for a playing stream
+    * @param[in]      request   A constant TimeshiftSeekRequest reference representing timeshift seek parameters.
+    * @return                   A DVBLinkRemoteStatusCode representing the status of the executed method.
+    */
+    virtual DVBLinkRemoteStatusCode TimeshiftSeek(const TimeshiftSeekRequest& request, std::string* err_str) = 0;
 
     /**
       * Gets a description of the last occured error.

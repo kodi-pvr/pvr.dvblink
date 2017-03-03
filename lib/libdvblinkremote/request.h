@@ -206,14 +206,14 @@ namespace dvblinkremote {
     /**
       * Initializes a new instance of the dvblinkremote::StreamRequest class.
       * @param serverAddress a constant string reference representing the DVBLink server address.
-      * @param dvbLinkChannelId a constant long representing the DVBLink channel identifier.
+      * @param dvbLinkChannelId a constant string representing the DVBLink channel identifier.
       * @param clientId a constant string reference representing the unique identification string of the client. 
       * @param streamType a constant string reference representing the stream type for the stream request. 
       * \remark \p serverAddress is the IP address/server network name of the DVBLink server. 
       * \remark \p clientId should be the same across all DVBLink Client API calls from a given client. 
       * It can be a uuid for example or id/mac of the client device.
       */
-    StreamRequest(const std::string& serverAddress, const long dvbLinkChannelId, const std::string& clientId, const std::string& streamType);
+    StreamRequest(const std::string& serverAddress, const std::string& dvbLinkChannelId, const std::string& clientId, const std::string& streamType);
 
     /**
       * Pure virtual destructor for cleaning up allocated memory.
@@ -231,7 +231,7 @@ namespace dvblinkremote {
       * Gets the DVBLink channel identifier for the stream request.
       * @return Stream request channel identifier
       */
-    long GetDVBLinkChannelID();
+    std::string& GetDVBLinkChannelID();
 
     /**
       * Gets the unique identification string of the client for the stream request.
@@ -259,7 +259,7 @@ namespace dvblinkremote {
     /**
       * DVBLink channel identifier.
       */
-    long m_dvbLinkChannelId;
+    std::string m_dvbLinkChannelId;
 
     /**
       * The unique identification string of the client.
@@ -381,7 +381,7 @@ namespace dvblinkremote {
     /**
       * Initializes a new instance of the dvblinkremote::TranscodedVideoStreamRequest class.
       * @param serverAddress a constant string reference representing the DVBLink server address.
-      * @param dvbLinkChannelId a constant long representing the DVBLink channel identifier.
+      * @param dvbLinkChannelId a constant string representing the DVBLink channel identifier.
       * @param clientId a constant string reference representing the unique identification string of the client. 
       * @param transcodingOptions a dvblinkremote::TranscodingOptions instance reference representing the transcoding options
       * of the stream request. 
@@ -390,7 +390,7 @@ namespace dvblinkremote {
       * \remark \p clientId should be the same across all DVBLink Client API calls from a given client. 
       * It can be a uuid for example or id/mac of the client device.
       */
-    TranscodedVideoStreamRequest(const std::string& serverAddress, const long dvbLinkChannelId, const std::string& clientId, TranscodingOptions& transcodingOptions, const std::string& streamType);
+    TranscodedVideoStreamRequest(const std::string& serverAddress, const std::string& dvbLinkChannelId, const std::string& clientId, TranscodingOptions& transcodingOptions, const std::string& streamType);
 
     /**
       * Destructor for cleaning up allocated memory.
@@ -421,7 +421,7 @@ namespace dvblinkremote {
     /**
       * Initializes a new instance of the dvblinkremote::RealTimeTransportProtocolStreamRequest class.
       * @param serverAddress a constant string reference representing the DVBLink server address.
-      * @param dvbLinkChannelId a constant long representing the DVBLink channel identifier.
+      * @param dvbLinkChannelId a constant string representing the DVBLink channel identifier.
       * @param clientId a constant string reference representing the unique identification string of the client. 
       * @param transcodingOptions a dvblinkremote::TranscodingOptions instance reference representing the transcoding options
       * of the stream request. 
@@ -429,7 +429,7 @@ namespace dvblinkremote {
       * \remark \p clientId should be the same across all DVBLink Client API calls from a given client. 
       * It can be a uuid for example or id/mac of the client device.
       */
-    RealTimeTransportProtocolStreamRequest(const std::string& serverAddress, const long dvbLinkChannelId, const std::string& clientId, TranscodingOptions& transcodingOptions);
+    RealTimeTransportProtocolStreamRequest(const std::string& serverAddress, const std::string& dvbLinkChannelId, const std::string& clientId, TranscodingOptions& transcodingOptions);
 
     /**
       * Destructor for cleaning up allocated memory.
@@ -448,7 +448,7 @@ namespace dvblinkremote {
 	  /**
 	  * Initializes a new instance of the dvblinkremote::MP4StreamRequest class.
 	  * @param serverAddress a constant string reference representing the DVBLink server address.
-	  * @param dvbLinkChannelId a constant long representing the DVBLink channel identifier.
+	  * @param dvbLinkChannelId a constant string representing the DVBLink channel identifier.
 	  * @param clientId a constant string reference representing the unique identification string of the client.
 	  * @param transcodingOptions a dvblinkremote::TranscodingOptions instance reference representing the transcoding options
 	  * of the stream request.
@@ -456,7 +456,7 @@ namespace dvblinkremote {
 	  * \remark \p clientId should be the same across all DVBLink Client API calls from a given client.
 	  * It can be a uuid for example or id/mac of the client device.
 	  */
-	  MP4StreamRequest(const std::string& serverAddress, const long dvbLinkChannelId, const std::string& clientId, TranscodingOptions& transcodingOptions);
+	  MP4StreamRequest(const std::string& serverAddress, const std::string& dvbLinkChannelId, const std::string& clientId, TranscodingOptions& transcodingOptions);
 
 	  /**
 	  * Destructor for cleaning up allocated memory.
@@ -475,7 +475,7 @@ namespace dvblinkremote {
       /**
       * Initializes a new instance of the dvblinkremote::H264TSStreamRequest class.
       * @param serverAddress a constant string reference representing the DVBLink server address.
-      * @param dvbLinkChannelId a constant long representing the DVBLink channel identifier.
+      * @param dvbLinkChannelId a constant string representing the DVBLink channel identifier.
       * @param clientId a constant string reference representing the unique identification string of the client.
       * @param transcodingOptions a dvblinkremote::TranscodingOptions instance reference representing the transcoding options
       * of the stream request.
@@ -483,7 +483,7 @@ namespace dvblinkremote {
       * \remark \p clientId should be the same across all DVBLink Client API calls from a given client.
       * It can be a uuid for example or id/mac of the client device.
       */
-      H264TSStreamRequest(const std::string& serverAddress, const long dvbLinkChannelId, const std::string& clientId, TranscodingOptions& transcodingOptions);
+      H264TSStreamRequest(const std::string& serverAddress, const std::string& dvbLinkChannelId, const std::string& clientId, TranscodingOptions& transcodingOptions);
 
       /**
       * Destructor for cleaning up allocated memory.
@@ -502,7 +502,7 @@ namespace dvblinkremote {
       /**
       * Initializes a new instance of the dvblinkremote::H264TSStreamRequest class.
       * @param serverAddress a constant string reference representing the DVBLink server address.
-      * @param dvbLinkChannelId a constant long representing the DVBLink channel identifier.
+      * @param dvbLinkChannelId a constant string representing the DVBLink channel identifier.
       * @param clientId a constant string reference representing the unique identification string of the client.
       * @param transcodingOptions a dvblinkremote::TranscodingOptions instance reference representing the transcoding options
       * of the stream request.
@@ -510,7 +510,7 @@ namespace dvblinkremote {
       * \remark \p clientId should be the same across all DVBLink Client API calls from a given client.
       * It can be a uuid for example or id/mac of the client device.
       */
-      H264TSTimeshiftStreamRequest(const std::string& serverAddress, const long dvbLinkChannelId, const std::string& clientId, TranscodingOptions& transcodingOptions);
+      H264TSTimeshiftStreamRequest(const std::string& serverAddress, const std::string& dvbLinkChannelId, const std::string& clientId, TranscodingOptions& transcodingOptions);
 
       /**
       * Destructor for cleaning up allocated memory.
@@ -529,7 +529,7 @@ namespace dvblinkremote {
     /**
       * Initializes a new instance of the dvblinkremote::HttpLiveStreamRequest class.
       * @param serverAddress a constant string reference representing the DVBLink server address.
-      * @param dvbLinkChannelId a constant long representing the DVBLink channel identifier.
+      * @param dvbLinkChannelId a constant string representing the DVBLink channel identifier.
       * @param clientId a constant string reference representing the unique identification string of the client. 
       * @param transcodingOptions a dvblinkremote::TranscodingOptions instance reference representing the transcoding options 
       * of the stream request. 
@@ -537,7 +537,7 @@ namespace dvblinkremote {
       * \remark \p clientId should be the same across all DVBLink Client API calls from a given client. 
       * It can be a uuid for example or id/mac of the client device.
       */
-    HttpLiveStreamRequest(const std::string& serverAddress, const long dvbLinkChannelId, const std::string& clientId, TranscodingOptions& transcodingOptions);
+    HttpLiveStreamRequest(const std::string& serverAddress, const std::string& dvbLinkChannelId, const std::string& clientId, TranscodingOptions& transcodingOptions);
 
     /**
       * Destructor for cleaning up allocated memory.
@@ -556,7 +556,7 @@ namespace dvblinkremote {
     /**
       * Initializes a new instance of the dvblinkremote::WindowsMediaStreamRequest class.
       * @param serverAddress a constant string reference representing the DVBLink server address.
-      * @param dvbLinkChannelId a constant long representing the DVBLink channel identifier.
+      * @param dvbLinkChannelId a constant string representing the DVBLink channel identifier.
       * @param clientId a constant string reference representing the unique identification string of the client. 
       * @param transcodingOptions a dvblinkremote::TranscodingOptions instance reference representing the transcoding options
       * of the stream request. 
@@ -564,7 +564,7 @@ namespace dvblinkremote {
       * \remark \p clientId should be the same across all DVBLink Client API calls from a given client. 
       * It can be a uuid for example or id/mac of the client device.
       */
-    WindowsMediaStreamRequest(const std::string& serverAddress, const long dvbLinkChannelId, const std::string& clientId, TranscodingOptions& transcodingOptions);
+    WindowsMediaStreamRequest(const std::string& serverAddress, const std::string& dvbLinkChannelId, const std::string& clientId, TranscodingOptions& transcodingOptions);
 
     /**
       * Destructor for cleaning up allocated memory.
@@ -583,13 +583,13 @@ namespace dvblinkremote {
     /**
       * Initializes a new instance of the dvblinkremote::RawHttpStreamRequest class.
       * @param serverAddress a constant string reference representing the DVBLink server address.
-      * @param dvbLinkChannelId a constant long representing the DVBLink channel identifier.
+      * @param dvbLinkChannelId a constant string representing the DVBLink channel identifier.
       * @param clientId a constant string reference representing the unique identification string of the client. 
       * \remark \p serverAddress is the IP address/server network name of the DVBLink server. 
       * \remark \p clientId should be the same across all DVBLink Client API calls from a given client. 
       * It can be a uuid for example or id/mac of the client device.
       */
-    RawHttpStreamRequest(const std::string& serverAddress, const long dvbLinkChannelId, const std::string& clientId);
+    RawHttpStreamRequest(const std::string& serverAddress, const std::string& dvbLinkChannelId, const std::string& clientId);
 
     /**
       * Destructor for cleaning up allocated memory.
@@ -608,13 +608,13 @@ namespace dvblinkremote {
     /**
       * Initializes a new instance of the dvblinkremote::RawHttpStreamRequest class.
       * @param serverAddress a constant string reference representing the DVBLink server address.
-      * @param dvbLinkChannelId a constant long representing the DVBLink channel identifier.
+      * @param dvbLinkChannelId a constant string representing the DVBLink channel identifier.
       * @param clientId a constant string reference representing the unique identification string of the client. 
       * \remark \p serverAddress is the IP address/server network name of the DVBLink server. 
       * \remark \p clientId should be the same across all DVBLink Client API calls from a given client. 
       * It can be a uuid for example or id/mac of the client device.
       */
-    RawHttpTimeshiftStreamRequest(const std::string& serverAddress, const long dvbLinkChannelId, const std::string& clientId);
+    RawHttpTimeshiftStreamRequest(const std::string& serverAddress, const std::string& dvbLinkChannelId, const std::string& clientId);
 
     /**
       * Destructor for cleaning up allocated memory.
@@ -633,7 +633,7 @@ namespace dvblinkremote {
     /**
       * Initializes a new instance of the dvblinkremote::RawUdpStreamRequest class.
       * @param serverAddress a constant string reference representing the DVBLink server address.
-      * @param dvbLinkChannelId a constant long representing the DVBLink channel identifier.
+      * @param dvbLinkChannelId a constant string representing the DVBLink channel identifier.
       * @param clientId a constant string reference representing the unique identification string of the client. 
       * @param clientAddress a constant string reference representing the client address.
       * @param streamingPort a constant unsigned short representing the streaming port.
@@ -641,7 +641,7 @@ namespace dvblinkremote {
       * \remark \p clientId should be the same across all DVBLink Client API calls from a given client. 
       * It can be a uuid for example or id/mac of the client device.
       */
-    RawUdpStreamRequest(const std::string& serverAddress, const long dvbLinkChannelId, const std::string& clientId, const std::string& clientAddress, const unsigned short int streamingPort);
+    RawUdpStreamRequest(const std::string& serverAddress, const std::string& dvbLinkChannelId, const std::string& clientId, const std::string& clientAddress, const unsigned short int streamingPort);
 
     /**
       * Destructor for cleaning up allocated memory.
@@ -1395,4 +1395,88 @@ namespace dvblinkremote {
         */
         ~GetServerInfoRequest();
     };
+
+    /**
+    * Class for timeshift stats request.
+    * This is used as input parameter for the IDVBLinkRemoteConnection::GetTimeshiftStats method.
+    * @see IDVBLinkRemoteConnection::GetTimeshiftStats()
+    */
+    class GetTimeshiftStatsRequest : public Request
+    {
+    public:
+      /**
+      * Initializes a new instance of the dvblinkremote::GetTimeshiftStatsRequest class.
+      * @param channelHandle a constant long representing the channel handle of an
+      * existing playing timeshifted stream.
+      * @see dvblinkremote::StreamRequest() for information about the channel handle.
+      */
+      GetTimeshiftStatsRequest(long channelHandle);
+
+      /**
+      * Destructor for cleaning up allocated memory.
+      */
+      ~GetTimeshiftStatsRequest();
+
+      /**
+      * Gets the channel handle.
+      * @return Channel handle
+      */
+      long GetChannelHandle();
+
+    private:
+      /**
+      * The channel handle to obtain the timeshift stats for.
+      */
+      long m_channelHandle;
+    };
+
+    /**
+    * Class for timeshift seek request.
+    * This is used as input parameter for the IDVBLinkRemoteConnection::TimeshiftSeek method.
+    * @see IDVBLinkRemoteConnection::TimeshiftSeek()
+    */
+    class TimeshiftSeekRequest : public Request
+    {
+    public:
+      /**
+      * Initializes a new instance of the dvblinkremote::TimeshiftSeekRequest class.
+      * @param channelHandle a constant long representing the channel handle of an
+      * existing playing timeshifted stream.
+      * @see dvblinkremote::StreamRequest() for information about the channel handle.
+      * @param byBytes type of seek operation: true - by bytes, false - by time
+      * @param offset offset in bytes (for seek by bytes) or in seconds (for seek by time). 
+      * Offset may be negative value and is calculated from a position, given by whence parameter.
+      * @param whence 0 - offset is calculated from the beginning of the timeshift buffer, 
+      * 1 - offset is calculated from the current playback position, 
+      * 2 - offset is calculated from the end of the timeshift buffer
+      */
+      TimeshiftSeekRequest(long channelHandle, bool byBytes, long long offset, long whence);
+
+      /**
+      * Destructor for cleaning up allocated memory.
+      */
+      ~TimeshiftSeekRequest();
+
+      /**
+      * The channel handle.
+      */
+      long m_channelHandle;
+
+      /**
+      * Seel type: 0 - by bytes, 1 - by time
+      */
+      long m_seekTypeSwitch;
+
+      /**
+      * Seek offset.
+      */
+      long long m_offset;
+
+      /**
+      * Seek origin.
+      */
+      long m_whence;
+
+    };
+
 }
