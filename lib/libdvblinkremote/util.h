@@ -38,6 +38,7 @@ namespace dvblinkremote {
     static bool ConvertToString(const int& value, std::string&);
     static bool ConvertToString(const unsigned int& value, std::string&);
     static bool ConvertToString(const long& value, std::string&);
+    static bool ConvertToString(const long long& value, std::string&);
     static bool ConvertToString(const bool& value, std::string&);
     static tinyxml2::XMLElement* CreateXmlElementWithText(tinyxml2::XMLDocument* xmlDocument, const char* elementName, const char* value);
     static tinyxml2::XMLElement* CreateXmlElementWithText(tinyxml2::XMLDocument* xmlDocument, const char* elementName, const std::string& value);
@@ -45,6 +46,7 @@ namespace dvblinkremote {
     static tinyxml2::XMLElement* CreateXmlElementWithText(tinyxml2::XMLDocument* xmlDocument, const char* elementName, unsigned int value);
     static tinyxml2::XMLElement* CreateXmlElementWithText(tinyxml2::XMLDocument* xmlDocument, const char* elementName, long value);
     static tinyxml2::XMLElement* CreateXmlElementWithText(tinyxml2::XMLDocument* xmlDocument, const char* elementName, bool value);
+    static tinyxml2::XMLElement* CreateXmlElementWithText(tinyxml2::XMLDocument* xmlDocument, const char* elementName, long long value);
     static const char* GetXmlFirstChildElementText(const tinyxml2::XMLElement* parentElement, const char* name);
     static int GetXmlFirstChildElementTextAsInt(const tinyxml2::XMLElement* parentElement, const char* name);
     static long GetXmlFirstChildElementTextAsLong(const tinyxml2::XMLElement* parentElement, const char* name);

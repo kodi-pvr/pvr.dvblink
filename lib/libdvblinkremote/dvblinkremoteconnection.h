@@ -66,6 +66,8 @@ namespace dvblinkremote
     DVBLinkRemoteStatusCode SetRecordingSettings(const SetRecordingSettingsRequest& request, std::string* err_str);
     DVBLinkRemoteStatusCode GetFavorites(const GetFavoritesRequest& request, ChannelFavorites& response, std::string* err_str);
     DVBLinkRemoteStatusCode GetServerInfo(const GetServerInfoRequest& request, ServerInfo& response, std::string* err_str);
+    DVBLinkRemoteStatusCode GetTimeshiftStats(const GetTimeshiftStatsRequest& request, TimeshiftStats& response, std::string* err_str);
+    DVBLinkRemoteStatusCode TimeshiftSeek(const TimeshiftSeekRequest& request, std::string* err_str);
 
   private:
     dvblinkremotehttp::HttpClient& m_httpClient;

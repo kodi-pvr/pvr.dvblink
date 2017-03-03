@@ -24,26 +24,10 @@
 
 #include "HttpPostClient.h"
 #include "base64.h"
+#include "p8-platform/sockets/tcp.h"
 
 using namespace dvblinkremotehttp;
 using namespace ADDON;
-
-#ifdef TARGET_WINDOWS
-#pragma warning(disable:4005) // Disable "warning C4005: '_WINSOCKAPI_' : macro redefinition"
-#include <winsock2.h>
-#pragma warning(default:4005)
-#define close(s) closesocket(s)
-#else
-#include <unistd.h>
-#include <netdb.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netinet/ip.h>
-#endif
-
-#define SEND_RQ(MSG) \
-  /*cout<<send_str;*/ \
-  send(sock,MSG,strlen(MSG),0);
 
 /* Converts a hex character to its integer value */
 char from_hex(char ch)
@@ -94,7 +78,7 @@ int HttpPostClient::SendPostRequest(HttpWebRequest& request)
   std::string message;
   char content_header[100];
 
-  buffer.append("POST /cs/ HTTP/1.0\r\n");
+  buffer.append("POST /mobile/ HTTP/1.0\r\n");
   sprintf(content_header, "Host: %s:%d\r\n", m_server.c_str(), (int) m_serverport);
   buffer.append(content_header);
   buffer.append("Content-Type: application/x-www-form-urlencoded\r\n");
@@ -110,44 +94,31 @@ int HttpPostClient::SendPostRequest(HttpWebRequest& request)
   buffer.append("\r\n");
   buffer.append(request.GetRequestData());
 
-#ifdef TARGET_WINDOWS
-  {
-    WSADATA WsaData;
-    WSAStartup(0x0101, &WsaData);
-  }
-#endif
+  P8PLATFORM::CTcpSocket sock(m_server.c_str(), (unsigned short) m_serverport);
 
-  sockaddr_in sin;
-  int sock = socket(AF_INET, SOCK_STREAM, 0);
-  if (sock == -1)
-  {
-    return -100;
-  }
-  sin.sin_family = AF_INET;
-  sin.sin_port = htons((unsigned short) m_serverport);
-
-  struct hostent * host_addr = gethostbyname(m_server.c_str());
-  if (host_addr == NULL)
-  {
-    return -103;
-  }
-  sin.sin_addr.s_addr = *((int*) *host_addr->h_addr_list);
-
-  if (connect(sock, (const struct sockaddr *) &sin, sizeof(sockaddr_in)) == -1)
+  int connect_timeout_ms = 15*1000; //15 seconds
+  if (!sock.Open(connect_timeout_ms))
   {
     return -101;
   }
 
-  SEND_RQ(buffer.c_str());
+  ssize_t written_length = sock.Write((void*)buffer.c_str(), buffer.length());
 
+  if (written_length != buffer.length())
+  {
+    sock.Shutdown();
+    return -102;
+  }
+
+  int read_timeout_ms = 30 * 1000; //30 seconds
   const int read_buffer_size = 4096;
   char read_buffer[read_buffer_size];
-  int read_size = 0;
+  ssize_t read_size = 0;
   std::string response;
-  while ((read_size = recv(sock, read_buffer, read_buffer_size, 0)) > 0)
+  while ((read_size = sock.Read(read_buffer, read_buffer_size, read_timeout_ms)) > 0)
     response.append(read_buffer, read_buffer + read_size);
 
-  close(sock);
+  sock.Shutdown();
 
   if (response.size() > 0)
   {
