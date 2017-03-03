@@ -27,6 +27,7 @@ SET(SOURCES channel.cpp
             stream.cpp
             streaming_capabilities.cpp
             stream_request.cpp
+            timeshift.cpp
             transcoded_video_stream_request.cpp
             transcoding_options.cpp
             util.cpp

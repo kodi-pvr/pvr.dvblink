@@ -36,13 +36,20 @@ GetStreamingCapabilitiesRequest::~GetStreamingCapabilitiesRequest()
 
 StreamingCapabilities::StreamingCapabilities() 
   : SupportedProtocols(0),
-    SupportedTranscoders(0)
+    SupportedTranscoders(0),
+    SupportsRecording(false),
+    SupportsTimeShifting(false),
+    SupportsDeviceManagement(false)
+
 { }
 
 StreamingCapabilities::StreamingCapabilities(StreamingCapabilities& streamingCapabilities)
 {
   SupportedProtocols = streamingCapabilities.SupportedProtocols;
   SupportedTranscoders = streamingCapabilities.SupportedTranscoders;
+  SupportsRecording = streamingCapabilities.SupportsRecording;
+  SupportsTimeShifting = streamingCapabilities.SupportsTimeShifting;
+  SupportsDeviceManagement = streamingCapabilities.SupportsDeviceManagement;
 }
 
 StreamingCapabilities::~StreamingCapabilities()
@@ -87,6 +94,9 @@ bool StreamingCapabilitiesSerializer::ReadObject(StreamingCapabilities& object, 
     tinyxml2::XMLElement* elRoot = doc.FirstChildElement("streaming_caps");
     object.SupportedProtocols = Util::GetXmlFirstChildElementTextAsInt(elRoot, "protocols");
     object.SupportedTranscoders = Util::GetXmlFirstChildElementTextAsInt(elRoot, "transcoders");
+    object.SupportsRecording = Util::GetXmlFirstChildElementTextAsBoolean(elRoot, "can_record");
+    object.SupportsTimeShifting = Util::GetXmlFirstChildElementTextAsBoolean(elRoot, "supports_timeshift");
+    object.SupportsDeviceManagement = Util::GetXmlFirstChildElementTextAsBoolean(elRoot, "device_management");
     return true;
   }
 

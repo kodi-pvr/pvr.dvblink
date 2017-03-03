@@ -80,6 +80,11 @@ bool Util::ConvertToString(const long& value, std::string& s)
   return to_string(value, s);
 }
 
+bool Util::ConvertToString(const long long& value, std::string& s)
+{
+  return to_string(value, s);
+}
+
 bool Util::ConvertToString(const bool& value, std::string& s) 
 {
   if (value) {
@@ -140,6 +145,17 @@ tinyxml2::XMLElement* Util::CreateXmlElementWithText(tinyxml2::XMLDocument* xmlD
 }
 
 tinyxml2::XMLElement* Util::CreateXmlElementWithText(tinyxml2::XMLDocument* xmlDocument, const char* elementName, bool value) 
+{
+  std::string s;
+
+  if (Util::ConvertToString(value, s)) {
+    return CreateXmlElementWithText(xmlDocument, elementName, s.c_str());
+  }
+
+  return NULL;
+}
+
+tinyxml2::XMLElement* Util::CreateXmlElementWithText(tinyxml2::XMLDocument* xmlDocument, const char* elementName, long long value)
 {
   std::string s;
 

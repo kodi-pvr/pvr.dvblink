@@ -57,7 +57,7 @@ namespace dvblinkremote {
       * @param number an optional constant integer representing the number of the channel.
       * @param subNumber an optional constant integer representing the sub-number of the channel.
       */
-    Channel(const std::string& id, const long dvbLinkId, const std::string& name, const DVBLinkChannelType type, 
+    Channel(const std::string& id, const std::string& dvbLinkId, const std::string& name, const DVBLinkChannelType type, 
       const std::string& logo_url, const int number = -1, const int subNumber = -1);
 
     /**
@@ -82,7 +82,7 @@ namespace dvblinkremote {
       * Gets the DVBLink identifier of the channel. 
       * @return DVBLink channel identifier
       */
-    long GetDvbLinkID();
+    std::string& GetDvbLinkID();
     
     /**
       * Gets the name of the channel.
@@ -119,7 +119,7 @@ namespace dvblinkremote {
     
   private:
     std::string m_id;
-    long m_dvbLinkId;
+    std::string m_dvbLinkId;
     std::string m_name;
     DVBLinkChannelType m_type;
     std::string m_logo_url;
@@ -1305,6 +1305,10 @@ namespace dvblinkremote {
 
     bool IsTranscoderSupported(const DVBLinkSupportedTranscoder transcoder);
     bool IsTranscoderSupported(const int transcodersToCheck);
+
+    bool SupportsRecording;
+    bool SupportsTimeShifting;
+    bool SupportsDeviceManagement;
   };
 
   /**
@@ -1433,6 +1437,58 @@ namespace dvblinkremote {
       std::string server_id_;
       std::string version_;
       std::string build_;
+  };
+
+  /**
+  * Represent timeshift statistcs object, which is used as output parameter for the
+  * IDVBLinkRemoteConnection::GetTimeshiftStats method.
+  * @see IDVBLinkRemoteConnection::GetTimeshiftStats()
+  */
+  class TimeshiftStats : public Response
+  {
+  public:
+    /**
+    * TimeshiftStats a new instance of the dvblinkremote::TimeshiftStats class.
+    */
+    TimeshiftStats();
+
+    /**
+    * Initializes a new instance of the dvblinkremote::TimeshiftStats class by coping another
+    * dvblinkremote::TimeshiftStats instance.
+    * @param timeshiftStats a dvblinkremote::TimeshiftStats reference.
+    */
+    TimeshiftStats(TimeshiftStats& timeshiftStats);
+
+    /**
+    * Destructor for cleaning up allocated memory.
+    */
+    ~TimeshiftStats();
+
+    /**
+    * Maximum size of the timeshift buffer in bytes.
+    */
+    long long maxBufferLength;
+
+    /**
+    * current size of the timeshift buffer in bytes (may be less than max_buffer_length while buffer is growing)
+    */
+    long long curBufferLength;
+
+    /**
+    * current playback position within the timeshift buffer in bytes (range: between 0 and buffer_length)
+    */
+    long long curPosBytes;
+
+    /**
+    * duration of the timeshift buffer in seconds
+    */
+    long long bufferDurationSec;
+
+    /**
+    * current playback position within the timeshift buffer in seconds (range: between 0 and buffer_duration)
+    */
+    long long curPosSec;
+
   };
 
 }

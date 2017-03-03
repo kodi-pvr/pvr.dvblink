@@ -1,3 +1,14 @@
+[B]Version 3.4.0[/B]
+Fixed: Crash when switching channels with timeshift enabled ( #69 )
+Fixed: Hangup after period of inactivity ( #64 )
+Fixed: Incorrect dvblink server version displayed in addon proeprties ( #66 )
+Fixed: Timer Rules incorrectly detected ( #68 )
+Changed: default value to "new only" when setting series recording ( #65 )
+Added: timeshift commands to libdvblnikremote
+Changed: dvblink channel id to string for compatibility with future dvblink versions
+Added: margin of 10 seconds to IsRealTimeStream and IsTimeshifting definitions
+General: code refactoring for easier maintenance
+
 [B]Version 3.3.6[/B]
 Fixed: PVR_TIMER.iClientIndex handling bug
 
