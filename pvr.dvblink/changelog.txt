@@ -1,3 +1,7 @@
+[B]Version 3.4.1[/B]
+Fixed: Timer Rules incorrectly detected for manual/keyword based timers ( #68 )
+Fixed: Incorrect addon version displayed ( #73 )
+
 [B]Version 3.4.0[/B]
 Fixed: Crash when switching channels with timeshift enabled ( #69 )
 Fixed: Hangup after period of inactivity ( #64 )
