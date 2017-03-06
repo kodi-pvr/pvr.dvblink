@@ -391,20 +391,11 @@ PVR_ERROR DVBLinkClient::GetTimerTypes(PVR_TIMER_TYPE types[], int *size)
       | PVR_TIMER_TYPE_SUPPORTS_CHANNELS | PVR_TIMER_TYPE_SUPPORTS_START_TIME | PVR_TIMER_TYPE_SUPPORTS_END_TIME
       | PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN;
 
-  static const unsigned int TIMER_CREATED_MANUAL_ATTRIBS = PVR_TIMER_TYPE_IS_MANUAL
-      | PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN
-      | PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES;
-
   static const unsigned int TIMER_EPG_ATTRIBS = PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE
       | PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN;
 
   static const unsigned int TIMER_REPEATING_MANUAL_ATTRIBS = PVR_TIMER_TYPE_IS_REPEATING
       | PVR_TIMER_TYPE_SUPPORTS_WEEKDAYS | PVR_TIMER_TYPE_SUPPORTS_MAX_RECORDINGS;
-
-  static const unsigned int TIMER_CREATED_REPEATING_MANUAL_ATTRIBS = PVR_TIMER_TYPE_IS_MANUAL
-      | PVR_TIMER_TYPE_IS_REPEATING 
-      | PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN | PVR_TIMER_TYPE_SUPPORTS_MAX_RECORDINGS
-      | PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES;
 
   static const unsigned int TIMER_REPEATING_EPG_ATTRIBS = PVR_TIMER_TYPE_IS_REPEATING
       | PVR_TIMER_TYPE_SUPPORTS_START_ANYTIME | PVR_TIMER_TYPE_SUPPORTS_RECORD_ONLY_NEW_EPISODES
@@ -413,9 +404,6 @@ PVR_ERROR DVBLinkClient::GetTimerTypes(PVR_TIMER_TYPE types[], int *size)
   static const unsigned int TIMER_REPEATING_KEYWORD_ATTRIBS = PVR_TIMER_TYPE_SUPPORTS_TITLE_EPG_MATCH
       | PVR_TIMER_TYPE_SUPPORTS_CHANNELS | PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN | PVR_TIMER_TYPE_IS_REPEATING
       | PVR_TIMER_TYPE_SUPPORTS_MAX_RECORDINGS;
-
-  static const unsigned int TIMER_CREATED_REPEATING_KEYWORD_ATTRIBS = PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN
-      | PVR_TIMER_TYPE_IS_REPEATING | PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES | PVR_TIMER_TYPE_SUPPORTS_MAX_RECORDINGS;
 
   static const unsigned int TIMER_MANUAL_CHILD_ATTRIBUTES = PVR_TIMER_TYPE_IS_MANUAL
       | PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES;
@@ -436,18 +424,6 @@ PVR_ERROR DVBLinkClient::GetTimerTypes(PVR_TIMER_TYPE types[], int *size)
     TIMER_ONCE_MANUAL,
     /* Attributes. */
     TIMER_MANUAL_ATTRIBS,
-    /* Description. */
-    XBMC->GetLocalizedString(32037),
-    /* Values definitions for attributes. */
-    recordingLimitValues, default_rec_limit_, showTypeValues, default_rec_show_type_)));
-
-    timerTypes.push_back(
-    /* One-shot manual (time and channel based) - already created, disable editing of some attributes*/
-    std::unique_ptr<TimerType>(new TimerType(
-    /* Type id. */
-    TIMER_CREATED_ONCE_MANUAL,
-    /* Attributes. */
-    TIMER_CREATED_MANUAL_ATTRIBS,
     /* Description. */
     XBMC->GetLocalizedString(32037),
     /* Values definitions for attributes. */
@@ -514,18 +490,6 @@ PVR_ERROR DVBLinkClient::GetTimerTypes(PVR_TIMER_TYPE types[], int *size)
     recordingLimitValues, default_rec_limit_, showTypeValues, default_rec_show_type_)));
 
     timerTypes.push_back(
-    /* Repeating manual (time and channel based) Parent - already created, so disable editing of some attributes*/
-    std::unique_ptr<TimerType>(new TimerType(
-    /* Type id. */
-    TIMER_CREATED_REPEATING_MANUAL,
-    /* Attributes. */
-    TIMER_CREATED_REPEATING_MANUAL_ATTRIBS,
-    /* Description. */
-    XBMC->GetLocalizedString(32042),
-    /* Values definitions for attributes. */
-    recordingLimitValues, default_rec_limit_, showTypeValues, default_rec_show_type_)));
-
-    timerTypes.push_back(
     /* Repeating epg based Parent*/
     std::unique_ptr<TimerType>(new TimerType(
     /* Type id. */
@@ -544,18 +508,6 @@ PVR_ERROR DVBLinkClient::GetTimerTypes(PVR_TIMER_TYPE types[], int *size)
     TIMER_REPEATING_KEYWORD,
     /* Attributes. */
     TIMER_REPEATING_KEYWORD_ATTRIBS,
-    /* Description. */
-    XBMC->GetLocalizedString(32044),
-    /* Values definitions for attributes. */
-    recordingLimitValues, default_rec_limit_, showTypeValues, default_rec_show_type_)));
-
-    timerTypes.push_back(
-    /* Repeating Keyword (Generic) based - already created, disable editing of some elements*/
-    std::unique_ptr<TimerType>(new TimerType(
-    /* Type id. */
-    TIMER_CREATED_REPEATING_KEYWORD,
-    /* Attributes. */
-    TIMER_CREATED_REPEATING_KEYWORD_ATTRIBS,
     /* Description. */
     XBMC->GetLocalizedString(32044),
     /* Values definitions for attributes. */
@@ -664,13 +616,13 @@ int DVBLinkClient::GetSchedules(ADDON_HANDLE handle, const RecordingList& record
   StoredManualScheduleList& manual_schedules = response.GetManualSchedules();
   for (size_t i = 0; i < manual_schedules.size(); i++)
   {
-    schedule_map_[manual_schedules[i]->GetID()] = schedule_desc(-1, TIMER_CREATED_ONCE_MANUAL,
+    schedule_map_[manual_schedules[i]->GetID()] = schedule_desc(-1, TIMER_ONCE_MANUAL,
         manual_schedules[i]->MarginBefore, manual_schedules[i]->MarginAfter);
 
     if (manual_schedules[i]->GetDayMask() != 0)
     {
       unsigned int kodi_idx = get_kodi_timer_idx_from_dvblink(manual_schedules[i]->GetID());
-      schedule_map_[manual_schedules[i]->GetID()] = schedule_desc(kodi_idx, TIMER_CREATED_REPEATING_MANUAL,
+      schedule_map_[manual_schedules[i]->GetID()] = schedule_desc(kodi_idx, TIMER_REPEATING_MANUAL,
           manual_schedules[i]->MarginBefore, manual_schedules[i]->MarginAfter);
 
       PVR_TIMER timer;
@@ -682,7 +634,7 @@ int DVBLinkClient::GetSchedules(ADDON_HANDLE handle, const RecordingList& record
       timer.iClientIndex = kodi_idx;
       timer.iClientChannelUid = GetInternalUniqueIdFromChannelId(manual_schedules[i]->GetChannelID());
       timer.state = PVR_TIMER_STATE_SCHEDULED;
-      timer.iTimerType = TIMER_CREATED_REPEATING_MANUAL;
+      timer.iTimerType = TIMER_REPEATING_MANUAL;
       timer.iMarginStart = manual_schedules[i]->MarginBefore / 60;
       timer.iMarginEnd = manual_schedules[i]->MarginAfter / 60;
       timer.iMaxRecordings = manual_schedules[i]->RecordingsToKeep;
@@ -752,7 +704,7 @@ int DVBLinkClient::GetSchedules(ADDON_HANDLE handle, const RecordingList& record
   for (size_t i = 0; i < bp_schedules.size(); i++)
   {
     unsigned int kodi_idx = get_kodi_timer_idx_from_dvblink(bp_schedules[i]->GetID());
-    schedule_map_[bp_schedules[i]->GetID()] = schedule_desc(kodi_idx, TIMER_CREATED_REPEATING_KEYWORD,
+    schedule_map_[bp_schedules[i]->GetID()] = schedule_desc(kodi_idx, TIMER_REPEATING_KEYWORD,
         bp_schedules[i]->MarginBefore, bp_schedules[i]->MarginAfter);
 
     PVR_TIMER timer;
@@ -767,7 +719,7 @@ int DVBLinkClient::GetSchedules(ADDON_HANDLE handle, const RecordingList& record
       timer.iClientChannelUid = PVR_TIMER_ANY_CHANNEL;
 
     timer.state = PVR_TIMER_STATE_SCHEDULED;
-    timer.iTimerType = TIMER_CREATED_REPEATING_KEYWORD;
+    timer.iTimerType = TIMER_REPEATING_KEYWORD;
     timer.iMarginStart = bp_schedules[i]->MarginBefore / 60;
     timer.iMarginEnd = bp_schedules[i]->MarginAfter / 60;
     strncpy(timer.strEpgSearchString, bp_schedules[i]->GetKeyphrase().c_str(), sizeof(timer.strEpgSearchString) - 1);
@@ -838,12 +790,12 @@ PVR_ERROR DVBLinkClient::GetTimers(ADDON_HANDLE handle)
       int schedule_type = schedule_map_[rec->GetScheduleID()].schedule_kodi_type;
       switch (schedule_type)
       {
-        case TIMER_CREATED_ONCE_MANUAL:
+        case TIMER_ONCE_MANUAL:
         case TIMER_ONCE_EPG:
           //for once timers - copy parent attribute (there was no separate schedule submitted to kodi)
           xbmcTimer.iTimerType = schedule_type;
         break;
-        case TIMER_CREATED_REPEATING_MANUAL:
+        case TIMER_REPEATING_MANUAL:
           xbmcTimer.iTimerType = TIMER_ONCE_MANUAL_CHILD;
           xbmcTimer.iParentClientIndex = get_kodi_timer_idx_from_dvblink(rec->GetScheduleID());
         break;
@@ -851,7 +803,7 @@ PVR_ERROR DVBLinkClient::GetTimers(ADDON_HANDLE handle)
           xbmcTimer.iTimerType = TIMER_ONCE_EPG_CHILD;
           xbmcTimer.iParentClientIndex = get_kodi_timer_idx_from_dvblink(rec->GetScheduleID());
         break;
-        case TIMER_CREATED_REPEATING_KEYWORD:
+        case TIMER_REPEATING_KEYWORD:
           xbmcTimer.iTimerType = TIMER_ONCE_KEYWORD_CHILD;
           xbmcTimer.iParentClientIndex = get_kodi_timer_idx_from_dvblink(rec->GetScheduleID());
         break;
@@ -1067,7 +1019,7 @@ PVR_ERROR DVBLinkClient::DeleteTimer(const PVR_TIMER &timer)
 
   switch (timer.iTimerType)
   {
-    case TIMER_CREATED_ONCE_MANUAL:
+    case TIMER_ONCE_MANUAL:
     case TIMER_ONCE_EPG:
     case TIMER_ONCE_MANUAL_CHILD:
     case TIMER_ONCE_EPG_CHILD:
@@ -1084,9 +1036,9 @@ PVR_ERROR DVBLinkClient::DeleteTimer(const PVR_TIMER &timer)
       status = srv_connection.get_connection()->RemoveRecording(removeRecording, &error);
     }
     break;
-    case TIMER_CREATED_REPEATING_MANUAL:
+    case TIMER_REPEATING_MANUAL:
     case TIMER_REPEATING_EPG:
-    case TIMER_CREATED_REPEATING_KEYWORD:
+    case TIMER_REPEATING_KEYWORD:
     {
       //this is a schedule
 
@@ -1119,7 +1071,7 @@ PVR_ERROR DVBLinkClient::UpdateTimer(const PVR_TIMER &timer)
   std::string schedule_id;
   switch (timer.iTimerType)
   {
-    case TIMER_CREATED_ONCE_MANUAL:
+    case TIMER_ONCE_MANUAL:
     case TIMER_ONCE_EPG:
     {
       //this is a timer
@@ -1129,9 +1081,9 @@ PVR_ERROR DVBLinkClient::UpdateTimer(const PVR_TIMER &timer)
       parse_timer_hash(timer.strDirectory, timer_id, schedule_id);
     }
     break;
-    case TIMER_CREATED_REPEATING_MANUAL:
+    case TIMER_REPEATING_MANUAL:
     case TIMER_REPEATING_EPG:
-    case TIMER_CREATED_REPEATING_KEYWORD:
+    case TIMER_REPEATING_KEYWORD:
     {
       //this is a schedule
 

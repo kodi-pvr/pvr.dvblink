@@ -55,9 +55,6 @@ typedef std::map<std::string, std::string> recording_id_to_url_map_t;
 #define TIMER_REPEATING_MANUAL		(PVR_TIMER_TYPE_NONE + 6)
 #define TIMER_REPEATING_EPG			(PVR_TIMER_TYPE_NONE + 7)
 #define TIMER_REPEATING_KEYWORD		(PVR_TIMER_TYPE_NONE + 8)
-#define TIMER_CREATED_ONCE_MANUAL	(PVR_TIMER_TYPE_NONE + 9)
-#define TIMER_CREATED_REPEATING_MANUAL		(PVR_TIMER_TYPE_NONE + 10)
-#define TIMER_CREATED_REPEATING_KEYWORD		(PVR_TIMER_TYPE_NONE + 11)
 
 enum dvblink_client_rec_num_e
 {
