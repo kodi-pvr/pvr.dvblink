@@ -1,3 +1,6 @@
+[B]Version 3.4.2[/B]
+Fixed: Incorrectly displayed days of week when editing manual repeating timer ( leftover of #68 )
+
 [B]Version 3.4.1[/B]
 Fixed: Timer Rules incorrectly detected for manual/keyword based timers ( #68 )
 Fixed: Incorrect addon version displayed ( #73 )
