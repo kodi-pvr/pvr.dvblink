@@ -643,6 +643,13 @@ int DVBLinkClient::GetSchedules(ADDON_HANDLE handle, const RecordingList& record
       timer.startTime = manual_schedules[i]->GetStartTime();
       timer.endTime = manual_schedules[i]->GetStartTime() + manual_schedules[i]->GetDuration();
 
+      //change day mask from DVBLink server (Sun - first day) to Kodi format 
+      long day_mask = manual_schedules[i]->GetDayMask();
+      bool bcarry = (day_mask & 0x01) == 0x01;
+      timer.iWeekdays = (day_mask >> 1);
+      if (bcarry)
+        timer.iWeekdays |= 0x40;
+
       PVR->TransferTimerEntry(handle, &timer);
       XBMC->Log(LOG_INFO, "Added EPG schedule : %s", manual_schedules[i]->GetID().c_str());
 
