@@ -1,3 +1,6 @@
+[B]Version 4.1.2[/B]
+Fixed: Incorrectly displayed days of week when editing manual repeating timer ( leftover of #68 )
+
 [B]Version 4.1.1[/B]
 Fixed: Timer Rules incorrectly detected for manual/keyword based timers ( #68 )
 
