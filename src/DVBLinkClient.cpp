@@ -148,7 +148,7 @@ DVBLinkClient::DVBLinkClient(CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* p
     {
       dvblinkremote::Channel* ch = channels[i];
       int idx = channel_id_start_seed_ + i;
-      m_channels[idx] = std::auto_ptr<dvblinkremote::Channel>(new dvblinkremote::Channel(*ch));
+      m_channels[idx] = new dvblinkremote::Channel(*ch);
       inverse_channel_map_[ch->GetID()] = idx;
     }
 
@@ -240,7 +240,7 @@ PVR_ERROR DVBLinkClient::GetChannels(ADDON_HANDLE handle, bool bRadio)
   dvblink_channel_map_t::iterator ch_it = m_channels.begin();
   while (ch_it != m_channels.end())
   {
-    Channel* channel = ch_it->second.get();
+    Channel* channel = ch_it->second;
 
     bool isRadio = (channel->GetChannelType() == Channel::CHANNEL_TYPE_RADIO);
 
@@ -314,7 +314,7 @@ PVR_ERROR DVBLinkClient::GetChannelGroupMembers(ADDON_HANDLE handle, const PVR_C
     {
       if (inverse_channel_map_.find(chlist[j]) != inverse_channel_map_.end())
       {
-        dvblinkremote::Channel* ch = m_channels[inverse_channel_map_[chlist[j]]].get();
+        dvblinkremote::Channel* ch = m_channels[inverse_channel_map_[chlist[j]]];
 
         bool isRadio = (ch->GetChannelType() == dvblinkremote::Channel::CHANNEL_TYPE_RADIO);
 
@@ -545,7 +545,7 @@ int DVBLinkClient::GetInternalUniqueIdFromChannelId(const std::string& channelId
   dvblink_channel_map_t::iterator ch_it = m_channels.begin();
   while (ch_it != m_channels.end())
   {
-    Channel * channel = ch_it->second.get();
+    Channel * channel = ch_it->second;
     int id = ch_it->first;
 
     if (channelId.compare(channel->GetID()) == 0)
@@ -1513,7 +1513,7 @@ bool DVBLinkClient::OpenLiveStream(const PVR_CHANNEL &channel, bool use_timeshif
   int w = width == 0 ? GUI->GetScreenWidth() : width;
   int h = height == 0 ? GUI->GetScreenHeight() : height;
 
-  Channel * c = m_channels[channel.iUniqueId].get();
+  Channel * c = m_channels[channel.iUniqueId];
 
   if (m_live_streamer->Start(c, use_transcoder, w, h, bitrate, audiotrack))
   {
@@ -1683,7 +1683,7 @@ PVR_ERROR DVBLinkClient::GetEPGForChannel(ADDON_HANDLE handle, const PVR_CHANNEL
   if (!is_valid_ch_idx(channel.iUniqueId))
     return result;
 
-  Channel * c = m_channels[channel.iUniqueId].get();
+  Channel * c = m_channels[channel.iUniqueId];
   EpgSearchResult epgSearchResult;
 
   if (DoEPGSearch(epgSearchResult, c->GetID(), iStart, iEnd))
@@ -1756,5 +1756,12 @@ DVBLinkClient::~DVBLinkClient(void)
   {
     m_live_streamer->Stop();
     SAFE_DELETE(m_live_streamer);
+  }
+
+  dvblink_channel_map_t::iterator ch_it = m_channels.begin();
+  while (ch_it != m_channels.end())
+  {
+    delete ch_it->second;
+    ++ch_it;
   }
 }
