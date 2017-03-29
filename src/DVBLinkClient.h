@@ -39,6 +39,7 @@
 #include "dvblink_connection.h"
 #include "client.h"
 #include <map>
+#include <memory>
 
 #define DVBLINK_BUILD_IN_RECORDER_SOURCE_ID   "8F94B459-EFC0-4D91-9B29-EC3D72E92677"
 #define DVBLINK_RECODINGS_BY_DATA_ID   "F6F08949-2A07-4074-9E9D-423D877270BB"
@@ -176,9 +177,13 @@ private:
   bool parse_timer_hash(const char* timer_hash, std::string& timer_id, std::string& schedule_id);
   unsigned int get_kodi_timer_idx_from_dvblink(const std::string& id);
   bool is_valid_ch_idx(int ch_idx);
+  void add_schedule_desc(const std::string& id, const schedule_desc& sd);
+  bool get_schedule_desc(const std::string& id, schedule_desc& sd);
+
+  typedef std::map<int, std::auto_ptr<dvblinkremote::Channel> > dvblink_channel_map_t;
 
   bool m_connected;
-  dvblinkremote::ChannelList m_channels;
+  dvblink_channel_map_t m_channels;
   int m_currentChannelId;
   long m_timerCount;
   long m_recordingCount;
