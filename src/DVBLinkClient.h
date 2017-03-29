@@ -176,9 +176,13 @@ private:
   bool parse_timer_hash(const char* timer_hash, std::string& timer_id, std::string& schedule_id);
   unsigned int get_kodi_timer_idx_from_dvblink(const std::string& id);
   bool is_valid_ch_idx(int ch_idx);
+  void add_schedule_desc(const std::string& id, const schedule_desc& sd);
+  bool get_schedule_desc(const std::string& id, schedule_desc& sd);
+
+  typedef std::map<int, dvblinkremote::Channel* > dvblink_channel_map_t;
 
   bool m_connected;
-  dvblinkremote::ChannelList m_channels;
+  dvblink_channel_map_t m_channels;
   int m_currentChannelId;
   long m_timerCount;
   long m_recordingCount;
