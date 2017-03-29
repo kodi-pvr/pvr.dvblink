@@ -146,9 +146,10 @@ DVBLinkClient::DVBLinkClient(CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* p
 
     for (size_t i=0; i<channels.size(); i++)
     {
+      dvblinkremote::Channel* ch = channels[i];
       int idx = channel_id_start_seed_ + i;
-      m_channels[idx] = std::auto_ptr<dvblinkremote::Channel>(new dvblinkremote::Channel(*channels[i]));
-      inverse_channel_map_[channels[i]->GetID()] = idx;
+      m_channels[idx] = std::auto_ptr<dvblinkremote::Channel>(new dvblinkremote::Channel(*ch));
+      inverse_channel_map_[ch->GetID()] = idx;
     }
 
     m_connected = true;
