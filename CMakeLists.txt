@@ -26,6 +26,14 @@ set(DVBLINK_SOURCES src/base64.cpp
                     src/RecordingStreamer.cpp
                     src/TimeShiftBuffer.cpp)
 
+set(DVBLINK_HEADERS src/base64.h
+                    src/client.h
+                    src/DVBLinkClient.h
+                    src/dvblink_connection.h
+                    src/HttpPostClient.h
+                    src/RecordingStreamer.h
+                    src/TimeShiftBuffer.h)
+
 add_subdirectory(lib/libdvblinkremote)
 set(DEPLIBS ${p8-platform_LIBRARIES} dvblinkremote ${TINYXML2_LIBRARIES})
 build_addon(pvr.dvblink DVBLINK DEPLIBS)
