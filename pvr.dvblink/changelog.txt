@@ -1,3 +1,8 @@
+[B]Version 4.1.4[/B]
+Changed: Set dependency versions automatic during build
+Changed: Removed never used kodi to addon functions
+Fixed: Build system
+
 [B]Version 4.1.3[/B]
 Fixed: First channel is not shown in the Guide view ( #81 )
 Fixed: Lock-up on RecTV and Tuning Channel after Idle ( leftover of #64 )
