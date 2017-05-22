@@ -1,3 +1,6 @@
+[B]Version 4.1.7[/B]
+Removed: Never used addon interface function
+
 [B]Version 4.1.6[/B]
 Changed: Update Debian package control
 Changed: PVR addon callback way
