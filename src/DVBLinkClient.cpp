@@ -197,6 +197,9 @@ void DVBLinkClient::GetAddonCapabilities(PVR_ADDON_CAPABILITIES* pCapabilities)
   pCapabilities->bSupportsRadio = true;
   pCapabilities->bHandlesInputStream = true;
   pCapabilities->bSupportsChannelGroups = server_caps_.favorites_supported_;
+  pCapabilities->bSupportsRecordingsRename = false;
+  pCapabilities->bSupportsRecordingsLifetimeChange = false;
+  pCapabilities->bSupportsDescrambleInfo = false;
 }
 
 void *DVBLinkClient::Process()
