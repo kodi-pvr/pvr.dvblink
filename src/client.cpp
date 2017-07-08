@@ -868,6 +868,11 @@ PVR_ERROR RenameRecording(const PVR_RECORDING &recording)
   return PVR_ERROR_NOT_IMPLEMENTED;
 }
 
+PVR_ERROR SetRecordingLifetime(const PVR_RECORDING* recording)
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
 PVR_ERROR SetRecordingPlayCount(const PVR_RECORDING &recording, int count)
 {
   return PVR_ERROR_NOT_IMPLEMENTED;
@@ -914,6 +919,11 @@ bool SeekTime(double, bool, double*)
 
 void SetSpeed(int)
 {
+}
+
+PVR_ERROR GetDescrambleInfo(PVR_DESCRAMBLE_INFO* descrambleInfo)
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
 }
 
 }
