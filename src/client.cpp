@@ -540,7 +540,7 @@ void CloseLiveStream(void)
 const char * GetLiveStreamURL(const PVR_CHANNEL &channel)
 {
 //not implemented. OpenLiveStream is always used
-  return NULL;
+  return "";
 }
 
 int ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize)
