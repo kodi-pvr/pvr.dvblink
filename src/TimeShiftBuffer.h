@@ -26,7 +26,7 @@
 #pragma once
 
 #include "libXBMC_addon.h"
-#include "p8-platform/util/StdString.h"
+#include "p8-platform/os.h"
 #include "p8-platform/util/util.h"
 #include "dvblink_connection.h"
 

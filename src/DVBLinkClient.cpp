@@ -24,7 +24,7 @@
  */
 #include <memory>
 #include "DVBLinkClient.h"
-#include "p8-platform/util/StdString.h"
+#include "p8-platform/os.h"
 #include "libKODI_guilib.h"
 
 using namespace dvblinkremote;
