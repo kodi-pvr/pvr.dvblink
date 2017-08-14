@@ -711,12 +711,6 @@ PVR_ERROR GetRecordingEdl(const PVR_RECORDING&, PVR_EDL_ENTRY[], int*)
   return PVR_ERROR_NOT_IMPLEMENTED;
 }
 
-bool SwitchChannel(const PVR_CHANNEL &channel)
-{
-  CloseLiveStream();
-  return OpenLiveStream(channel);
-}
-
 PVR_ERROR SignalStatus(PVR_SIGNAL_STATUS &signalStatus)
 {
   return PVR_ERROR_NO_ERROR;
@@ -790,6 +784,11 @@ long long LengthRecordedStream(void)
 }
 
 /** UNUSED API FUNCTIONS */
+
+PVR_ERROR GetStreamTimes(PVR_STREAM_TIMES *)
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
 
 PVR_ERROR GetStreamProperties(PVR_STREAM_PROPERTIES* pProperties)
 {
@@ -905,11 +904,6 @@ void DemuxAbort(void)
 DemuxPacket* DemuxRead(void)
 {
   return NULL;
-}
-
-unsigned int GetChannelSwitchDelay(void)
-{
-  return 0;
 }
 
 bool SeekTime(double, bool, double*)
