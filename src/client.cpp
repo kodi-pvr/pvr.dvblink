@@ -537,12 +537,6 @@ void CloseLiveStream(void)
     dvblinkclient->StopStreaming();
 }
 
-const char * GetLiveStreamURL(const PVR_CHANNEL &channel)
-{
-//not implemented. OpenLiveStream is always used
-  return "";
-}
-
 int ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize)
 {
   if (dvblinkclient)
@@ -784,6 +778,16 @@ long long LengthRecordedStream(void)
 }
 
 /** UNUSED API FUNCTIONS */
+
+PVR_ERROR GetChannelStreamProperties(const PVR_CHANNEL*, PVR_NAMED_VALUE*, unsigned int*)
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
+PVR_ERROR GetRecordingStreamProperties(const PVR_RECORDING*, PVR_NAMED_VALUE*, unsigned int*)
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
 
 PVR_ERROR GetStreamTimes(PVR_STREAM_TIMES *)
 {
