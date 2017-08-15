@@ -1380,7 +1380,6 @@ PVR_ERROR DVBLinkClient::GetRecordings(ADDON_HANDLE handle)
     xbmcRecording.recordingTime = tvitem->GetMetadata().GetStartTime();
     PVR_STRCPY(xbmcRecording.strPlot, tvitem->GetMetadata().ShortDescription.c_str());
     PVR_STRCPY(xbmcRecording.strPlotOutline, tvitem->GetMetadata().SubTitle.c_str());
-    //    PVR_STRCPY(xbmcRecording.strStreamURL, tvitem->GetPlaybackUrl().c_str());
     {
       P8PLATFORM::CLockObject critsec(m_mutex);
 

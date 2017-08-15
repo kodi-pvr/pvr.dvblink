@@ -537,12 +537,6 @@ void CloseLiveStream(void)
     dvblinkclient->StopStreaming();
 }
 
-const char * GetLiveStreamURL(const PVR_CHANNEL &channel)
-{
-//not implemented. OpenLiveStream is always used
-  return "";
-}
-
 int ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize)
 {
   if (dvblinkclient)
@@ -711,12 +705,6 @@ PVR_ERROR GetRecordingEdl(const PVR_RECORDING&, PVR_EDL_ENTRY[], int*)
   return PVR_ERROR_NOT_IMPLEMENTED;
 }
 
-bool SwitchChannel(const PVR_CHANNEL &channel)
-{
-  CloseLiveStream();
-  return OpenLiveStream(channel);
-}
-
 PVR_ERROR SignalStatus(PVR_SIGNAL_STATUS &signalStatus)
 {
   return PVR_ERROR_NO_ERROR;
@@ -790,6 +778,21 @@ long long LengthRecordedStream(void)
 }
 
 /** UNUSED API FUNCTIONS */
+
+PVR_ERROR GetChannelStreamProperties(const PVR_CHANNEL*, PVR_NAMED_VALUE*, unsigned int*)
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
+PVR_ERROR GetRecordingStreamProperties(const PVR_RECORDING*, PVR_NAMED_VALUE*, unsigned int*)
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
+PVR_ERROR GetStreamTimes(PVR_STREAM_TIMES *)
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
 
 PVR_ERROR GetStreamProperties(PVR_STREAM_PROPERTIES* pProperties)
 {
@@ -905,11 +908,6 @@ void DemuxAbort(void)
 DemuxPacket* DemuxRead(void)
 {
   return NULL;
-}
-
-unsigned int GetChannelSwitchDelay(void)
-{
-  return 0;
 }
 
 bool SeekTime(double, bool, double*)
