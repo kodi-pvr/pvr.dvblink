@@ -1702,7 +1702,7 @@ PVR_ERROR DVBLinkClient::GetEPGForChannel(ADDON_HANDLE handle, const PVR_CHANNEL
 
         broadcast.iUniqueBroadcastId = p->GetStartTime();
         broadcast.strTitle = p->GetTitle().c_str();
-        broadcast.iChannelNumber = channel.iChannelNumber;
+        broadcast.iUniqueChannelId = channel.iUniqueId;
         broadcast.startTime = p->GetStartTime();
         broadcast.endTime = p->GetStartTime() + p->GetDuration();
         broadcast.strPlot = p->ShortDescription.c_str();
