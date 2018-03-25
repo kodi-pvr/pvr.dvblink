@@ -26,6 +26,7 @@
 #pragma once
 
 #include "p8-platform/os.h"
+#include "libXBMC_pvr.h"
 #include "libXBMC_addon.h"
 #include "p8-platform/threads/threads.h"
 #include "p8-platform/threads/mutex.h"
@@ -44,13 +45,14 @@ public:
   void CloseRecordedStream(void);
   int ReadRecordedStream(unsigned char *pBuffer, unsigned int iBufferSize);
   long long SeekRecordedStream(long long iPosition, int iWhence /* = SEEK_SET */);
-  long long PositionRecordedStream(void);
   long long LengthRecordedStream(void);
+  PVR_ERROR GetStreamTimes(PVR_STREAM_TIMES* stream_times);
 protected:
   ADDON::CHelper_libXBMC_addon* xbmc_;
   std::string recording_id_;
   std::string url_;
   long long recording_size_;
+  long recording_duration_;
   bool is_in_recording_;
   void* playback_handle_;
   long long cur_pos_;
@@ -65,7 +67,7 @@ protected:
   time_t check_delta_;
   P8PLATFORM::CMutex m_comm_mutex;
 
-  bool get_recording_info(const std::string& recording_id, long long& recording_size, bool& is_in_recording);
+  bool get_recording_info(const std::string& recording_id, long long& recording_size, long& recording_duration, bool& is_in_recording);
 
   virtual void lock()
   {

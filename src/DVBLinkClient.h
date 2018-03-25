@@ -151,12 +151,10 @@ public:
   int GetCurrentChannelId();
   void GetDriveSpace(long long *iTotal, long long *iUsed);
   long long SeekLiveStream(long long iPosition, int iWhence);
-  long long PositionLiveStream(void);
+  PVR_ERROR GetStreamTimes(PVR_STREAM_TIMES* stream_times);
   long long LengthLiveStream(void);
+  bool IsLive();
   int ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize);
-  time_t GetPlayingTime();
-  time_t GetBufferTimeStart();
-  time_t GetBufferTimeEnd();
   bool GetRecordingURL(const char* recording_id, std::string& url, bool use_transcoder, int width,
     int height, int bitrate, std::string audiotrack);
 

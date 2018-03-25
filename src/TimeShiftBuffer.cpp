@@ -30,7 +30,7 @@ using namespace dvblinkremote;
 //base live streaming class
 
 LiveStreamerBase::LiveStreamerBase(CHelper_libXBMC_addon * XBMC, const server_connection_properties& connection_props) :
-  m_streamHandle(NULL), connection_props_(connection_props), server_connection_(XBMC, connection_props)
+m_streamHandle(NULL), connection_props_(connection_props), server_connection_(XBMC, connection_props), stream_start_(0)
 {
   this->XBMC = XBMC;
 }
@@ -48,6 +48,7 @@ int LiveStreamerBase::ReadData(unsigned char *pBuffer, unsigned int iBufferSize)
 bool LiveStreamerBase::Start(Channel* channel, bool use_transcoder, int width, int height, int bitrate, const std::string& audiotrack)
 {
   m_streamHandle = NULL;
+  stream_start_ = time(nullptr);
 
   StreamRequest* sr = GetStreamRequest(channel->GetDvbLinkID(), use_transcoder, width, height, bitrate, audiotrack);
 
@@ -123,7 +124,7 @@ StreamRequest* LiveTVStreamer::GetStreamRequest(const std::string& dvblink_chann
 //timeshifted live streaming class
 
 TimeShiftBuffer::TimeShiftBuffer(CHelper_libXBMC_addon* XBMC, const server_connection_properties& connection_props, bool use_dvblink_timeshift_cmds) :
-LiveStreamerBase(XBMC, connection_props), last_pos_req_time_(-1), last_pos_(0), use_dvblink_timeshift_cmds_(use_dvblink_timeshift_cmds)
+LiveStreamerBase(XBMC, connection_props), last_pos_req_time_(-1), use_dvblink_timeshift_cmds_(use_dvblink_timeshift_cmds)
 {
 }
 
@@ -175,10 +176,9 @@ long long TimeShiftBuffer::Seek(long long iPosition, int iWhence)
     } else 
     {
       //update current playback position
-      long long length, cur_pos_sec;
-      time_t duration;
-
-      GetBufferParams(length, duration, ret_val, cur_pos_sec);
+      buffer_params_t buffer_params;
+      GetBufferParams(buffer_params);
+      ret_val = buffer_params.cur_pos;
     }
 
     SAFE_DELETE(request);
@@ -207,9 +207,9 @@ long long TimeShiftBuffer::Position()
 {
   long long ret_val = 0;
 
-  time_t duration;
-  long long length, cur_pos_sec;
-  GetBufferParams(length, duration, ret_val, cur_pos_sec);
+  buffer_params_t buffer_params;
+  GetBufferParams(buffer_params);
+  ret_val = buffer_params.cur_pos;
 
   return ret_val;
 }
@@ -249,101 +249,102 @@ long long TimeShiftBuffer::Length()
 {
   long long ret_val = 0;
 
-  time_t duration;
-  long long cur_pos, cur_pos_sec;
-  GetBufferParams(ret_val, duration, cur_pos, cur_pos_sec);
+  buffer_params_t buffer_params;
+  GetBufferParams(buffer_params);
+  ret_val = buffer_params.buffer_length;
 
   return ret_val;
 }
 
-bool TimeShiftBuffer::GetBufferParams(long long& length, time_t& duration, long long& cur_pos, long long& cur_pos_sec)
+void TimeShiftBuffer::GetStreamTimes(PVR_STREAM_TIMES* stream_times)
+{
+  time_t now;
+  now = time(NULL);
+
+  buffer_params_t buffer_params;
+  GetBufferParams(buffer_params);
+
+  stream_times->startTime = stream_start_;
+  stream_times->ptsStart = 0;
+  if (now >= buffer_params.buffer_duration + stream_start_ && now >= stream_start_)
+  {
+    stream_times->ptsBegin = (now - buffer_params.buffer_duration - stream_start_) * DVD_TIME_BASE;
+    stream_times->ptsEnd = (now - stream_start_) * DVD_TIME_BASE;
+  } else
+  {
+    stream_times->ptsBegin = 0;
+    stream_times->ptsEnd = 0;
+  }
+}
+
+bool TimeShiftBuffer::IsLive()
+{
+  buffer_params_t buffer_params;
+  GetBufferParams(buffer_params);
+
+  return buffer_params.cur_pos_sec + 10 >= buffer_params.buffer_duration; //add 10 seconds to the definition of "live"
+}
+
+bool TimeShiftBuffer::GetBufferParams(buffer_params_t& buffer_params)
 {
   bool ret_val = false;
 
-  if (use_dvblink_timeshift_cmds_)
-  {
-    GetTimeshiftStatsRequest* request = new GetTimeshiftStatsRequest(stream_.GetChannelHandle());
-
-    DVBLinkRemoteStatusCode status;
-    std::string error;
-    TimeshiftStats response;
-    if ((status = server_connection_.get_connection()->GetTimeshiftStats(*request, response, &error)) != DVBLINK_REMOTE_STATUS_OK)
-    {
-      XBMC->Log(LOG_ERROR, "GetTimeshiftStats failed (Error code : %d Description : %s)", (int)status, error.c_str());
-    } else
-    {
-      length = response.curBufferLength;
-      duration = (time_t)response.bufferDurationSec;
-      cur_pos = response.curPosBytes;
-      cur_pos_sec = response.curPosSec;
-      ret_val = true;
-    }
-
-    SAFE_DELETE(request);
-  } else
-  {
-    std::string req_url = streampath_;
-    req_url += "&get_stats=1";
-
-    std::vector<std::string> response_values;
-    if (ExecuteServerRequest(req_url, response_values) && response_values.size() == 3)
-    {
-      length = atoll(response_values[0].c_str());
-      duration = (time_t) atoll(response_values[1].c_str());
-      cur_pos = atoll(response_values[2].c_str());
-
-      if (length == 0)
-        cur_pos_sec = 0;
-      else
-        cur_pos_sec = cur_pos * duration / length;
-
-      ret_val = true;
-    }
-  }
-
-  return ret_val;
-}
-
-time_t TimeShiftBuffer::GetPlayingTime()
-{
-  time_t ret_val = last_pos_;
-
   time_t now;
   now = time(NULL);
-
   if (last_pos_req_time_ == -1 || now > last_pos_req_time_)
   {
-    long long length, cur_pos, cur_pos_sec;
-    time_t duration;
-    if (GetBufferParams(length, duration, cur_pos, cur_pos_sec))
-      ret_val = now - (duration - cur_pos_sec);
+    if (use_dvblink_timeshift_cmds_)
+    {
+      GetTimeshiftStatsRequest* request = new GetTimeshiftStatsRequest(stream_.GetChannelHandle());
 
-    last_pos_ = ret_val;
-    last_pos_req_time_ = now;
+      DVBLinkRemoteStatusCode status;
+      std::string error;
+      TimeshiftStats response;
+      if ((status = server_connection_.get_connection()->GetTimeshiftStats(*request, response, &error)) != DVBLINK_REMOTE_STATUS_OK)
+      {
+        XBMC->Log(LOG_ERROR, "GetTimeshiftStats failed (Error code : %d Description : %s)", (int)status, error.c_str());
+      } else
+      {
+        buffer_params.buffer_length = response.curBufferLength;
+        buffer_params.buffer_duration = (time_t)response.bufferDurationSec;
+        buffer_params.cur_pos = response.curPosBytes;
+        buffer_params.cur_pos_sec = response.curPosSec;
+        ret_val = true;
+      }
+
+      SAFE_DELETE(request);
+    } else
+    {
+      std::string req_url = streampath_;
+      req_url += "&get_stats=1";
+
+      std::vector<std::string> response_values;
+      if (ExecuteServerRequest(req_url, response_values) && response_values.size() == 3)
+      {
+        buffer_params.buffer_length = atoll(response_values[0].c_str());
+        buffer_params.buffer_duration = (time_t)atoll(response_values[1].c_str());
+        buffer_params.cur_pos = atoll(response_values[2].c_str());
+
+        if (buffer_params.buffer_length == 0)
+          buffer_params.cur_pos_sec = 0;
+        else
+          buffer_params.cur_pos_sec = buffer_params.cur_pos * buffer_params.buffer_duration / buffer_params.buffer_length;
+
+        ret_val = true;
+      }
+    }
+  
+    if (ret_val)
+    {
+      last_pos_req_time_ = now;
+      buffer_params_ = buffer_params;
+    }
+  } else
+  {
+    buffer_params = buffer_params_;
+    ret_val = true;
   }
 
   return ret_val;
 }
 
-time_t TimeShiftBuffer::GetBufferTimeStart()
-{
-  time_t ret_val = 0;
-
-  time_t now;
-  now = time(NULL);
-
-  long long length, cur_pos, cur_pos_sec;
-  time_t duration;
-  if (GetBufferParams(length, duration, cur_pos, cur_pos_sec))
-    ret_val = now - duration;
-
-  return ret_val;
-}
-
-time_t TimeShiftBuffer::GetBufferTimeEnd()
-{
-  time_t now;
-  now = time(NULL);
-
-  return now;
-}

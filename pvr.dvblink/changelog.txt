@@ -1,3 +1,6 @@
+[B]Version 4.5.0[/B]
+Updated to PVR API v5.8.0
+
 [B]Version 4.4.0[/B]
 Updated to PVR API v5.7.0
 
