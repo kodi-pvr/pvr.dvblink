@@ -53,7 +53,7 @@ bool RecordingStreamer::OpenRecordedStream(const char* recording_id, std::string
   cur_pos_ = 0;
 
   prev_check_ = time(NULL);
-  get_recording_info(recording_id_, recording_size_, is_in_recording_);
+  get_recording_info(recording_id_, recording_size_, recording_duration_, is_in_recording_);
 
   playback_handle_ = xbmc_->OpenFile(url_.c_str(), 0);
 
@@ -77,7 +77,7 @@ int RecordingStreamer::ReadRecordedStream(unsigned char *pBuffer, unsigned int i
     time_t now = time(NULL);
     if (now - prev_check_ > check_delta_)
     {
-      get_recording_info(recording_id_, recording_size_, is_in_recording_);
+      get_recording_info(recording_id_, recording_size_, recording_duration_, is_in_recording_);
 
       //reopen original data connection to refresh its file size
       xbmc_->CloseFile(playback_handle_);
@@ -100,18 +100,26 @@ long long RecordingStreamer::SeekRecordedStream(long long iPosition, int iWhence
   return cur_pos_;
 }
 
-long long RecordingStreamer::PositionRecordedStream(void)
-{
-  return cur_pos_;
-}
-
 long long RecordingStreamer::LengthRecordedStream(void)
 {
   return recording_size_;
 }
 
-bool RecordingStreamer::get_recording_info(const std::string& recording_id, long long& recording_size,
-    bool& is_in_recording)
+PVR_ERROR RecordingStreamer::GetStreamTimes(PVR_STREAM_TIMES* stream_times)
+{
+  if (stream_times != NULL)
+  {
+    stream_times->startTime = 0;
+    stream_times->ptsStart = 0;
+    stream_times->ptsBegin = 0;
+    stream_times->ptsEnd = recording_duration_ * DVD_TIME_BASE;
+    return PVR_ERROR_NO_ERROR;
+  }
+
+  return PVR_ERROR_SERVER_ERROR;
+}
+
+bool RecordingStreamer::get_recording_info(const std::string& recording_id, long long& recording_size, long& recording_duration, bool& is_in_recording)
 {
   bool ret_val = false;
   recording_size = -1;
@@ -137,6 +145,7 @@ bool RecordingStreamer::get_recording_info(const std::string& recording_id, long
       RecordedTvItem* rectv_item = static_cast<RecordedTvItem*>(item);
       recording_size = rectv_item->Size;
       is_in_recording = rectv_item->State == RecordedTvItem::RECORDED_TV_ITEM_STATE_IN_PROGRESS;
+      recording_duration = rectv_item->GetMetadata().GetDuration();
       ret_val = true;
     }
     else

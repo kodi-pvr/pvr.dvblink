@@ -53,18 +53,16 @@ public:
   {
     return -1;
   }
-
-  virtual time_t GetPlayingTime()
+  virtual void GetStreamTimes(PVR_STREAM_TIMES* stream_times)
   {
-    return 0;
+    stream_times->startTime = stream_start_;
+    stream_times->ptsStart = 0;
+    stream_times->ptsBegin = 0;
+    stream_times->ptsEnd = 0;
   }
-  virtual time_t GetBufferTimeStart()
+  virtual bool IsLive()
   {
-    return 0;
-  }
-  virtual time_t GetBufferTimeEnd()
-  {
-    return 0;
+    return true;
   }
 
 protected:
@@ -79,6 +77,7 @@ protected:
   server_connection_properties connection_props_;
   dvblink_server_connection server_connection_;
   dvblinkremote::Stream stream_;
+  time_t stream_start_;
 };
 
 class LiveTVStreamer: public LiveStreamerBase
@@ -92,6 +91,14 @@ protected:
 
 class TimeShiftBuffer: public LiveStreamerBase
 {
+  struct buffer_params_t
+  {
+    long long buffer_length;
+    time_t buffer_duration;
+    long long cur_pos;
+    long long cur_pos_sec;
+  };
+
 public:
   TimeShiftBuffer(ADDON::CHelper_libXBMC_addon * XBMC, const server_connection_properties& connection_props, bool use_dvblink_timeshift_cmds);
   ~TimeShiftBuffer(void);
@@ -99,18 +106,16 @@ public:
   virtual long long Seek(long long iPosition, int iWhence);
   virtual long long Position();
   virtual long long Length();
-
-  virtual time_t GetPlayingTime();
-  virtual time_t GetBufferTimeStart();
-  virtual time_t GetBufferTimeEnd();
+  virtual void GetStreamTimes(PVR_STREAM_TIMES* stream_times);
+  virtual bool IsLive();
 
 protected:
   virtual dvblinkremote::StreamRequest* GetStreamRequest(const std::string& dvblink_channel_id, bool use_transcoder, int width, int height, int bitrate, std::string audiotrack);
   bool ExecuteServerRequest(const std::string& url, std::vector<std::string>& response_values);
-  bool GetBufferParams(long long& length, time_t& duration, long long& cur_pos, long long& cur_pos_sec);
+  bool GetBufferParams(buffer_params_t& buffer_params);
 
   time_t last_pos_req_time_;
-  time_t last_pos_;
+  buffer_params_t buffer_params_;
   bool use_dvblink_timeshift_cmds_;
 };
 

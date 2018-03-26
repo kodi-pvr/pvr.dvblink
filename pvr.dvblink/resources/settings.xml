@@ -3,7 +3,7 @@
   <!-- Connection -->
   <category label="30000">
     <setting id="host" type="text" label="30001" option="urlencoded" default="127.0.0.1" />
-    <setting id="port" type="number" option="int" label="30002" default="8100" />
+    <setting id="port" type="number" option="int" label="30002" default="9270" />
 	<setting id="username" type="text" label="30005" default="" />
 	<setting id="password" type="text" label="30006" default="" option="hidden"  enable="!eq(-1,)" />
 

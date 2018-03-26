@@ -551,11 +551,13 @@ long long SeekLiveStream(long long iPosition, int iWhence /* = SEEK_SET */)
   return -1;
 }
 
-long long PositionLiveStream(void)
+PVR_ERROR GetStreamTimes(PVR_STREAM_TIMES* stream_times)
 {
-  if (dvblinkclient)
-    return dvblinkclient->PositionLiveStream();
-  return -1;
+  if (recording_streamer)
+    return recording_streamer->GetStreamTimes(stream_times);
+  else if (dvblinkclient)
+    return dvblinkclient->GetStreamTimes(stream_times);
+  return PVR_ERROR_SERVER_ERROR;
 }
 
 long long LengthLiveStream(void)
@@ -565,58 +567,31 @@ long long LengthLiveStream(void)
   return -1;
 }
 
-time_t GetPlayingTime()
-{
-  if (dvblinkclient)
-    return dvblinkclient->GetPlayingTime();
-  return 0;
-}
-
-time_t GetBufferTimeStart()
-{
-  if (dvblinkclient)
-    return dvblinkclient->GetBufferTimeStart();
-  return 0;
-}
-
-time_t GetBufferTimeEnd()
-{
-  if (dvblinkclient)
-    return dvblinkclient->GetBufferTimeEnd();
-  return 0;
-}
-
 void PauseStream(bool bPaused)
 {
 }
 
 bool CanPauseStream(void)
 {
-  return g_bUseTimeshift;
+  return recording_streamer != NULL || (dvblinkclient != NULL && g_bUseTimeshift);
 }
 
 bool CanSeekStream(void)
 {
-  return g_bUseTimeshift;
-}
-
-static bool dvblink_is_live()
-{
-  if (dvblinkclient)
-  {
-    return (dvblinkclient->GetBufferTimeEnd() - dvblinkclient->GetPlayingTime()) < 10; //add a margin of 10 seconds to the definition of "live"
-  }
-  return true;
+  return recording_streamer != NULL || (dvblinkclient != NULL && g_bUseTimeshift);
 }
 
 bool IsRealTimeStream()
 {
-  return !g_bUseTimeshift || dvblink_is_live();
+  if (dvblinkclient)
+    return dvblinkclient->IsLive();
+
+  return false;
 }
 
 bool IsTimeshifting(void)
 {
-  return g_bUseTimeshift && !dvblink_is_live();
+  return (dvblinkclient != NULL && g_bUseTimeshift);
 }
 
 PVR_ERROR SetEPGTimeFrame(int iDays)
@@ -761,14 +736,6 @@ long long SeekRecordedStream(long long iPosition, int iWhence /* = SEEK_SET */)
   return -1;
 }
 
-long long PositionRecordedStream(void)
-{
-  if (recording_streamer != NULL)
-    return recording_streamer->PositionRecordedStream();
-
-  return -1;
-}
-
 long long LengthRecordedStream(void)
 {
   if (recording_streamer != NULL)
@@ -785,11 +752,6 @@ PVR_ERROR GetChannelStreamProperties(const PVR_CHANNEL*, PVR_NAMED_VALUE*, unsig
 }
 
 PVR_ERROR GetRecordingStreamProperties(const PVR_RECORDING*, PVR_NAMED_VALUE*, unsigned int*)
-{
-  return PVR_ERROR_NOT_IMPLEMENTED;
-}
-
-PVR_ERROR GetStreamTimes(PVR_STREAM_TIMES *)
 {
   return PVR_ERROR_NOT_IMPLEMENTED;
 }
@@ -815,11 +777,6 @@ PVR_ERROR DeleteChannel(const PVR_CHANNEL &channel)
 }
 
 PVR_ERROR RenameChannel(const PVR_CHANNEL &channel)
-{
-  return PVR_ERROR_NOT_IMPLEMENTED;
-}
-
-PVR_ERROR MoveChannel(const PVR_CHANNEL &channel)
 {
   return PVR_ERROR_NOT_IMPLEMENTED;
 }

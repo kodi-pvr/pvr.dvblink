@@ -328,8 +328,10 @@ PVR_ERROR DVBLinkClient::GetChannelGroupMembers(ADDON_HANDLE handle, const PVR_C
         memset(&member, 0, sizeof(PVR_CHANNEL_GROUP_MEMBER));
         PVR_STRCPY(member.strGroupName, group.strGroupName);
         member.iChannelUniqueId = inverse_channel_map_[chlist[j]];
-        if (ch->Number != -1)
+        if (ch->Number > 0)
           member.iChannelNumber = ch->Number;
+        if (ch->SubNumber > 0)
+          member.iSubChannelNumber = ch->SubNumber;
 
         PVR->TransferChannelGroupMember(handle, &member);
       }
@@ -1505,7 +1507,6 @@ bool DVBLinkClient::OpenLiveStream(const PVR_CHANNEL &channel, bool use_timeshif
   if (m_live_streamer)
     SAFE_DELETE(m_live_streamer);
 
-  //time-shifted playback always uses raw http stream type - no transcoding option is possible now
   if (use_timeshift)
     m_live_streamer = new TimeShiftBuffer(XBMC, connection_props_, server_caps_.timeshift_commands_supported_);
   else
@@ -1544,13 +1545,23 @@ long long DVBLinkClient::SeekLiveStream(long long iPosition, int iWhence)
   return 0;
 }
 
-long long DVBLinkClient::PositionLiveStream(void)
+bool DVBLinkClient::IsLive()
+{
+  if (m_live_streamer)
+    return m_live_streamer->IsLive();
+  return false;
+}
+
+PVR_ERROR DVBLinkClient::GetStreamTimes(PVR_STREAM_TIMES* stream_times)
 {
   P8PLATFORM::CLockObject critsec(live_mutex_);
 
-  if (m_live_streamer)
-    return m_live_streamer->Position();
-  return 0;
+  if (m_live_streamer && stream_times != NULL)
+  {
+    m_live_streamer->GetStreamTimes(stream_times);
+    return PVR_ERROR_NO_ERROR;
+  }
+  return PVR_ERROR_SERVER_ERROR;
 }
 
 long long DVBLinkClient::LengthLiveStream(void)
@@ -1559,33 +1570,6 @@ long long DVBLinkClient::LengthLiveStream(void)
 
   if (m_live_streamer)
     return m_live_streamer->Length();
-  return 0;
-}
-
-time_t DVBLinkClient::GetPlayingTime()
-{
-  P8PLATFORM::CLockObject critsec(live_mutex_);
-
-  if (m_live_streamer)
-    return m_live_streamer->GetPlayingTime();
-  return 0;
-}
-
-time_t DVBLinkClient::GetBufferTimeStart()
-{
-  P8PLATFORM::CLockObject critsec(live_mutex_);
-
-  if (m_live_streamer)
-    return m_live_streamer->GetBufferTimeStart();
-  return 0;
-}
-
-time_t DVBLinkClient::GetBufferTimeEnd()
-{
-  P8PLATFORM::CLockObject critsec(live_mutex_);
-
-  if (m_live_streamer)
-    return m_live_streamer->GetBufferTimeEnd();
   return 0;
 }
 
