@@ -268,8 +268,8 @@ void TimeShiftBuffer::GetStreamTimes(PVR_STREAM_TIMES* stream_times)
   stream_times->ptsStart = 0;
   if (now >= buffer_params.buffer_duration + stream_start_ && now >= stream_start_)
   {
-    stream_times->ptsBegin = (now - buffer_params.buffer_duration - stream_start_) * DVD_TIME_BASE;
-    stream_times->ptsEnd = (now - stream_start_) * DVD_TIME_BASE;
+    stream_times->ptsBegin = (int64_t)(now - buffer_params.buffer_duration - stream_start_) * DVD_TIME_BASE;
+    stream_times->ptsEnd = (int64_t)(now - stream_start_) * DVD_TIME_BASE;
   } else
   {
     stream_times->ptsBegin = 0;

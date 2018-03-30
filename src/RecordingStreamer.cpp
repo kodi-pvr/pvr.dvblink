@@ -112,7 +112,7 @@ PVR_ERROR RecordingStreamer::GetStreamTimes(PVR_STREAM_TIMES* stream_times)
     stream_times->startTime = 0;
     stream_times->ptsStart = 0;
     stream_times->ptsBegin = 0;
-    stream_times->ptsEnd = recording_duration_ * DVD_TIME_BASE;
+    stream_times->ptsEnd = (int64_t)recording_duration_ * DVD_TIME_BASE;
     return PVR_ERROR_NO_ERROR;
   }
 
