@@ -1,3 +1,6 @@
+[B]Version 4.5.2[/B]
+Updated to PVR API v5.9.0
+
 [B]Version 4.5.1[/B]
 Fixed: Reporting incorrect stream stats on 32 bits system
 
