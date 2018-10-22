@@ -1,4 +1,7 @@
-[B]Version 4.6.0
+[B]Version 4.6.4[/B]
+Bump tinyxml2 to version 6.2.0
+
+[B]Version 4.6.0[/B]
 Updated to PVR API v5.10.0
 
 [B]Version 4.5.2[/B]
