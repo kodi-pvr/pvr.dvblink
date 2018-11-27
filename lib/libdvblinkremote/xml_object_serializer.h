@@ -421,6 +421,27 @@ namespace dvblinkremoteserialization {
     bool WriteObject(std::string& serializedData, TimeshiftSeekRequest& objectGraph);
   };
 
+  class GetObjectResumeInfoRequestSerializer : public XmlObjectSerializer<GetObjectResumeInfoRequest>
+  {
+  public:
+    GetObjectResumeInfoRequestSerializer() : XmlObjectSerializer<GetObjectResumeInfoRequest>() { }
+    bool WriteObject(std::string& serializedData, GetObjectResumeInfoRequest& objectGraph);
+  };
+
+  class SetObjectResumeInfoRequestSerializer : public XmlObjectSerializer<SetObjectResumeInfoRequest>
+  {
+  public:
+    SetObjectResumeInfoRequestSerializer() : XmlObjectSerializer<SetObjectResumeInfoRequest>() { }
+    bool WriteObject(std::string& serializedData, SetObjectResumeInfoRequest& objectGraph);
+  };
+
+  class ResumeInfoSerializer : public XmlObjectSerializer<ResumeInfo>
+  {
+  public:
+    ResumeInfoSerializer() : XmlObjectSerializer<ResumeInfo>() { }
+    bool ReadObject(ResumeInfo& object, const std::string& xml);
+  };
+
   class ItemMetadataSerializer
   {
   public:

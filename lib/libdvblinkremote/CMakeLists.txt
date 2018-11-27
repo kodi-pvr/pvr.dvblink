@@ -31,6 +31,7 @@ SET(SOURCES channel.cpp
             transcoded_video_stream_request.cpp
             transcoding_options.cpp
             util.cpp
+            resume_info.cpp
             xml_object_serializer_factory.cpp)
 
 if(NOT WIN32)

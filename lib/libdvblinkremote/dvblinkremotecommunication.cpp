@@ -253,6 +253,20 @@ DVBLinkRemoteStatusCode DVBLinkRemoteCommunication::TimeshiftSeek(const Timeshif
   return status;
 }
 
+DVBLinkRemoteStatusCode DVBLinkRemoteCommunication::GetObjectResumeInfo(const GetObjectResumeInfoRequest& request, ResumeInfo& response, std::string* err_str)
+{
+  return GetData(DVBLINK_REMOTE_GET_RESUME_INFO_CMD, request, response, err_str);
+}
+
+DVBLinkRemoteStatusCode DVBLinkRemoteCommunication::SetObjectResumeInfo(const SetObjectResumeInfoRequest& request, std::string* err_str)
+{
+  Response* response = new Response();
+
+  DVBLinkRemoteStatusCode status = GetData(DVBLINK_REMOTE_SET_RESUME_INFO_CMD, request, *response, err_str);
+
+  delete response;
+  return status;
+}
 
 std::string DVBLinkRemoteCommunication::GetUrl()
 {

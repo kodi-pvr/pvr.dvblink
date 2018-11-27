@@ -207,6 +207,16 @@ namespace dvblinkremote
   const std::string DVBLINK_REMOTE_TIMESHIFT_SEEK_CMD = "timeshift_seek";
 
   /**
+  * A constant string representing the DVBLink command to retrieve last playback position.
+  */
+  const std::string DVBLINK_REMOTE_GET_RESUME_INFO_CMD = "get_object_resume_info";
+
+  /**
+  * A constant string representing the DVBLink command to save last playback position.
+  */
+  const std::string DVBLINK_REMOTE_SET_RESUME_INFO_CMD = "set_object_resume_info";
+
+  /**
     * A constant string representing a Real Time Transport Protocol stream type for Android devices.
     */
   const std::string DVBLINK_REMOTE_STREAM_TYPE_ANDROID = "rtp";
@@ -512,6 +522,21 @@ namespace dvblinkremote
     * @return                   A DVBLinkRemoteStatusCode representing the status of the executed method.
     */
     virtual DVBLinkRemoteStatusCode TimeshiftSeek(const TimeshiftSeekRequest& request, std::string* err_str) = 0;
+
+    /**
+    * Gets resume information for a playback object
+    * @param[in]      request   A constant GetObjectResumeInfoRequest reference representing the object to get resume info for (object id)
+    * @param[in,out]  response  A ResumeInfo reference that will be populated with resume information.
+    * @return                   A DVBLinkRemoteStatusCode representing the status of the executed method.
+    */
+    virtual DVBLinkRemoteStatusCode GetObjectResumeInfo(const GetObjectResumeInfoRequest& request, ResumeInfo& response, std::string* err_str) = 0;
+
+    /**
+    * Saves resume information for a playback object
+    * @param[in] request A constant SetObjectResumeInfoRequest reference representing the object and its resume information.
+    * @return            A DVBLinkRemoteStatusCode representing the status of the executed method.
+    */
+    virtual DVBLinkRemoteStatusCode SetObjectResumeInfo(const SetObjectResumeInfoRequest& request, std::string* err_str) = 0;
 
     /**
       * Gets a description of the last occured error.

@@ -86,6 +86,9 @@ void DVBLinkClient::get_server_caps()
     //server with build earlier than 12700 does not support playing transcoded recordings
     server_caps_.transcoding_recordings_supported_ = (server_build >= 12700);
 
+    //resume position is supported on server with build 16830 and up
+    server_caps_.resume_supported_ = (server_build >= 16830);
+
     //only dvblink server v6 and up supports timeshift commands
     int v1, v2, v3;
     if (sscanf(si.version_.c_str(), "%d.%d.%d", &v1, &v2, &v3) == 3)
@@ -200,6 +203,7 @@ void DVBLinkClient::GetAddonCapabilities(PVR_ADDON_CAPABILITIES* pCapabilities)
   pCapabilities->bSupportsRecordingsRename = false;
   pCapabilities->bSupportsRecordingsLifetimeChange = false;
   pCapabilities->bSupportsDescrambleInfo = false;
+  pCapabilities->bSupportsLastPlayedPosition = server_caps_.resume_supported_;
 }
 
 void *DVBLinkClient::Process()
@@ -1751,3 +1755,31 @@ DVBLinkClient::~DVBLinkClient(void)
     ++ch_it;
   }
 }
+
+int DVBLinkClient::GetRecordingLastPlayedPosition(const PVR_RECORDING &recording)
+{
+  GetObjectResumeInfoRequest request(recording.strRecordingId);
+  ResumeInfo response;
+
+  DVBLinkRemoteStatusCode status;
+  dvblink_server_connection srv_connection(XBMC, connection_props_);
+  if ((status = srv_connection.get_connection()->GetObjectResumeInfo(request, response, NULL)) == DVBLINK_REMOTE_STATUS_OK)
+  {
+    return response.m_positionSec;
+  }
+  return -1;
+}
+
+PVR_ERROR DVBLinkClient::SetRecordingLastPlayedPosition(const PVR_RECORDING &recording, int position)
+{
+  SetObjectResumeInfoRequest request(recording.strRecordingId, position);
+
+  DVBLinkRemoteStatusCode status;
+  dvblink_server_connection srv_connection(XBMC, connection_props_);
+  if ((status = srv_connection.get_connection()->SetObjectResumeInfo(request, NULL)) == DVBLINK_REMOTE_STATUS_OK)
+  {
+    return PVR_ERROR_NO_ERROR;
+  }
+  return PVR_ERROR_SERVER_ERROR;
+}
+

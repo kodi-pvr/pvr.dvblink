@@ -68,6 +68,8 @@ namespace dvblinkremote
     DVBLinkRemoteStatusCode GetServerInfo(const GetServerInfoRequest& request, ServerInfo& response, std::string* err_str);
     DVBLinkRemoteStatusCode GetTimeshiftStats(const GetTimeshiftStatsRequest& request, TimeshiftStats& response, std::string* err_str);
     DVBLinkRemoteStatusCode TimeshiftSeek(const TimeshiftSeekRequest& request, std::string* err_str);
+    DVBLinkRemoteStatusCode GetObjectResumeInfo(const GetObjectResumeInfoRequest& request, ResumeInfo& response, std::string* err_str);
+    DVBLinkRemoteStatusCode SetObjectResumeInfo(const SetObjectResumeInfoRequest& request, std::string* err_str);
 
   private:
     dvblinkremotehttp::HttpClient& m_httpClient;
