@@ -1479,4 +1479,59 @@ namespace dvblinkremote {
 
     };
 
+    /**
+    * Class for get object resume info request.
+    * This is used as input parameter for the IDVBLinkRemoteConnection::GetObjectResumeInfo method.
+    */
+    class GetObjectResumeInfoRequest : public Request
+    {
+    public:
+      /**
+      * Initializes a new instance of the dvblinkremote::GetObjectResumeInfoRequest class.
+      * @param objectId ID of the playback object to request the resume information for
+      */
+      GetObjectResumeInfoRequest(const std::string& objectId);
+
+      /**
+      * Destructor for cleaning up allocated memory.
+      */
+      ~GetObjectResumeInfoRequest();
+
+      /**
+      * The object ID.
+      */
+      std::string m_objectId;
+
+    };
+
+    /**
+    * Class for set object resume info request.
+    * This is used as input parameter for the IDVBLinkRemoteConnection::SetObjectResumeInfo method.
+    */
+    class SetObjectResumeInfoRequest : public Request
+    {
+    public:
+      /**
+      * Initializes a new instance of the dvblinkremote::SetObjectResumeInfoRequest class.
+      * @param objectId ID of the playback object to save the resume information for
+      * @param positionSec Resume position in seconds
+      */
+      SetObjectResumeInfoRequest(const std::string& objectId, int positionSec);
+
+      /**
+      * Destructor for cleaning up allocated memory.
+      */
+      ~SetObjectResumeInfoRequest();
+
+      /**
+      * The object ID.
+      */
+      std::string m_objectId;
+
+      /**
+      * Resume position in seconds
+      */
+      int m_positionSec;
+    };
+
 }

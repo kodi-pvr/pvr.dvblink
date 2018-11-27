@@ -1491,4 +1491,33 @@ namespace dvblinkremote {
 
   };
 
+  /**
+  * Represent resume information object, which is used as output parameter for the
+  * IDVBLinkRemoteConnection::GetObjectResumeInfo method.
+  */
+  class ResumeInfo : public Response
+  {
+  public:
+    /**
+    * ResumeInfo a new instance of the dvblinkremote::ResumeInfo class.
+    */
+    ResumeInfo();
+
+    /**
+    * Initializes a new instance of the dvblinkremote::ResumeInfo class by coping another
+    * dvblinkremote::ResumeInfo instance.
+    */
+    ResumeInfo(ResumeInfo& resumeInfo);
+
+    /**
+    * Destructor for cleaning up allocated memory.
+    */
+    ~ResumeInfo();
+
+    /**
+    * Maximum size of the timeshift buffer in bytes.
+    */
+    int m_positionSec;
+  };
+
 }

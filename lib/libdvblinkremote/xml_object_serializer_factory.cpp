@@ -122,6 +122,14 @@ bool XmlObjectSerializerFactory::Serialize(const std::string& dvbLinkCommand, co
     requestSerializer = (XmlObjectSerializer<Request>*)new TimeshiftSeekRequestSerializer();
     result = ((TimeshiftSeekRequestSerializer*)requestSerializer)->WriteObject(serializedData, (TimeshiftSeekRequest&)request);
   }
+  else if (dvbLinkCommand == DVBLINK_REMOTE_GET_RESUME_INFO_CMD) {
+    requestSerializer = (XmlObjectSerializer<Request>*)new GetObjectResumeInfoRequestSerializer();
+    result = ((GetObjectResumeInfoRequestSerializer*)requestSerializer)->WriteObject(serializedData, (GetObjectResumeInfoRequest&)request);
+  }
+  else if (dvbLinkCommand == DVBLINK_REMOTE_SET_RESUME_INFO_CMD) {
+    requestSerializer = (XmlObjectSerializer<Request>*)new SetObjectResumeInfoRequestSerializer();
+    result = ((SetObjectResumeInfoRequestSerializer*)requestSerializer)->WriteObject(serializedData, (SetObjectResumeInfoRequest&)request);
+  }
   else {
     result = false;
   }
@@ -187,6 +195,10 @@ bool XmlObjectSerializerFactory::Deserialize(const std::string& dvbLinkCommand, 
     responseSerializer = (XmlObjectSerializer<Response>*)new TimeshiftStatsSerializer();
     result = ((TimeshiftStatsSerializer*)responseSerializer)->ReadObject((TimeshiftStats&)response, serializedData);
   }
+  else if (dvbLinkCommand == DVBLINK_REMOTE_GET_RESUME_INFO_CMD) {
+    responseSerializer = (XmlObjectSerializer<Response>*)new ResumeInfoSerializer();
+    result = ((ResumeInfoSerializer*)responseSerializer)->ReadObject((ResumeInfo&)response, serializedData);
+  }
   else if (dvbLinkCommand == DVBLINK_REMOTE_ADD_SCHEDULE_CMD ||
            dvbLinkCommand == DVBLINK_REMOTE_UPDATE_SCHEDULE_CMD ||
            dvbLinkCommand == DVBLINK_REMOTE_REMOVE_SCHEDULE_CMD ||
@@ -195,6 +207,7 @@ bool XmlObjectSerializerFactory::Deserialize(const std::string& dvbLinkCommand, 
            dvbLinkCommand == DVBLINK_REMOTE_REMOVE_OBJECT_CMD ||
            dvbLinkCommand == DVBLINK_REMOTE_STOP_RECORDING_CMD ||
            dvbLinkCommand == DVBLINK_REMOTE_TIMESHIFT_SEEK_CMD ||
+           dvbLinkCommand == DVBLINK_REMOTE_SET_RESUME_INFO_CMD ||
            dvbLinkCommand == DVBLINK_REMOTE_SET_RECORDING_SETTING_CMD) {
     result = true;
   }

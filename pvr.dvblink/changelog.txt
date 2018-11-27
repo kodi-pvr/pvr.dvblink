@@ -1,3 +1,6 @@
+[B]Version 4.7.0[/B]
+Added: support for set/get last played position in a recording
+
 [B]Version 4.6.4[/B]
 Bump tinyxml2 to version 6.2.0
 
