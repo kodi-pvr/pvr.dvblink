@@ -49,7 +49,7 @@ RecordingStreamer* recording_streamer = NULL;
 
 std::string g_szHostname            = DEFAULT_HOST;                  ///< The Host name or IP of the DVBLink Server
 long        g_lPort                 = DEFAULT_PORT;                  ///< The DVBLink Connect Server listening port (default: 8080)
-bool        g_bUseTranscoding		    = DEFAULT_USETRANSCODING;        ///< Use transcoding
+bool        g_bUseTranscoding       = DEFAULT_USETRANSCODING;        ///< Use transcoding
 std::string g_szClientname;                                          ///< Name of dvblink client
 std::string g_szUsername            = DEFAULT_USERNAME;              ///< Username
 std::string g_szPassword            = DEFAULT_PASSWORD;              ///< Password
@@ -57,11 +57,12 @@ bool        g_bShowInfoMSG          = DEFAULT_SHOWINFOMSG;           ///< Show i
 int         g_iHeight               = DEFAULT_HEIGHT;                ///< Height of stream when using transcoding (0: autodetect)
 int         g_iWidth                = DEFAULT_WIDTH;                 ///< Width of stream when using transcoding (0: autodetect)
 int         g_iBitrate              = DEFAULT_BITRATE;               ///< Bitrate of stream when using transcoding
+int         g_iDefaultRecShowType   = DEFAULT_RECORD_SHOW_TYPE;      ///< Default record show type
 std::string g_szAudiotrack          = DEFAULT_AUDIOTRACK;            ///< Audiotrack to include in stream when using transcoding
 bool        g_bUseTimeshift         = DEFAULT_USETIMESHIFT;          ///< Use timeshift
 bool        g_bAddRecEpisode2title  = DEFAULT_ADDRECEPISODE2TITLE;   ///< Concatenate title and episode info for recordings
-bool        g_bGroupRecBySeries     = DEFAULT_GROUPRECBYSERIES;         ///< Group Recordings as Directories by series
-bool        g_bNoGroupSingleRec     = DEFAULT_NOGROUP_SINGLE_REC;         ///< Do not group single recordings
+bool        g_bGroupRecBySeries     = DEFAULT_GROUPRECBYSERIES;      ///< Group Recordings as Directories by series
+bool        g_bNoGroupSingleRec     = DEFAULT_NOGROUP_SINGLE_REC;    ///< Do not group single recordings
 CHelper_libXBMC_addon  *XBMC        = NULL;
 CHelper_libXBMC_pvr    *PVR         = NULL;
 CHelper_libKODI_guilib *GUI         = NULL;
@@ -269,12 +270,20 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
     g_szAudiotrack = DEFAULT_AUDIOTRACK;
   }
 
+  /* Read setting "default_record_show_type" from settings.xml */
+  if (!XBMC->GetSetting("default_record_show_type", &g_iDefaultRecShowType))
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC->Log(LOG_ERROR, "Couldn't get 'default_record_show_type' setting, falling back to 'record only new episodes' as default");
+    g_iDefaultRecShowType = DEFAULT_RECORD_SHOW_TYPE;
+  }
+
   /* Log the current settings for debugging purposes */
   XBMC->Log(LOG_DEBUG, "settings: enable_transcoding='%i' host='%s', port=%i", g_bUseTranscoding, g_szHostname.c_str(),
       g_lPort);
 
   dvblinkclient = new DVBLinkClient(XBMC, PVR, GUI, g_szClientname, g_szHostname, g_lPort, g_bShowInfoMSG, g_szUsername,
-      g_szPassword, g_bAddRecEpisode2title, g_bGroupRecBySeries, g_bNoGroupSingleRec);
+      g_szPassword, g_bAddRecEpisode2title, g_bGroupRecBySeries, g_bNoGroupSingleRec, g_iDefaultRecShowType);
 
   if (dvblinkclient->GetStatus())
     m_CurStatus = ADDON_STATUS_OK;
@@ -331,7 +340,7 @@ ADDON_STATUS ADDON_SetSetting(const char *settingName, const void *settingValue)
   }
   else if (str == "enable_transcoding")
   {
-    XBMC->Log(LOG_INFO, "Changed Setting 'enable_transcoding' from %u to %u", g_bUseTranscoding, *(int*) settingValue);
+    XBMC->Log(LOG_INFO, "Changed Setting 'enable_transcoding' from %u to %u", g_bUseTranscoding, *(bool*) settingValue);
     g_bUseTranscoding = *(bool*) settingValue;
     return ADDON_STATUS_NEED_RESTART;
   }
@@ -347,33 +356,30 @@ ADDON_STATUS ADDON_SetSetting(const char *settingName, const void *settingValue)
   }
   else if (str == "timeshift")
   {
-    XBMC->Log(LOG_INFO, "Changed Setting 'timeshift' from %u to %u", g_bUseTimeshift, *(int*) settingValue);
+    XBMC->Log(LOG_INFO, "Changed Setting 'timeshift' from %u to %u", g_bUseTimeshift, *(bool*) settingValue);
     g_bUseTimeshift = *(bool*) settingValue;
     return ADDON_STATUS_NEED_RESTART;
   }
   else if (str == "showinfomsg")
   {
-    XBMC->Log(LOG_INFO, "Changed Setting 'showinfomsg' from %u to %u", g_bShowInfoMSG, *(int*) settingValue);
+    XBMC->Log(LOG_INFO, "Changed Setting 'showinfomsg' from %u to %u", g_bShowInfoMSG, *(bool*) settingValue);
     g_bShowInfoMSG = *(bool*) settingValue;
   }
   else if (str == "add_rec_episode_info")
   {
-    XBMC->Log(LOG_INFO, "Changed Setting 'add_rec_episode_info' from %u to %u", g_bAddRecEpisode2title,
-        *(int*) settingValue);
+    XBMC->Log(LOG_INFO, "Changed Setting 'add_rec_episode_info' from %u to %u", g_bAddRecEpisode2title, *(bool*) settingValue);
     g_bAddRecEpisode2title = *(bool*) settingValue;
     return ADDON_STATUS_NEED_RESTART;
   }
   else if (str == "group_recordings_by_series")
   {
-    XBMC->Log(LOG_INFO, "Changed Setting 'group_recordings_by_series' from %u to %u", g_bGroupRecBySeries,
-        *(int*) settingValue);
+    XBMC->Log(LOG_INFO, "Changed Setting 'group_recordings_by_series' from %u to %u", g_bGroupRecBySeries, *(bool*) settingValue);
     g_bGroupRecBySeries = *(bool*) settingValue;
     return ADDON_STATUS_NEED_RESTART;
   }
   else if (str == "no_group_for_single_record")
   {
-    XBMC->Log(LOG_INFO, "Changed Setting 'no_group_for_single_record' from %u to %u", g_bNoGroupSingleRec,
-        *(int*) settingValue);
+    XBMC->Log(LOG_INFO, "Changed Setting 'no_group_for_single_record' from %u to %u", g_bNoGroupSingleRec, *(bool*) settingValue);
     g_bNoGroupSingleRec = *(bool*) settingValue;
     return ADDON_STATUS_NEED_RESTART;
   }
@@ -401,6 +407,11 @@ ADDON_STATUS ADDON_SetSetting(const char *settingName, const void *settingValue)
     g_szAudiotrack = (const char*) settingValue;
     if (tmp_sAudiotrack != g_szAudiotrack)
       return ADDON_STATUS_NEED_RESTART;
+  }
+  else if (str == "default_record_show_type")
+  {
+    XBMC->Log(LOG_INFO, "Changed Setting 'default_record_show_type' from %u to %u", g_iDefaultRecShowType, *(int*) settingValue);
+    g_iDefaultRecShowType = *(int*) settingValue;
   }
   return ADDON_STATUS_OK;
 }

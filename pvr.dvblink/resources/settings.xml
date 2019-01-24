@@ -4,24 +4,24 @@
   <category label="30000">
     <setting id="host" type="text" label="30001" option="urlencoded" default="127.0.0.1" />
     <setting id="port" type="number" option="int" label="30002" default="9270" />
-	<setting id="username" type="text" label="30005" default="" />
-	<setting id="password" type="text" label="30006" default="" option="hidden"  enable="!eq(-1,)" />
-
+    <setting id="username" type="text" label="30005" default="" />
+    <setting id="password" type="text" label="30006" default="" option="hidden"  enable="!eq(-1,)" />
   </category>
   <!-- Stream -->  
   <category label="30100">  
-		<setting id="timeshift" type="bool" label="30111" default="false" />
-		<setting id="enable_transcoding" type="bool" label="30102" default="false" />
-		<setting id="bitrate"  visible="eq(-1,true)" type="number" label="30105" default="512" />
-		<setting id="audiotrack"  visible="eq(-2,true)" type="text" label="30106" default="eng" /> 
-		<setting id="height"  visible="eq(-3,true)" type="number" label="30103" default="0" />
-		<setting id="width"  visible="eq(-4,true)" type="number" label="30104" default="0" />
+    <setting id="timeshift" type="bool" label="30111" default="false" />
+    <setting id="enable_transcoding" type="bool" label="30102" default="false" />
+    <setting id="bitrate"  visible="eq(-1,true)" type="number" label="30105" default="512" />
+    <setting id="audiotrack"  visible="eq(-2,true)" type="text" label="30106" default="eng" /> 
+    <setting id="height"  visible="eq(-3,true)" type="number" label="30103" default="0" />
+    <setting id="width"  visible="eq(-4,true)" type="number" label="30104" default="0" />
   </category>
-   <!-- Advanced -->
+  <!-- Advanced -->
   <category label="30200">   
-		<setting id="showinfomsg" type="bool" label="30202" default="false" />
-		<setting id="add_rec_episode_info" type="bool" label="30203" default="true" />
-		<setting id="group_recordings_by_series" type="bool" label="30204" default="true" />
-		<setting id="no_group_for_single_record"  visible="eq(-1,true)" type="bool" label="32025" default="false" />
-</category>
+    <setting id="showinfomsg" type="bool" label="30202" default="false" />
+    <setting id="add_rec_episode_info" type="bool" label="30203" default="true" />
+    <setting id="group_recordings_by_series" type="bool" label="30204" default="true" />
+    <setting id="no_group_for_single_record"  visible="eq(-1,true)" type="bool" label="32025" default="false" />
+    <setting id="default_record_show_type" label="812" type="enum" lvalues="32035|32036" default="1" />
+  </category>
 </settings>
