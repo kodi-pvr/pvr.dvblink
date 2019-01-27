@@ -199,6 +199,9 @@ private:
   bool m_group_recordings_by_series;
   bool m_showinfomsg;
   bool m_updating;
+  bool m_update_timers_now;
+  bool m_update_timers_repeat;
+  bool m_update_recordings;
   std::string m_recordingsid;
   std::string m_recordingsid_by_date;
   std::string m_recordingsid_by_series;
