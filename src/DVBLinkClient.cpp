@@ -210,22 +210,53 @@ void *DVBLinkClient::Process()
 {
   XBMC->Log(LOG_DEBUG, "DVBLinkUpdateProcess:: thread started");
 
-  time_t update_period_sec = 300;
+  time_t update_period_default_sec = 300;
+  time_t update_period_timers_sec = 5;
+  time_t update_period_recordings_sec = 1;
   time_t now;
   time(&now);
-  time_t next_update_time = now + update_period_sec;
+  time_t next_update_time_timers = now + update_period_default_sec;
+  time_t next_update_time_recordings = now + update_period_default_sec;
 
   while (m_updating)
   {
     time(&now);
-    if (now > next_update_time)
+
+    if (m_update_timers_repeat)
+    {
+      next_update_time_timers = now - update_period_timers_sec;
+    }
+    else if (m_update_timers_now)
+    {
+      next_update_time_timers = now - update_period_timers_sec;
+      m_update_timers_now = false;
+    }
+
+    if (now > next_update_time_timers)
     {
       PVR->TriggerTimerUpdate();
-      PVR->TriggerRecordingUpdate();
-
-      next_update_time = now + update_period_sec;
+      next_update_time_timers = now + update_period_default_sec;
     }
-    Sleep(1000);
+
+    if (m_update_timers_repeat)
+    {
+      next_update_time_timers = now + update_period_timers_sec;
+      m_update_timers_repeat = false;
+    }
+
+    if (m_update_recordings)
+    {
+      next_update_time_recordings = now + update_period_recordings_sec;
+      m_update_recordings = false;
+    }
+
+    if (now > next_update_time_recordings)
+    {
+      PVR->TriggerRecordingUpdate();
+      next_update_time_recordings = now + update_period_default_sec;
+    }
+
+    Sleep(100);
   }
   XBMC->Log(LOG_DEBUG, "DVBLinkUpdateProcess:: thread stopped");
   return NULL;
@@ -1050,7 +1081,7 @@ PVR_ERROR DVBLinkClient::AddTimer(const PVR_TIMER &timer)
     if ((status = srv_connection.get_connection()->AddSchedule(*addScheduleRequest, &error)) == DVBLINK_REMOTE_STATUS_OK)
     {
       XBMC->Log(LOG_INFO, "Timer added");
-      PVR->TriggerTimerUpdate();
+      m_update_timers_repeat = true;
       result = PVR_ERROR_NO_ERROR;
     }
     else
@@ -1111,7 +1142,7 @@ PVR_ERROR DVBLinkClient::DeleteTimer(const PVR_TIMER &timer)
   if (status == DVBLINK_REMOTE_STATUS_OK)
   {
     XBMC->Log(LOG_INFO, "Timer(s) deleted");
-    PVR->TriggerTimerUpdate();
+    m_update_timers_now = true;
     result = PVR_ERROR_NO_ERROR;
   }
   else
@@ -1182,7 +1213,7 @@ PVR_ERROR DVBLinkClient::UpdateTimer(const PVR_TIMER &timer)
         if (status == DVBLINK_REMOTE_STATUS_OK)
         {
           XBMC->Log(LOG_INFO, "Schedule %s was updated", schedule_id.c_str());
-          PVR->TriggerTimerUpdate();
+          m_update_timers_now = true;
           result = PVR_ERROR_NO_ERROR;
         }
         else
@@ -1252,7 +1283,7 @@ PVR_ERROR DVBLinkClient::DeleteRecording(const PVR_RECORDING& recording)
   }
 
   XBMC->Log(LOG_INFO, "Recording %s deleted", recording.strTitle);
-  PVR->TriggerRecordingUpdate();
+  m_update_recordings = true;
   result = PVR_ERROR_NO_ERROR;
   return result;
 }
@@ -1778,6 +1809,7 @@ PVR_ERROR DVBLinkClient::SetRecordingLastPlayedPosition(const PVR_RECORDING &rec
   dvblink_server_connection srv_connection(XBMC, connection_props_);
   if ((status = srv_connection.get_connection()->SetObjectResumeInfo(request, NULL)) == DVBLINK_REMOTE_STATUS_OK)
   {
+    m_update_recordings = true;
     return PVR_ERROR_NO_ERROR;
   }
   return PVR_ERROR_SERVER_ERROR;
