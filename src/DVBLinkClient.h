@@ -127,7 +127,7 @@ class DVBLinkClient: public P8PLATFORM::CThread
 public:
   DVBLinkClient(ADDON::CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* pvr, CHelper_libKODI_guilib* gui,
       std::string clientname, std::string hostname, long port, bool showinfomsg, std::string username,
-      std::string password, bool add_episode_to_rec_title, bool group_recordings_by_series, bool no_group_single_rec);
+      std::string password, bool add_episode_to_rec_title, bool group_recordings_by_series, bool no_group_single_rec, int default_rec_show_type);
   ~DVBLinkClient(void);
   const char *GetBackendVersion();
   void GetAddonCapabilities(PVR_ADDON_CAPABILITIES* pCapabilities);
@@ -210,6 +210,7 @@ private:
   dvblinkremote::ChannelFavorites channel_favorites_;
   std::map<std::string, int> inverse_channel_map_;
   bool no_group_single_rec_;
+  int default_rec_show_type_;
   std::map<std::string, schedule_desc> schedule_map_;
   std::map<std::string, unsigned int> timer_idx_map_;
   unsigned int timer_idx_seed_;

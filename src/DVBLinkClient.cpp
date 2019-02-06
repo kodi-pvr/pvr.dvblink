@@ -32,7 +32,6 @@ using namespace dvblinkremotehttp;
 using namespace ADDON;
 
 static int default_rec_limit_ = dcrn_keep_all;
-static int default_rec_show_type_ = dcrs_record_new_only;
 
 static int channel_id_start_seed_ = 100;
 
@@ -117,7 +116,7 @@ void DVBLinkClient::get_server_caps()
 
 DVBLinkClient::DVBLinkClient(CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* pvr, CHelper_libKODI_guilib* gui,
     std::string clientname, std::string hostname, long port, bool showinfomsg, std::string username,
-    std::string password, bool add_episode_to_rec_title, bool group_recordings_by_series, bool no_group_single_rec) :
+    std::string password, bool add_episode_to_rec_title, bool group_recordings_by_series, bool no_group_single_rec, int default_rec_show_type) :
     connection_props_(hostname, port, username, password, clientname)
 {
   PVR = pvr;
@@ -129,6 +128,7 @@ DVBLinkClient::DVBLinkClient(CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* p
   m_add_episode_to_rec_title = add_episode_to_rec_title;
   m_group_recordings_by_series = group_recordings_by_series;
   no_group_single_rec_ = no_group_single_rec;
+  default_rec_show_type_ = default_rec_show_type;
   timer_idx_seed_ = PVR_TIMER_NO_CLIENT_INDEX + 10; //arbitrary seed number, greater than 
 
   get_server_caps();
