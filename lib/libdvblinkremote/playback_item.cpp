@@ -93,6 +93,7 @@ RecordedTvItemMetadata::~RecordedTvItemMetadata()
 RecordedTvItem::RecordedTvItem(const std::string& objectId, const std::string& parentId, const std::string& playbackUrl, const std::string& thumbnailUrl, const RecordedTvItemMetadata* metadata)
   : PlaybackItem(PlaybackItem::PLAYBACK_ITEM_TYPE_RECORDED_TV, objectId, parentId, playbackUrl, thumbnailUrl, (ItemMetadata*)metadata),
     ChannelName(""),
+    ChannelID(""),
     ChannelNumber(0),
     ChannelSubNumber(0),
     State(RecordedTvItem::RECORDED_TV_ITEM_STATE_IN_PROGRESS),
@@ -181,6 +182,11 @@ bool GetPlaybackObjectResponseSerializer::PlaybackItemXmlDataDeserializer::Visit
       if (m_parent.HasChildElement(element, "channel_name")) 
       {
         recordedTvitem->ChannelName = Util::GetXmlFirstChildElementText(&element, "channel_name");
+      }
+
+      if (m_parent.HasChildElement(element, "channel_id"))
+      {
+        recordedTvitem->ChannelID = Util::GetXmlFirstChildElementText(&element, "channel_id");
       }
 
       if (m_parent.HasChildElement(element, "channel_number")) 

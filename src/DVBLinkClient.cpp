@@ -1452,11 +1452,20 @@ PVR_ERROR DVBLinkClient::GetRecordings(ADDON_HANDLE handle)
       }
     }
 
-    /* TODO: PVR API 5.0.0: Implement this */
-    xbmcRecording.iChannelUid = PVR_CHANNEL_INVALID_UID;
+    if (inverse_channel_map_.find(tvitem->ChannelID) != inverse_channel_map_.end())
+    {
+      int chid = inverse_channel_map_[tvitem->ChannelID];
+      xbmcRecording.iChannelUid = chid;
 
-    /* TODO: PVR API 5.1.0: Implement this */
-    xbmcRecording.channelType = PVR_RECORDING_CHANNEL_TYPE_UNKNOWN;
+      dvblinkremote::Channel* ch = m_channels[chid];
+      bool isRadio = (ch->GetChannelType() == dvblinkremote::Channel::CHANNEL_TYPE_RADIO);
+      xbmcRecording.channelType = isRadio ? PVR_RECORDING_CHANNEL_TYPE_RADIO : PVR_RECORDING_CHANNEL_TYPE_TV;
+    }
+    else
+    {
+      xbmcRecording.iChannelUid = PVR_CHANNEL_INVALID_UID;
+      xbmcRecording.channelType = PVR_RECORDING_CHANNEL_TYPE_UNKNOWN;
+    }
 
     PVR->TransferRecordingEntry(handle, &xbmcRecording);
 
