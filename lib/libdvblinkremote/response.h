@@ -1097,6 +1097,11 @@ namespace dvblinkremote {
     std::string ChannelName;
 
     /**
+    * The channel ID of the recorded TV item.
+    */
+    std::string ChannelID;
+
+    /**
       * The channel number of the recorded TV item.
       */
     int ChannelNumber;
