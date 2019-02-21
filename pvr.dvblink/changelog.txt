@@ -1,5 +1,6 @@
 [B]Version 4.7.2[/B]
 Added: PVR_RECORDING.iChannelUid and PVR_RECORDING.channelType support
+Added: Setting to change the addon update interval
 
 [B]Version 4.7.1[/B]
 Added: Option to change default 'Prevent duplicate episodes' setting

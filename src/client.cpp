@@ -57,6 +57,7 @@ bool        g_bShowInfoMSG          = DEFAULT_SHOWINFOMSG;           ///< Show i
 int         g_iHeight               = DEFAULT_HEIGHT;                ///< Height of stream when using transcoding (0: autodetect)
 int         g_iWidth                = DEFAULT_WIDTH;                 ///< Width of stream when using transcoding (0: autodetect)
 int         g_iBitrate              = DEFAULT_BITRATE;               ///< Bitrate of stream when using transcoding
+int         g_iDefaultUpdateInterval  = DEFAULT_UPDATE_INTERVAL;     ///< Default update interval
 int         g_iDefaultRecShowType   = DEFAULT_RECORD_SHOW_TYPE;      ///< Default record show type
 std::string g_szAudiotrack          = DEFAULT_AUDIOTRACK;            ///< Audiotrack to include in stream when using transcoding
 bool        g_bUseTimeshift         = DEFAULT_USETIMESHIFT;          ///< Use timeshift
@@ -270,6 +271,14 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
     g_szAudiotrack = DEFAULT_AUDIOTRACK;
   }
 
+  /* Read setting "default_update_interval" from settings.xml */
+  if (!XBMC->GetSetting("default_update_interval", &g_iDefaultUpdateInterval))
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC->Log(LOG_ERROR, "Couldn't get 'default_update_interval' setting, falling back to '4' (5 minutes) as default");
+    g_iDefaultUpdateInterval = DEFAULT_UPDATE_INTERVAL;
+  }
+
   /* Read setting "default_record_show_type" from settings.xml */
   if (!XBMC->GetSetting("default_record_show_type", &g_iDefaultRecShowType))
   {
@@ -283,7 +292,7 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
       g_lPort);
 
   dvblinkclient = new DVBLinkClient(XBMC, PVR, GUI, g_szClientname, g_szHostname, g_lPort, g_bShowInfoMSG, g_szUsername,
-      g_szPassword, g_bAddRecEpisode2title, g_bGroupRecBySeries, g_bNoGroupSingleRec, g_iDefaultRecShowType);
+      g_szPassword, g_bAddRecEpisode2title, g_bGroupRecBySeries, g_bNoGroupSingleRec, g_iDefaultUpdateInterval, g_iDefaultRecShowType);
 
   if (dvblinkclient->GetStatus())
     m_CurStatus = ADDON_STATUS_OK;
@@ -407,6 +416,11 @@ ADDON_STATUS ADDON_SetSetting(const char *settingName, const void *settingValue)
     g_szAudiotrack = (const char*) settingValue;
     if (tmp_sAudiotrack != g_szAudiotrack)
       return ADDON_STATUS_NEED_RESTART;
+  }
+  else if (str == "default_update_interval")
+  {
+    XBMC->Log(LOG_INFO, "Changed Setting 'default_update_interval' from %u to %u", g_iDefaultUpdateInterval, *(int*) settingValue);
+    g_iDefaultUpdateInterval = *(int*) settingValue;
   }
   else if (str == "default_record_show_type")
   {

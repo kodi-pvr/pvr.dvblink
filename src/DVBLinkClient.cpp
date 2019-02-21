@@ -116,7 +116,7 @@ void DVBLinkClient::get_server_caps()
 
 DVBLinkClient::DVBLinkClient(CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* pvr, CHelper_libKODI_guilib* gui,
     std::string clientname, std::string hostname, long port, bool showinfomsg, std::string username,
-    std::string password, bool add_episode_to_rec_title, bool group_recordings_by_series, bool no_group_single_rec, int default_rec_show_type) :
+    std::string password, bool add_episode_to_rec_title, bool group_recordings_by_series, bool no_group_single_rec, int default_update_interval, int default_rec_show_type) :
     connection_props_(hostname, port, username, password, clientname)
 {
   PVR = pvr;
@@ -130,6 +130,58 @@ DVBLinkClient::DVBLinkClient(CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* p
   no_group_single_rec_ = no_group_single_rec;
   default_rec_show_type_ = default_rec_show_type;
   timer_idx_seed_ = PVR_TIMER_NO_CLIENT_INDEX + 10; //arbitrary seed number, greater than 
+  
+  switch (default_update_interval)
+  {
+  case 0:
+    default_update_interval_sec_ = UPDATE_INTERVAL_60_SEC;
+    break;
+  case 1:
+    default_update_interval_sec_ = UPDATE_INTERVAL_120_SEC;
+    break;
+  case 2:
+    default_update_interval_sec_ = UPDATE_INTERVAL_180_SEC;
+    break;
+  case 3:
+    default_update_interval_sec_ = UPDATE_INTERVAL_240_SEC;
+    break;
+  case 4:
+    default_update_interval_sec_ = UPDATE_INTERVAL_300_SEC;
+    break;
+  case 5:
+    default_update_interval_sec_ = UPDATE_INTERVAL_360_SEC;
+    break;
+  case 6:
+    default_update_interval_sec_ = UPDATE_INTERVAL_420_SEC;
+    break;
+  case 7:
+    default_update_interval_sec_ = UPDATE_INTERVAL_480_SEC;
+    break;
+  case 8:
+    default_update_interval_sec_ = UPDATE_INTERVAL_540_SEC;
+    break;
+  case 9:
+    default_update_interval_sec_ = UPDATE_INTERVAL_600_SEC;
+    break;
+  case 10:
+    default_update_interval_sec_ = UPDATE_INTERVAL_1200_SEC;
+    break;
+  case 11:
+    default_update_interval_sec_ = UPDATE_INTERVAL_1800_SEC;
+    break;
+  case 12:
+    default_update_interval_sec_ = UPDATE_INTERVAL_2400_SEC;
+    break;
+  case 13:
+    default_update_interval_sec_ = UPDATE_INTERVAL_3000_SEC;
+    break;
+  case 14:
+    default_update_interval_sec_ = UPDATE_INTERVAL_3600_SEC;
+    break;
+  default:
+    default_update_interval_sec_ = UPDATE_INTERVAL_300_SEC;
+    break;
+  }
 
   get_server_caps();
 
@@ -210,13 +262,12 @@ void *DVBLinkClient::Process()
 {
   XBMC->Log(LOG_DEBUG, "DVBLinkUpdateProcess:: thread started");
 
-  time_t update_period_default_sec = 300;
   time_t update_period_timers_sec = 5;
   time_t update_period_recordings_sec = 1;
   time_t now;
   time(&now);
-  time_t next_update_time_timers = now + update_period_default_sec;
-  time_t next_update_time_recordings = now + update_period_default_sec;
+  time_t next_update_time_timers = now + default_update_interval_sec_;
+  time_t next_update_time_recordings = now + default_update_interval_sec_;
 
   while (m_updating)
   {
@@ -235,7 +286,7 @@ void *DVBLinkClient::Process()
     if (now > next_update_time_timers)
     {
       PVR->TriggerTimerUpdate();
-      next_update_time_timers = now + update_period_default_sec;
+      next_update_time_timers = now + default_update_interval_sec_;
     }
 
     if (m_update_timers_repeat)
@@ -253,7 +304,7 @@ void *DVBLinkClient::Process()
     if (now > next_update_time_recordings)
     {
       PVR->TriggerRecordingUpdate();
-      next_update_time_recordings = now + update_period_default_sec;
+      next_update_time_recordings = now + default_update_interval_sec_;
     }
 
     Sleep(100);
