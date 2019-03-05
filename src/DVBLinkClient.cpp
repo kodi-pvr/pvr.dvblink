@@ -94,6 +94,9 @@ void DVBLinkClient::get_server_caps()
     {
       //timeshift commands are supported in the latest v6 build or in v7 build (aka tv mosaic)
       server_caps_.timeshift_commands_supported_ = (v1 == 6 && server_build >= 14061) || v1 >= 7; 
+
+      //start timer any time flag is only supported in v6
+      server_caps_.start_any_time_supported_ = (v1 == 6);
     }
   }
 
@@ -501,8 +504,7 @@ PVR_ERROR DVBLinkClient::GetTimerTypes(PVR_TIMER_TYPE types[], int *size)
       | PVR_TIMER_TYPE_SUPPORTS_WEEKDAYS | PVR_TIMER_TYPE_SUPPORTS_MAX_RECORDINGS;
 
   static const unsigned int TIMER_REPEATING_EPG_ATTRIBS = PVR_TIMER_TYPE_IS_REPEATING
-      | PVR_TIMER_TYPE_SUPPORTS_START_ANYTIME | PVR_TIMER_TYPE_SUPPORTS_RECORD_ONLY_NEW_EPISODES
-      | PVR_TIMER_TYPE_SUPPORTS_MAX_RECORDINGS;
+      | PVR_TIMER_TYPE_SUPPORTS_RECORD_ONLY_NEW_EPISODES | PVR_TIMER_TYPE_SUPPORTS_MAX_RECORDINGS;
 
   static const unsigned int TIMER_REPEATING_KEYWORD_ATTRIBS = PVR_TIMER_TYPE_SUPPORTS_TITLE_EPG_MATCH
       | PVR_TIMER_TYPE_SUPPORTS_CHANNELS | PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN | PVR_TIMER_TYPE_IS_REPEATING
@@ -592,13 +594,18 @@ PVR_ERROR DVBLinkClient::GetTimerTypes(PVR_TIMER_TYPE types[], int *size)
     /* Values definitions for attributes. */
     recordingLimitValues, default_rec_limit_, showTypeValues, default_rec_show_type_)));
 
+    unsigned int repeating_epg_attrs = TIMER_EPG_ATTRIBS | TIMER_REPEATING_EPG_ATTRIBS;
+    //start timer anytime is supported only in v6
+    if (server_caps_.start_any_time_supported_)
+      repeating_epg_attrs |= PVR_TIMER_TYPE_SUPPORTS_START_ANYTIME;
+
     timerTypes.push_back(
     /* Repeating epg based Parent*/
     std::unique_ptr<TimerType>(new TimerType(
     /* Type id. */
     TIMER_REPEATING_EPG,
     /* Attributes. */
-    TIMER_EPG_ATTRIBS | TIMER_REPEATING_EPG_ATTRIBS,
+    repeating_epg_attrs,
     /* Description. */
     XBMC->GetLocalizedString(32043),
     /* Values definitions for attributes. */
@@ -817,7 +824,7 @@ int DVBLinkClient::GetSchedules(ADDON_HANDLE handle, const RecordingList& record
       timer.iMarginEnd = epg_schedules[i]->MarginAfter / 60;
 
       timer.iMaxRecordings = epg_schedules[i]->RecordingsToKeep;
-      timer.bStartAnyTime = epg_schedules[i]->RecordSeriesAnytime;
+      timer.bStartAnyTime = server_caps_.start_any_time_supported_ ? epg_schedules[i]->RecordSeriesAnytime : true;
       timer.iPreventDuplicateEpisodes = epg_schedules[i]->NewOnly ? dcrs_record_new_only : dcrs_record_all;
       strncpy(timer.strTitle, epg_schedules[i]->program_name_.c_str(), sizeof(timer.strTitle) - 1);
 
@@ -913,11 +920,15 @@ PVR_ERROR DVBLinkClient::GetTimers(ADDON_HANDLE handle)
 
   //get and process schedules first
   int schedule_count = GetSchedules(handle, recordings);
+  int recording_count = 0;
 
   unsigned int index = PVR_TIMER_NO_CLIENT_INDEX + 1;
   for (size_t i = 0; i < recordings.size(); i++, index++)
   {
     Recording* rec = recordings[i];
+
+    if (!rec->GetProgram().IsRecord)
+      continue;
 
     PVR_TIMER xbmcTimer;
     memset(&xbmcTimer, 0, sizeof(PVR_TIMER));
@@ -987,10 +998,11 @@ PVR_ERROR DVBLinkClient::GetTimers(ADDON_HANDLE handle)
     }
 
     PVR->TransferTimerEntry(handle, &xbmcTimer);
+    recording_count += 1;
     XBMC->Log(LOG_INFO, "Added EPG timer : %s", rec->GetProgram().GetTitle().c_str());
   }
 
-  m_timerCount = recordings.size() + schedule_count;
+  m_timerCount = recording_count + schedule_count;
 
   result = PVR_ERROR_NO_ERROR;
   return result;
@@ -1098,7 +1110,7 @@ PVR_ERROR DVBLinkClient::AddTimer(const PVR_TIMER &timer)
       std::string channelId = m_channels[timer.iClientChannelUid]->GetID();
       bool record_series = true;
       bool newOnly = timer.iPreventDuplicateEpisodes == dcrs_record_all ? false : true;
-      bool anytime = timer.bStartAnyTime;
+      bool anytime = server_caps_.start_any_time_supported_ ? timer.bStartAnyTime : true;
 
       std::string dvblink_program_id;
       if (get_dvblink_program_id(channelId, timer.iEpgUid, dvblink_program_id))
@@ -1249,7 +1261,7 @@ PVR_ERROR DVBLinkClient::UpdateTimer(const PVR_TIMER &timer)
       if (timer.iTimerType == schedule_type)
       {
         bool new_only = timer.iPreventDuplicateEpisodes == dcrs_record_new_only;
-        bool recordSeriesAnytime = timer.bStartAnyTime;
+        bool recordSeriesAnytime = server_caps_.start_any_time_supported_ ? timer.bStartAnyTime : true;
         int recordingsToKeep = timer.iMaxRecordings;
         int margin_before = timer.iMarginStart * 60;
         int margin_after = timer.iMarginEnd * 60;

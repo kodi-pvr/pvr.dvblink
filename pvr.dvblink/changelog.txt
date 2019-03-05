@@ -1,6 +1,8 @@
 [B]Version 4.7.2[/B]
 Added: PVR_RECORDING.iChannelUid and PVR_RECORDING.channelType support
 Added: Setting to change the addon update interval
+Fixed: deleted timers do not remain in the list as disabled
+Removed: start any time flag for EPG recurring timers when working with TVMosaic server due to behavior inconsistency
 
 [B]Version 4.7.1[/B]
 Added: Option to change default 'Prevent duplicate episodes' setting
