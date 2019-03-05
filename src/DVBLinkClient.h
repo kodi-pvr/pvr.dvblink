@@ -74,6 +74,23 @@ enum dvblink_client_rec_showtype_e
   dcrs_record_all = 0, dcrs_record_new_only = 1
 };
 
+/* dvblink update interval values */
+const int UPDATE_INTERVAL_60_SEC   = 60;
+const int UPDATE_INTERVAL_120_SEC  = 120;
+const int UPDATE_INTERVAL_180_SEC  = 180;
+const int UPDATE_INTERVAL_240_SEC  = 240;
+const int UPDATE_INTERVAL_300_SEC  = 300;
+const int UPDATE_INTERVAL_360_SEC  = 360;
+const int UPDATE_INTERVAL_420_SEC  = 420;
+const int UPDATE_INTERVAL_480_SEC  = 480;
+const int UPDATE_INTERVAL_540_SEC  = 540;
+const int UPDATE_INTERVAL_600_SEC  = 600;
+const int UPDATE_INTERVAL_1200_SEC = 1200;
+const int UPDATE_INTERVAL_1800_SEC = 1800;
+const int UPDATE_INTERVAL_2400_SEC = 2400;
+const int UPDATE_INTERVAL_3000_SEC = 3000;
+const int UPDATE_INTERVAL_3600_SEC = 3600;
+
 struct schedule_desc
 {
   schedule_desc(unsigned int idx, int type, int margin_before, int margin_after)
@@ -127,7 +144,7 @@ class DVBLinkClient: public P8PLATFORM::CThread
 public:
   DVBLinkClient(ADDON::CHelper_libXBMC_addon* xbmc, CHelper_libXBMC_pvr* pvr, CHelper_libKODI_guilib* gui,
       std::string clientname, std::string hostname, long port, bool showinfomsg, std::string username,
-      std::string password, bool add_episode_to_rec_title, bool group_recordings_by_series, bool no_group_single_rec, int default_rec_show_type);
+      std::string password, bool add_episode_to_rec_title, bool group_recordings_by_series, bool no_group_single_rec, int default_update_interval, int default_rec_show_type);
   ~DVBLinkClient(void);
   const char *GetBackendVersion();
   void GetAddonCapabilities(PVR_ADDON_CAPABILITIES* pCapabilities);
@@ -210,6 +227,7 @@ private:
   dvblinkremote::ChannelFavorites channel_favorites_;
   std::map<std::string, int> inverse_channel_map_;
   bool no_group_single_rec_;
+  time_t default_update_interval_sec_;
   int default_rec_show_type_;
   std::map<std::string, schedule_desc> schedule_map_;
   std::map<std::string, unsigned int> timer_idx_map_;

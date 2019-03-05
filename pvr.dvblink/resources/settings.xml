@@ -22,6 +22,7 @@
     <setting id="add_rec_episode_info" type="bool" label="30203" default="true" />
     <setting id="group_recordings_by_series" type="bool" label="30204" default="true" />
     <setting id="no_group_for_single_record"  visible="eq(-1,true)" type="bool" label="32025" default="false" />
+    <setting id="default_update_interval" label="19071" type="enum" lvalues="30120|30121|30122|30123|30124|30125|30126|30127|30128|30129|30130|30131|30132|30133|30134" default="4" />
     <setting id="default_record_show_type" label="812" type="enum" lvalues="32035|32036" default="1" />
   </category>
 </settings>
