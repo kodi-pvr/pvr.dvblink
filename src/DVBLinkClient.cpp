@@ -1769,14 +1769,14 @@ bool DVBLinkClient::is_valid_ch_idx(int ch_idx)
   return m_channels.find(ch_idx) != m_channels.end();
 }
 
-PVR_ERROR DVBLinkClient::GetEPGForChannel(ADDON_HANDLE handle, const PVR_CHANNEL& channel, time_t iStart, time_t iEnd)
+PVR_ERROR DVBLinkClient::GetEPGForChannel(ADDON_HANDLE handle, int iChannelUid, time_t iStart, time_t iEnd)
 {
   PVR_ERROR result = PVR_ERROR_FAILED;
 
-  if (!is_valid_ch_idx(channel.iUniqueId))
+  if (!is_valid_ch_idx(iChannelUid))
     return result;
 
-  Channel * c = m_channels[channel.iUniqueId];
+  Channel * c = m_channels[iChannelUid];
   EpgSearchResult epgSearchResult;
 
   if (DoEPGSearch(epgSearchResult, c->GetID(), iStart, iEnd))
@@ -1793,7 +1793,7 @@ PVR_ERROR DVBLinkClient::GetEPGForChannel(ADDON_HANDLE handle, const PVR_CHANNEL
 
         broadcast.iUniqueBroadcastId = p->GetStartTime();
         broadcast.strTitle = p->GetTitle().c_str();
-        broadcast.iUniqueChannelId = channel.iUniqueId;
+        broadcast.iUniqueChannelId = iChannelUid;
         broadcast.startTime = p->GetStartTime();
         broadcast.endTime = p->GetStartTime() + p->GetDuration();
         broadcast.strPlot = p->ShortDescription.c_str();
@@ -1808,7 +1808,6 @@ PVR_ERROR DVBLinkClient::GetEPGForChannel(ADDON_HANDLE handle, const PVR_CHANNEL
         broadcast.firstAired = 0;
         broadcast.iParentalRating = 0;
         broadcast.iStarRating = p->Rating;
-        broadcast.bNotify = false;
         broadcast.iSeriesNumber = p->SeasonNumber;
         broadcast.iEpisodeNumber = p->EpisodeNumber;
         broadcast.iEpisodePartNumber = 0;
@@ -1834,8 +1833,7 @@ PVR_ERROR DVBLinkClient::GetEPGForChannel(ADDON_HANDLE handle, const PVR_CHANNEL
   }
   else
   {
-    XBMC->Log(LOG_NOTICE, "Not EPG data found for channel : %s with id : %i", channel.strChannelName,
-        channel.iUniqueId);
+    XBMC->Log(LOG_NOTICE, "Not EPG data found for channel with id : %i", iChannelUid);
   }
   return result;
 }

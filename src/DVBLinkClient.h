@@ -152,7 +152,7 @@ public:
   void GetAddonCapabilities(PVR_ADDON_CAPABILITIES* pCapabilities);
   int GetChannelsAmount();
   PVR_ERROR GetChannels(ADDON_HANDLE handle, bool bRadio);
-  PVR_ERROR GetEPGForChannel(ADDON_HANDLE handle, const PVR_CHANNEL& channel, time_t iStart, time_t iEnd);
+  PVR_ERROR GetEPGForChannel(ADDON_HANDLE handle, int iChannelUid, time_t iStart, time_t iEnd);
   int GetRecordingsAmount();
   PVR_ERROR GetRecordings(ADDON_HANDLE handle);
   PVR_ERROR DeleteRecording(const PVR_RECORDING& recording);
