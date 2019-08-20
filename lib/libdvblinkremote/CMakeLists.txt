@@ -31,11 +31,8 @@ SET(SOURCES channel.cpp
             resume_info.cpp
             xml_object_serializer_factory.cpp)
 
-if(NOT WIN32)
-  add_options(ALL_LANGUAGES ALL_BUILDS "-fPIC")
-endif()
-
 ADD_LIBRARY(dvblinkremote STATIC ${SOURCES})
+set_property(TARGET dvblinkremote PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 if(WIN32)
   target_link_libraries(dvblinkremote ws2_32)
