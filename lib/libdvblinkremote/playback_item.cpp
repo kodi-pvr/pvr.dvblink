@@ -166,7 +166,7 @@ bool GetPlaybackObjectResponseSerializer::PlaybackItemXmlDataDeserializer::Visit
   if (strcmp(element.Name(), "recorded_tv") == 0 ||
       strcmp(element.Name(), "video") == 0) 
   {
-    PlaybackItem* item;
+    PlaybackItem* item = nullptr;
     std::string objectId = Util::GetXmlFirstChildElementText(&element, "object_id");
     std::string parentId = Util::GetXmlFirstChildElementText(&element, "parent_id");
     std::string playbackUrl = Util::GetXmlFirstChildElementText(&element, "url");
