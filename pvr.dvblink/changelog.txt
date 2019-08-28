@@ -1,3 +1,8 @@
+[B]Version 4.7.3[/B]
+Update build system version and cleanup
+Fix package check for Tiny XML
+Added AppVeyor for Windows related build tests
+
 [B]Version 4.7.2[/B]
 Added: PVR_RECORDING.iChannelUid and PVR_RECORDING.channelType support
 Added: Setting to change the addon update interval

@@ -1,28 +1,27 @@
 # - Find TinyXML2
-# Find the native TinyXML includes and library
+# Find the native TinyXML2 includes and library
 #
-#   TINYXML2_FOUND        - True if TinyXML found.
-#   TINYXML2_INCLUDE_DIRS - where to find tinyxml.h, etc.
-#   TINYXML2_LIBRARIES    - List of libraries when using TinyXML.
+#   TINYXML2_FOUND        - True if TinyXML2 found.
+#   TINYXML2_INCLUDE_DIRS - where to find tinyxml2.h, etc.
+#   TINYXML2_LIBRARIES    - List of libraries when using TinyXML2.
 #
 
 find_package(PkgConfig)
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules (TINYXML2 tinyxml2)
-  list(APPEND TINYXML2_INCLUDE_DIRS ${TINYXML2_INCLUDEDIR})
-endif()
-if(NOT TINYXML2_FOUND)
-  find_path( TINYXML2_INCLUDE_DIRS "tinyxml2.h"
-             PATH_SUFFIXES "tinyxml2" )
-
-  find_library( TINYXML2_LIBRARIES
-                NAMES "tinyxml2"
-                PATH_SUFFIXES "tinyxml2" )
+  pkg_check_modules(PC_TINYXML2 tinyxml2 QUIET)
 endif()
 
-# handle the QUIETLY and REQUIRED arguments and set TINYXML2_FOUND to TRUE if
-# all listed variables are TRUE
-include( "FindPackageHandleStandardArgs" )
-find_package_handle_standard_args(TinyXML2 DEFAULT_MSG TINYXML2_INCLUDE_DIRS TINYXML2_LIBRARIES )
+find_path(TINYXML2_INCLUDE_DIR tinyxml2.h PATHS ${PC_TINYXML2_INCLUDEDIR})
+find_library(TINYXML2_LIBRARY NAMES tinyxml2 PATHS ${PC_TINYXML2_LIBDIR})
 
-mark_as_advanced(TINYXML2_INCLUDE_DIRS TINYXML2_LIBRARIES)
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(TinyXML2
+                                  REQUIRED_VARS TINYXML2_LIBRARY TINYXML2_INCLUDE_DIR
+                                  VERSION_VAR ${PC_TINYXML2_VERSION})
+
+if(TINYXML2_FOUND)
+  set(TINYXML2_INCLUDE_DIRS ${TINYXML2_INCLUDE_DIR})
+  set(TINYXML2_LIBRARIES ${TINYXML2_LIBRARY})
+endif()
+
+mark_as_advanced(TINYXML2_INCLUDE_DIR TINYXML2_LIBRARY)
