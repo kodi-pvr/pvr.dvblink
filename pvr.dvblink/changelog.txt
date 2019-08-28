@@ -1,3 +1,8 @@
+[B]Version 5.1.1[/B]
+Update build system version and cleanup
+Fix package check for Tiny XML
+Added AppVeyor for Windows related build tests
+
 [B]Version 5.1.0[/B]
 Update to GUI addon API v5.14.0
 

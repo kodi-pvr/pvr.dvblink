@@ -1,8 +1,5 @@
+cmake_minimum_required(VERSION 3.5)
 PROJECT(dvblinkremote)
-
-ENABLE_LANGUAGE(CXX)
-
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 SET(SOURCES channel.cpp
             dvblinkremotecommunication.cpp
@@ -34,11 +31,8 @@ SET(SOURCES channel.cpp
             resume_info.cpp
             xml_object_serializer_factory.cpp)
 
-if(NOT WIN32)
-  add_options(ALL_LANGUAGES ALL_BUILDS "-fPIC")
-endif()
-
 ADD_LIBRARY(dvblinkremote STATIC ${SOURCES})
+set_property(TARGET dvblinkremote PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 if(WIN32)
   target_link_libraries(dvblinkremote ws2_32)
