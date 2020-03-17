@@ -43,8 +43,8 @@ ItemMetadata::ItemMetadata()
   Keywords = "";
   Image = "";
   Year = 0;
-  EpisodeNumber = 0;
-  SeasonNumber = 0;
+  EpisodeNumber = -1;
+  SeasonNumber = -1;
   Rating = 0;
   MaximumRating = 0;
   IsHdtv = false;
@@ -90,8 +90,8 @@ ItemMetadata::ItemMetadata(const std::string& title, const long startTime, const
   Keywords = "";
   Image = "";
   Year = 0;
-  EpisodeNumber = 0;
-  SeasonNumber = 0;
+  EpisodeNumber = -1;
+  SeasonNumber = -1;
   Rating = 0;
   MaximumRating = 0;
   IsHdtv = false;
