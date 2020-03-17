@@ -1805,12 +1805,12 @@ PVR_ERROR DVBLinkClient::GetEPGForChannel(ADDON_HANDLE handle, int iChannelUid, 
         broadcast.iGenreType = 0;
         broadcast.iGenreSubType = 0;
         broadcast.strGenreDescription = "";
-        broadcast.firstAired = 0;
+        broadcast.strFirstAired = "";
         broadcast.iParentalRating = 0;
         broadcast.iStarRating = p->Rating;
         broadcast.iSeriesNumber = p->SeasonNumber;
         broadcast.iEpisodeNumber = p->EpisodeNumber;
-        broadcast.iEpisodePartNumber = 0;
+        broadcast.iEpisodePartNumber = EPG_TAG_INVALID_SERIES_EPISODE;
         broadcast.strEpisodeName = p->SubTitle.c_str();
         broadcast.strIMDBNumber = NULL;  // unused
         broadcast.strOriginalTitle = NULL;  // unused
