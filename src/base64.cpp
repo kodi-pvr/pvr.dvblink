@@ -23,7 +23,7 @@
 
    René Nyffenegger rene.nyffenegger@adp-gmbh.ch
 
-   Code modified to meet XBMC stand coding style by Palle Ehmsen (Palle@barcodemadness.com) 2012
+   Code modified to meet Kodi stand coding style by Palle Ehmsen (Palle@barcodemadness.com) 2012
 */
 
 #include "base64.h"
