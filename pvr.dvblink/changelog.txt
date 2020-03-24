@@ -1,5 +1,22 @@
+[B]Version 5.2.6[/B]
+Added: GPL2 license file and show GPL2 on README.md
+Update: Debian build code
+Update: Some minor cleanups
+
 [B]Version 5.2.5[/B]
 Update: PVR API 6.2.0
+
+[B]Version 5.2.4[/B]
+Updated: language files from Transifex
+
+[B]Version 5.2.3[/B]
+Updated: language files from Transifex
+
+[B]Version 5.2.2[/B]
+Updated: language files from Transifex
+
+[B]Version 5.2.1[/B]
+Updated: language files from Transifex
 
 [B]Version 5.2.0[/B]
 Recompile for 6.1.0 PVR Addon API compatibility
