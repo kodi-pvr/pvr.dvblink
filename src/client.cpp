@@ -780,6 +780,11 @@ PVR_ERROR SetRecordingLastPlayedPosition(const PVR_RECORDING &recording, int pos
   return PVR_ERROR_FAILED;
 }
 
+PVR_ERROR GetRecordingSize(const PVR_RECORDING* recording, int64_t* sizeInBytes)
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
 /** UNUSED API FUNCTIONS */
 
 PVR_ERROR GetChannelStreamProperties(const PVR_CHANNEL*, PVR_NAMED_VALUE*, unsigned int*)
