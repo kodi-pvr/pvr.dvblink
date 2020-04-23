@@ -1817,7 +1817,7 @@ PVR_ERROR DVBLinkClient::GetEPGForChannel(ADDON_HANDLE handle, int iChannelUid, 
   }
   else
   {
-    XBMC->Log(LOG_NOTICE, "Not EPG data found for channel with id : %i", iChannelUid);
+    XBMC->Log(LOG_INFO, "Not EPG data found for channel with id : %i", iChannelUid);
   }
   return result;
 }

@@ -115,7 +115,7 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
 
   //generate a guid to use as a client identification
   generate_uuid(g_szClientname);
-  XBMC->Log(LOG_NOTICE, "Generated guid %s to use as a DVBLink client ID", g_szClientname.c_str());
+  XBMC->Log(LOG_INFO, "Generated guid %s to use as a DVBLink client ID", g_szClientname.c_str());
 
   m_CurStatus = ADDON_STATUS_UNKNOWN;
   g_strUserPath = pvrprops->strUserPath;
