@@ -433,13 +433,13 @@ void OnPowerSavingDeactivated()
 {
 }
 
-PVR_ERROR GetAddonCapabilities(PVR_ADDON_CAPABILITIES* pCapabilities)
+PVR_ERROR GetCapabilities(PVR_ADDON_CAPABILITIES* pCapabilities)
 {
   if (dvblinkclient)
   {
     if (dvblinkclient->GetStatus())
     {
-      dvblinkclient->GetAddonCapabilities(pCapabilities);
+      dvblinkclient->GetCapabilities(pCapabilities);
       return PVR_ERROR_NO_ERROR;
     }
   }
