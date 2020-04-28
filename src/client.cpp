@@ -683,7 +683,7 @@ PVR_ERROR GetRecordingEdl(const PVR_RECORDING&, PVR_EDL_ENTRY[], int*)
   return PVR_ERROR_NOT_IMPLEMENTED;
 }
 
-PVR_ERROR SignalStatus(PVR_SIGNAL_STATUS &signalStatus)
+PVR_ERROR GetSignalStatus(int channelUid, PVR_SIGNAL_STATUS *signalStatus)
 {
   return PVR_ERROR_NO_ERROR;
 }
@@ -894,7 +894,7 @@ void SetSpeed(int)
 {
 }
 
-PVR_ERROR GetDescrambleInfo(PVR_DESCRAMBLE_INFO* descrambleInfo)
+PVR_ERROR GetDescrambleInfo(int channelUid, PVR_DESCRAMBLE_INFO* descrambleInfo)
 {
   return PVR_ERROR_NOT_IMPLEMENTED;
 }
