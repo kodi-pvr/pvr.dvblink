@@ -1,3 +1,6 @@
+[B]Version 5.2.9[/B]
+Update: PVR API 6.5.0
+
 [B]Version 5.2.8[/B]
 Update: PVR API 6.4.0
 Update: Add license name, forum url and source url to addon.xml
