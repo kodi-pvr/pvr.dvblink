@@ -85,7 +85,7 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
   if (!hdl || !props)
     return ADDON_STATUS_UNKNOWN;
 
-  PVR_PROPERTIES* pvrprops = (PVR_PROPERTIES*) props;
+  AddonProperties_PVR* pvrprops = (AddonProperties_PVR*) props;
 
   XBMC = new CHelper_libXBMC_addon;
   if (!XBMC->RegisterMe(hdl))
@@ -433,13 +433,13 @@ void OnPowerSavingDeactivated()
 {
 }
 
-PVR_ERROR GetAddonCapabilities(PVR_ADDON_CAPABILITIES* pCapabilities)
+PVR_ERROR GetCapabilities(PVR_ADDON_CAPABILITIES* pCapabilities)
 {
   if (dvblinkclient)
   {
     if (dvblinkclient->GetStatus())
     {
-      dvblinkclient->GetAddonCapabilities(pCapabilities);
+      dvblinkclient->GetCapabilities(pCapabilities);
       return PVR_ERROR_NO_ERROR;
     }
   }
@@ -683,7 +683,7 @@ PVR_ERROR GetRecordingEdl(const PVR_RECORDING&, PVR_EDL_ENTRY[], int*)
   return PVR_ERROR_NOT_IMPLEMENTED;
 }
 
-PVR_ERROR SignalStatus(PVR_SIGNAL_STATUS &signalStatus)
+PVR_ERROR GetSignalStatus(int channelUid, PVR_SIGNAL_STATUS *signalStatus)
 {
   return PVR_ERROR_NO_ERROR;
 }
@@ -894,7 +894,7 @@ void SetSpeed(int)
 {
 }
 
-PVR_ERROR GetDescrambleInfo(PVR_DESCRAMBLE_INFO* descrambleInfo)
+PVR_ERROR GetDescrambleInfo(int channelUid, PVR_DESCRAMBLE_INFO* descrambleInfo)
 {
   return PVR_ERROR_NOT_IMPLEMENTED;
 }

@@ -229,7 +229,7 @@ const char* DVBLinkClient::GetBackendVersion()
   return server_caps_.server_version_.c_str();
 }
 
-void DVBLinkClient::GetAddonCapabilities(PVR_ADDON_CAPABILITIES* pCapabilities)
+void DVBLinkClient::GetCapabilities(PVR_ADDON_CAPABILITIES* pCapabilities)
 {
   pCapabilities->bSupportsEPG = true;
   pCapabilities->bSupportsRecordings = server_caps_.recordings_supported_;

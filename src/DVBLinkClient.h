@@ -132,7 +132,7 @@ public:
       std::string password, bool add_episode_to_rec_title, bool group_recordings_by_series, bool no_group_single_rec, int default_update_interval, int default_rec_show_type);
   ~DVBLinkClient(void);
   const char *GetBackendVersion();
-  void GetAddonCapabilities(PVR_ADDON_CAPABILITIES* pCapabilities);
+  void GetCapabilities(PVR_ADDON_CAPABILITIES* pCapabilities);
   int GetChannelsAmount();
   PVR_ERROR GetChannels(ADDON_HANDLE handle, bool bRadio);
   PVR_ERROR GetEPGForChannel(ADDON_HANDLE handle, int iChannelUid, time_t iStart, time_t iEnd);
