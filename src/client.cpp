@@ -80,7 +80,7 @@ static void generate_uuid(std::string& uuid)
   }
 }
 
-ADDON_STATUS ADDON_Create(void* hdl, void* props)
+ADDON_STATUS ADDON_Create(void* hdl, const char* globalApiVersion, void* props)
 {
   if (!hdl || !props)
     return ADDON_STATUS_UNKNOWN;
