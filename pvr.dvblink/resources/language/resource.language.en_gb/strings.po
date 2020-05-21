@@ -46,7 +46,11 @@ msgctxt "#30006"
 msgid "Password"
 msgstr ""
 
-#empty strings from id 30007 to 30099
+msgctxt "#30007"
+msgid "Playback failed, please ensure you are using TV MOSAIC PLUS"
+msgstr ""
+
+#empty strings from id 30008 to 30099
 
 msgctxt "#30100"
 msgid "Stream"

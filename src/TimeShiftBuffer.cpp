@@ -8,6 +8,8 @@
 
 #include "TimeShiftBuffer.h"
 
+#include <kodi/General.h>
+
 using namespace dvblinkremote;
 
 //base live streaming class
@@ -50,15 +52,17 @@ bool LiveStreamerBase::Start(Channel* channel,
       streampath_ = stream_.GetUrl();
       if (!m_streamHandle.OpenFile(streampath_))
       {
-        kodi::Log(ADDON_LOG_ERROR, "Could not open streaming for channel %s (Error code : %d)",
-                  channel->GetDvbLinkID().c_str(), (int)status, error.c_str());
+        kodi::Log(ADDON_LOG_ERROR, "Could not open streaming for channel %s",
+                  channel->GetDvbLinkID().c_str());
         return false;
       }
     }
     else
     {
-      kodi::Log(ADDON_LOG_ERROR, "Could not start streaming for channel %s (Error code : %d)",
+      kodi::Log(ADDON_LOG_ERROR, "Could not start streaming for channel %s (Error code : %d Description : %s)",
                 channel->GetDvbLinkID().c_str(), (int)status, error.c_str());
+      if (status == DVBLINK_REMOTE_STATUS_INVALID_DATA)
+        kodi::QueueNotification(QUEUE_ERROR, "", kodi::GetLocalizedString(30007));
     }
 
     SAFE_DELETE(sr);
