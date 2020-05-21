@@ -12,8 +12,8 @@ bool CSettings::Load()
   if (!kodi::CheckSettingString("host", m_szHostname))
   {
     /* If setting is unknown fallback to defaults */
-    kodi::Log(ADDON_LOG_ERROR,
-              "Couldn't get 'host' setting, falling back to '%s' as default", DEFAULT_HOST);
+    kodi::Log(ADDON_LOG_ERROR, "Couldn't get 'host' setting, falling back to '%s' as default",
+              DEFAULT_HOST);
     m_szHostname = DEFAULT_HOST;
   }
 
@@ -47,8 +47,8 @@ bool CSettings::Load()
   if (!kodi::CheckSettingInt("port", m_iPort))
   {
     /* If setting is unknown fallback to defaults */
-    kodi::Log(ADDON_LOG_ERROR,
-              "Couldn't get 'port' setting, falling back to '%i' as default", DEFAULT_PORT);
+    kodi::Log(ADDON_LOG_ERROR, "Couldn't get 'port' setting, falling back to '%i' as default",
+              DEFAULT_PORT);
     m_iPort = DEFAULT_PORT;
   }
 
@@ -56,8 +56,7 @@ bool CSettings::Load()
   if (!kodi::CheckSettingBoolean("timeshift", m_bUseTimeshift))
   {
     /* If setting is unknown fallback to defaults */
-    kodi::Log(ADDON_LOG_ERROR,
-              "Couldn't get 'timeshift' setting, falling back to '%s' as default",
+    kodi::Log(ADDON_LOG_ERROR, "Couldn't get 'timeshift' setting, falling back to '%s' as default",
               DEFAULT_USETIMESHIFT ? "true" : "false");
     m_bUseTimeshift = DEFAULT_USETIMESHIFT;
   }
@@ -106,8 +105,8 @@ bool CSettings::Load()
   if (!kodi::CheckSettingInt("height", m_iHeight))
   {
     /* If setting is unknown fallback to defaults */
-    kodi::Log(ADDON_LOG_ERROR,
-              "Couldn't get 'height' setting, falling back to '%i' as default", DEFAULT_HEIGHT);
+    kodi::Log(ADDON_LOG_ERROR, "Couldn't get 'height' setting, falling back to '%i' as default",
+              DEFAULT_HEIGHT);
     m_iHeight = DEFAULT_HEIGHT;
   }
 
@@ -115,8 +114,8 @@ bool CSettings::Load()
   if (!kodi::CheckSettingInt("width", m_iWidth))
   {
     /* If setting is unknown fallback to defaults */
-    kodi::Log(ADDON_LOG_ERROR,
-              "Couldn't get 'width' setting, falling back to '%i' as default", DEFAULT_WIDTH);
+    kodi::Log(ADDON_LOG_ERROR, "Couldn't get 'width' setting, falling back to '%i' as default",
+              DEFAULT_WIDTH);
     m_iWidth = DEFAULT_WIDTH;
   }
 
@@ -124,8 +123,8 @@ bool CSettings::Load()
   if (!kodi::CheckSettingInt("bitrate", m_iBitrate))
   {
     /* If setting is unknown fallback to defaults */
-    kodi::Log(ADDON_LOG_ERROR,
-              "Couldn't get 'bitrate' setting, falling back to '%i' as default", DEFAULT_BITRATE);
+    kodi::Log(ADDON_LOG_ERROR, "Couldn't get 'bitrate' setting, falling back to '%i' as default",
+              DEFAULT_BITRATE);
     m_iBitrate = DEFAULT_BITRATE;
   }
 
@@ -133,8 +132,8 @@ bool CSettings::Load()
   if (!kodi::CheckSettingString("audiotrack", m_szAudiotrack))
   {
     /* If setting is unknown fallback to defaults */
-    kodi::Log(ADDON_LOG_ERROR,
-              "Couldn't get 'audiotrack' setting, falling back to '%s' as default", DEFAULT_AUDIOTRACK);
+    kodi::Log(ADDON_LOG_ERROR, "Couldn't get 'audiotrack' setting, falling back to '%s' as default",
+              DEFAULT_AUDIOTRACK);
     m_szAudiotrack = DEFAULT_AUDIOTRACK;
   }
 
@@ -279,14 +278,14 @@ ADDON_STATUS CSettings::SetSetting(const std::string& settingName,
   }
   else if (settingName == "default_update_interval")
   {
-    kodi::Log(ADDON_LOG_INFO, "Changed setting 'default_update_interval' from %u to %u", m_iDefaultUpdateInterval,
-              settingValue.GetInt());
+    kodi::Log(ADDON_LOG_INFO, "Changed setting 'default_update_interval' from %u to %u",
+              m_iDefaultUpdateInterval, settingValue.GetInt());
     m_iDefaultUpdateInterval = settingValue.GetInt();
   }
   else if (settingName == "default_record_show_type")
   {
-    kodi::Log(ADDON_LOG_INFO, "Changed setting 'default_record_show_type' from %u to %u", m_iDefaultRecShowType,
-              settingValue.GetInt());
+    kodi::Log(ADDON_LOG_INFO, "Changed setting 'default_record_show_type' from %u to %u",
+              m_iDefaultRecShowType, settingValue.GetInt());
     m_iDefaultRecShowType = settingValue.GetInt();
   }
 

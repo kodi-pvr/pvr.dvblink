@@ -8,29 +8,33 @@
 
 #pragma once
 
-#include "p8-platform/os.h"
-#include "p8-platform/threads/threads.h"
-#include "p8-platform/threads/mutex.h"
-#include "p8-platform/util/util.h"
-#include "libdvblinkremote/dvblinkremote.h"
 #include "HttpPostClient.h"
+#include "libdvblinkremote/dvblinkremote.h"
 
 #include <kodi/Filesystem.h>
 #include <kodi/addon-instance/PVR.h>
+#include <p8-platform/os.h>
+#include <p8-platform/threads/mutex.h>
+#include <p8-platform/threads/threads.h>
+#include <p8-platform/util/util.h>
 
-class RecordingStreamer: public dvblinkremote::DVBLinkRemoteLocker
+class RecordingStreamer : public dvblinkremote::DVBLinkRemoteLocker
 {
 public:
-  RecordingStreamer(const std::string& client_id, const std::string& hostname,
-      int port, const std::string& username, const std::string& password);
+  RecordingStreamer(const std::string& client_id,
+                    const std::string& hostname,
+                    int port,
+                    const std::string& username,
+                    const std::string& password);
   virtual ~RecordingStreamer();
 
   bool OpenRecordedStream(const std::string& recording_id, std::string& url);
   void CloseRecordedStream(void);
-  int ReadRecordedStream(unsigned char *pBuffer, unsigned int iBufferSize);
+  int ReadRecordedStream(unsigned char* pBuffer, unsigned int iBufferSize);
   long long SeekRecordedStream(long long iPosition, int iWhence /* = SEEK_SET */);
   long long LengthRecordedStream(void);
   PVR_ERROR GetStreamTimes(kodi::addon::PVRStreamTimes& stream_times);
+
 protected:
   std::string recording_id_;
   std::string url_;
@@ -50,15 +54,12 @@ protected:
   time_t check_delta_;
   P8PLATFORM::CMutex m_comm_mutex;
 
-  bool get_recording_info(const std::string& recording_id, long long& recording_size, long& recording_duration, bool& is_in_recording);
+  bool get_recording_info(const std::string& recording_id,
+                          long long& recording_size,
+                          long& recording_duration,
+                          bool& is_in_recording);
 
-  virtual void lock()
-  {
-    m_comm_mutex.Lock();
-  }
+  virtual void lock() { m_comm_mutex.Lock(); }
 
-  virtual void unlock()
-  {
-    m_comm_mutex.Unlock();
-  }
+  virtual void unlock() { m_comm_mutex.Unlock(); }
 };

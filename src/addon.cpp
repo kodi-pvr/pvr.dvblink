@@ -7,6 +7,7 @@
  */
 
 #include "addon.h"
+
 #include "DVBLinkClient.h"
 
 #include <chrono>
@@ -24,19 +25,16 @@ ADDON_STATUS CDVBLinkAddon::CreateInstance(int instanceType,
     //generate a guid to use as a client identification
     std::string clientname;
     GenerateUuid(clientname);
-    kodi::Log(ADDON_LOG_INFO, "Generated guid %s to use as a DVBLink client ID", clientname.c_str());
+    kodi::Log(ADDON_LOG_INFO, "Generated guid %s to use as a DVBLink client ID",
+              clientname.c_str());
 
-    DVBLinkClient* client = new DVBLinkClient(*this, instance, version, clientname,
-                                              m_settings.Hostname(),
-                                              m_settings.Port(),
-                                              m_settings.ShowInfoMSG(),
-                                              m_settings.Username(),
-                                              m_settings.Password(),
-                                              m_settings.AddRecEpisode2title(),
-                                              m_settings.GroupRecBySeries(),
-                                              m_settings.NoGroupSingleRec(),
-                                              m_settings.DefaultUpdateInterval(),
-                                              m_settings.DefaultRecShowType());
+    DVBLinkClient* client =
+        new DVBLinkClient(*this, instance, version, clientname, m_settings.Hostname(),
+                          m_settings.Port(), m_settings.ShowInfoMSG(), m_settings.Username(),
+                          m_settings.Password(), m_settings.AddRecEpisode2title(),
+                          m_settings.GroupRecBySeries(), m_settings.NoGroupSingleRec(),
+                          m_settings.DefaultUpdateInterval(), m_settings.DefaultRecShowType());
+
     addonInstance = client;
 
     if (client->GetStatus())
@@ -58,9 +56,12 @@ void CDVBLinkAddon::GenerateUuid(std::string& uuid)
 {
   using namespace std::chrono;
 
-  int64_t seed_value = duration_cast<milliseconds>(time_point_cast<milliseconds>(high_resolution_clock::now()).time_since_epoch()).count();
+  int64_t seed_value =
+      duration_cast<milliseconds>(
+          time_point_cast<milliseconds>(high_resolution_clock::now()).time_since_epoch())
+          .count();
   seed_value = seed_value % 1000000000;
-  srand((unsigned int) seed_value);
+  srand((unsigned int)seed_value);
 
   //fill in uuid string from a template
   std::string template_str = "xxxx-xx-xx-xx-xxxxxx";
@@ -70,7 +71,7 @@ void CDVBLinkAddon::GenerateUuid(std::string& uuid)
     {
       double a1 = rand();
       double a3 = RAND_MAX;
-      unsigned char ch = (unsigned char) (a1 * 255 / a3);
+      unsigned char ch = (unsigned char)(a1 * 255 / a3);
       char buf[16];
       sprintf(buf, "%02x", ch);
       uuid += buf;
@@ -83,4 +84,3 @@ void CDVBLinkAddon::GenerateUuid(std::string& uuid)
 }
 
 ADDONCREATOR(CDVBLinkAddon)
-

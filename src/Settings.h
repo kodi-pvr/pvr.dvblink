@@ -53,20 +53,36 @@ public:
   bool NoGroupSingleRec() const { return m_bNoGroupSingleRec; }
 
 private:
-  std::string m_szHostname = DEFAULT_HOST;                    ///< The Host name or IP of the DVBLink Server
-  int m_iPort = DEFAULT_PORT;                                ///< The DVBLink Connect Server listening port (default: 8080)
-  bool m_bUseTranscoding = DEFAULT_USETRANSCODING;            ///< Use transcoding
-  std::string m_szUsername = DEFAULT_USERNAME;                ///< Username
-  std::string m_szPassword = DEFAULT_PASSWORD;                ///< Password
-  bool m_bShowInfoMSG = DEFAULT_SHOWINFOMSG;                  ///< Show information messages
-  int m_iHeight = DEFAULT_HEIGHT;                             ///< Height of stream when using transcoding (0: autodetect)
-  int m_iWidth = DEFAULT_WIDTH;                               ///< Width of stream when using transcoding (0: autodetect)
-  int m_iBitrate = DEFAULT_BITRATE;                           ///< Bitrate of stream when using transcoding
-  int m_iDefaultUpdateInterval = DEFAULT_UPDATE_INTERVAL;     ///< Default update interval
-  int m_iDefaultRecShowType = DEFAULT_RECORD_SHOW_TYPE;       ///< Default record show type
-  std::string m_szAudiotrack = DEFAULT_AUDIOTRACK;            ///< Audiotrack to include in stream when using transcoding
-  bool m_bUseTimeshift = DEFAULT_USETIMESHIFT;                ///< Use timeshift
-  bool m_bAddRecEpisode2title = DEFAULT_ADDRECEPISODE2TITLE;  ///< Concatenate title and episode info for recordings
-  bool m_bGroupRecBySeries = DEFAULT_GROUPRECBYSERIES;        ///< Group Recordings as Directories by series
-  bool m_bNoGroupSingleRec = DEFAULT_NOGROUP_SINGLE_REC;      ///< Do not group single recordings
+  /// The Host name or IP of the DVBLink Server
+  std::string m_szHostname = DEFAULT_HOST;
+  /// The DVBLink Connect Server listening port (default: 8080)
+  int m_iPort = DEFAULT_PORT;
+  /// Use transcoding
+  bool m_bUseTranscoding = DEFAULT_USETRANSCODING;
+  /// Username
+  std::string m_szUsername = DEFAULT_USERNAME;
+  /// Password
+  std::string m_szPassword = DEFAULT_PASSWORD;
+  /// Show information messages
+  bool m_bShowInfoMSG = DEFAULT_SHOWINFOMSG;
+  /// Height of stream when using transcoding (0: autodetect)
+  int m_iHeight = DEFAULT_HEIGHT;
+  /// Width of stream when using transcoding (0: autodetect)
+  int m_iWidth = DEFAULT_WIDTH;
+  /// Bitrate of stream when using transcoding
+  int m_iBitrate = DEFAULT_BITRATE;
+  /// Default update interval
+  int m_iDefaultUpdateInterval = DEFAULT_UPDATE_INTERVAL;
+  /// Default record show type
+  int m_iDefaultRecShowType = DEFAULT_RECORD_SHOW_TYPE;
+  /// Audiotrack to include in stream when using transcoding
+  std::string m_szAudiotrack = DEFAULT_AUDIOTRACK;
+  /// Use timeshift
+  bool m_bUseTimeshift = DEFAULT_USETIMESHIFT;
+  /// Concatenate title and episode info for recordings
+  bool m_bAddRecEpisode2title = DEFAULT_ADDRECEPISODE2TITLE;
+  /// Group Recordings as Directories by series
+  bool m_bGroupRecBySeries = DEFAULT_GROUPRECBYSERIES;
+  /// Do not group single recordings
+  bool m_bNoGroupSingleRec = DEFAULT_NOGROUP_SINGLE_REC;
 };

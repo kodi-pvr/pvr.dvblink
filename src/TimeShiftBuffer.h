@@ -8,12 +8,12 @@
 
 #pragma once
 
-#include "p8-platform/os.h"
-#include "p8-platform/util/util.h"
 #include "dvblink_connection.h"
 
 #include <kodi/Filesystem.h>
 #include <kodi/addon-instance/pvr/Stream.h>
+#include <p8-platform/os.h>
+#include <p8-platform/util/util.h>
 
 class LiveStreamerBase
 {
@@ -21,23 +21,19 @@ public:
   LiveStreamerBase(const server_connection_properties& connection_props);
   virtual ~LiveStreamerBase();
 
-  bool Start(dvblinkremote::Channel* channel, bool use_transcoder, int width, int height, int bitrate, const std::string& audiotrack);
+  bool Start(dvblinkremote::Channel* channel,
+             bool use_transcoder,
+             int width,
+             int height,
+             int bitrate,
+             const std::string& audiotrack);
   void Stop();
 
-  virtual int ReadData(unsigned char *pBuffer, unsigned int iBufferSize);
+  virtual int ReadData(unsigned char* pBuffer, unsigned int iBufferSize);
 
-  virtual long long Seek(long long iPosition, int iWhence)
-  {
-    return -1;
-  }
-  virtual long long Position()
-  {
-    return -1;
-  }
-  virtual long long Length()
-  {
-    return -1;
-  }
+  virtual long long Seek(long long iPosition, int iWhence) { return -1; }
+  virtual long long Position() { return -1; }
+  virtual long long Length() { return -1; }
   virtual void GetStreamTimes(kodi::addon::PVRStreamTimes& stream_times)
   {
     stream_times.SetStartTime(stream_start_);
@@ -45,15 +41,17 @@ public:
     stream_times.SetPTSBegin(0);
     stream_times.SetPTSEnd(0);
   }
-  virtual bool IsLive()
-  {
-    return true;
-  }
+  virtual bool IsLive() { return true; }
 
 protected:
-  virtual dvblinkremote::StreamRequest* GetStreamRequest(const std::string& dvblink_channel_id, bool use_transcoder, int width, int height, int bitrate, std::string audiotrack)
+  virtual dvblinkremote::StreamRequest* GetStreamRequest(const std::string& dvblink_channel_id,
+                                                         bool use_transcoder,
+                                                         int width,
+                                                         int height,
+                                                         int bitrate,
+                                                         std::string audiotrack)
   {
-    return NULL;
+    return nullptr;
   }
 
   kodi::vfs::CFile m_streamHandle;
@@ -64,16 +62,21 @@ protected:
   time_t stream_start_;
 };
 
-class LiveTVStreamer: public LiveStreamerBase
+class LiveTVStreamer : public LiveStreamerBase
 {
 public:
   LiveTVStreamer(const server_connection_properties& connection_props);
 
 protected:
-  virtual dvblinkremote::StreamRequest* GetStreamRequest(const std::string& dvblink_channel_id, bool use_transcoder, int width, int height, int bitrate, std::string audiotrack);
+  virtual dvblinkremote::StreamRequest* GetStreamRequest(const std::string& dvblink_channel_id,
+                                                         bool use_transcoder,
+                                                         int width,
+                                                         int height,
+                                                         int bitrate,
+                                                         std::string audiotrack);
 };
 
-class TimeShiftBuffer: public LiveStreamerBase
+class TimeShiftBuffer : public LiveStreamerBase
 {
   struct buffer_params_t
   {
@@ -84,7 +87,8 @@ class TimeShiftBuffer: public LiveStreamerBase
   };
 
 public:
-  TimeShiftBuffer(const server_connection_properties& connection_props, bool use_dvblink_timeshift_cmds);
+  TimeShiftBuffer(const server_connection_properties& connection_props,
+                  bool use_dvblink_timeshift_cmds);
   ~TimeShiftBuffer(void);
 
   virtual long long Seek(long long iPosition, int iWhence);
@@ -94,7 +98,12 @@ public:
   virtual bool IsLive();
 
 protected:
-  virtual dvblinkremote::StreamRequest* GetStreamRequest(const std::string& dvblink_channel_id, bool use_transcoder, int width, int height, int bitrate, std::string audiotrack);
+  virtual dvblinkremote::StreamRequest* GetStreamRequest(const std::string& dvblink_channel_id,
+                                                         bool use_transcoder,
+                                                         int width,
+                                                         int height,
+                                                         int bitrate,
+                                                         std::string audiotrack);
   bool ExecuteServerRequest(const std::string& url, std::vector<std::string>& response_values);
   bool GetBufferParams(buffer_params_t& buffer_params);
 
@@ -102,4 +111,3 @@ protected:
   buffer_params_t buffer_params_;
   bool use_dvblink_timeshift_cmds_;
 };
-

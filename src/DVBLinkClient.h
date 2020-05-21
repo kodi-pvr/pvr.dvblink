@@ -8,36 +8,36 @@
 
 #pragma once
 
-#include "p8-platform/os.h"
-#include "p8-platform/threads/threads.h"
-#include "p8-platform/threads/mutex.h"
-#include "p8-platform/util/util.h"
-#include "libdvblinkremote/dvblinkremote.h"
 #include "HttpPostClient.h"
-#include "TimeShiftBuffer.h"
 #include "RecordingStreamer.h"
+#include "TimeShiftBuffer.h"
 #include "dvblink_connection.h"
+#include "libdvblinkremote/dvblinkremote.h"
 
 #include <kodi/addon-instance/PVR.h>
 #include <map>
+#include <p8-platform/os.h>
+#include <p8-platform/threads/mutex.h>
+#include <p8-platform/threads/threads.h>
+#include <p8-platform/util/util.h>
 
-#define DVBLINK_BUILD_IN_RECORDER_SOURCE_ID   "8F94B459-EFC0-4D91-9B29-EC3D72E92677"
-#define DVBLINK_RECODINGS_BY_DATA_ID   "F6F08949-2A07-4074-9E9D-423D877270BB"
-#define DVBLINK_RECODINGS_BY_SERIES_ID   "0E03FEB8-BD8F-46e7-B3EF-34F6890FB458"
+#define DVBLINK_BUILD_IN_RECORDER_SOURCE_ID "8F94B459-EFC0-4D91-9B29-EC3D72E92677"
+#define DVBLINK_RECODINGS_BY_DATA_ID "F6F08949-2A07-4074-9E9D-423D877270BB"
+#define DVBLINK_RECODINGS_BY_SERIES_ID "0E03FEB8-BD8F-46e7-B3EF-34F6890FB458"
 
 class CDVBLinkAddon;
 
 typedef std::map<std::string, std::string> recording_id_to_url_map_t;
 
 /* timer type ids */
-#define TIMER_ONCE_MANUAL			(PVR_TIMER_TYPE_NONE + 1)
-#define TIMER_ONCE_EPG				(PVR_TIMER_TYPE_NONE + 2)
-#define TIMER_ONCE_MANUAL_CHILD		(PVR_TIMER_TYPE_NONE + 3)
-#define TIMER_ONCE_EPG_CHILD		(PVR_TIMER_TYPE_NONE + 4)
-#define TIMER_ONCE_KEYWORD_CHILD	(PVR_TIMER_TYPE_NONE + 5)
-#define TIMER_REPEATING_MANUAL		(PVR_TIMER_TYPE_NONE + 6)
-#define TIMER_REPEATING_EPG			(PVR_TIMER_TYPE_NONE + 7)
-#define TIMER_REPEATING_KEYWORD		(PVR_TIMER_TYPE_NONE + 8)
+#define TIMER_ONCE_MANUAL (PVR_TIMER_TYPE_NONE + 1)
+#define TIMER_ONCE_EPG (PVR_TIMER_TYPE_NONE + 2)
+#define TIMER_ONCE_MANUAL_CHILD (PVR_TIMER_TYPE_NONE + 3)
+#define TIMER_ONCE_EPG_CHILD (PVR_TIMER_TYPE_NONE + 4)
+#define TIMER_ONCE_KEYWORD_CHILD (PVR_TIMER_TYPE_NONE + 5)
+#define TIMER_REPEATING_MANUAL (PVR_TIMER_TYPE_NONE + 6)
+#define TIMER_REPEATING_EPG (PVR_TIMER_TYPE_NONE + 7)
+#define TIMER_REPEATING_KEYWORD (PVR_TIMER_TYPE_NONE + 8)
 
 enum dvblink_client_rec_num_e
 {
@@ -54,20 +54,21 @@ enum dvblink_client_rec_num_e
 
 enum dvblink_client_rec_showtype_e
 {
-  dcrs_record_all = 0, dcrs_record_new_only = 1
+  dcrs_record_all = 0,
+  dcrs_record_new_only = 1
 };
 
 /* dvblink update interval values */
-const int UPDATE_INTERVAL_60_SEC   = 60;
-const int UPDATE_INTERVAL_120_SEC  = 120;
-const int UPDATE_INTERVAL_180_SEC  = 180;
-const int UPDATE_INTERVAL_240_SEC  = 240;
-const int UPDATE_INTERVAL_300_SEC  = 300;
-const int UPDATE_INTERVAL_360_SEC  = 360;
-const int UPDATE_INTERVAL_420_SEC  = 420;
-const int UPDATE_INTERVAL_480_SEC  = 480;
-const int UPDATE_INTERVAL_540_SEC  = 540;
-const int UPDATE_INTERVAL_600_SEC  = 600;
+const int UPDATE_INTERVAL_60_SEC = 60;
+const int UPDATE_INTERVAL_120_SEC = 120;
+const int UPDATE_INTERVAL_180_SEC = 180;
+const int UPDATE_INTERVAL_240_SEC = 240;
+const int UPDATE_INTERVAL_300_SEC = 300;
+const int UPDATE_INTERVAL_360_SEC = 360;
+const int UPDATE_INTERVAL_420_SEC = 420;
+const int UPDATE_INTERVAL_480_SEC = 480;
+const int UPDATE_INTERVAL_540_SEC = 540;
+const int UPDATE_INTERVAL_600_SEC = 600;
 const int UPDATE_INTERVAL_1200_SEC = 1200;
 const int UPDATE_INTERVAL_1800_SEC = 1800;
 const int UPDATE_INTERVAL_2400_SEC = 2400;
@@ -84,8 +85,11 @@ struct schedule_desc
     schedule_margin_after = margin_after;
   }
 
-  schedule_desc() :
-    schedule_kodi_idx(PVR_TIMER_NO_CLIENT_INDEX), schedule_kodi_type(PVR_TIMER_TYPE_NONE), schedule_margin_before(0), schedule_margin_after(0)
+  schedule_desc()
+    : schedule_kodi_idx(PVR_TIMER_NO_CLIENT_INDEX),
+      schedule_kodi_type(PVR_TIMER_TYPE_NONE),
+      schedule_margin_before(0),
+      schedule_margin_after(0)
   {
   }
 
@@ -97,18 +101,19 @@ struct schedule_desc
 
 struct dvblink_server_caps
 {
-  dvblink_server_caps() :
-    setting_margins_supported_(false),
-    favorites_supported_(false),
-    transcoding_supported_(false),
-    transcoding_recordings_supported_(false),
-    recordings_supported_(false),
-    timeshifting_supported_(false),
-    device_management_supported_(false),
-    timeshift_commands_supported_(false),
-    resume_supported_(false),
-    start_any_time_supported_(false)
-  {}
+  dvblink_server_caps()
+    : setting_margins_supported_(false),
+      favorites_supported_(false),
+      transcoding_supported_(false),
+      transcoding_recordings_supported_(false),
+      recordings_supported_(false),
+      timeshifting_supported_(false),
+      device_management_supported_(false),
+      timeshift_commands_supported_(false),
+      resume_supported_(false),
+      start_any_time_supported_(false)
+  {
+  }
 
   std::string server_version_;
   std::string server_build_;
@@ -124,14 +129,24 @@ struct dvblink_server_caps
   bool start_any_time_supported_;
 };
 
-class ATTRIBUTE_HIDDEN DVBLinkClient : public kodi::addon::CInstancePVRClient, public P8PLATFORM::CThread
+class ATTRIBUTE_HIDDEN DVBLinkClient : public kodi::addon::CInstancePVRClient,
+                                       public P8PLATFORM::CThread
 {
 public:
   DVBLinkClient(const CDVBLinkAddon& base,
                 KODI_HANDLE instance,
                 const std::string& kodiVersion,
-      std::string clientname, std::string hostname, int port, bool showinfomsg, std::string username,
-      std::string password, bool add_episode_to_rec_title, bool group_recordings_by_series, bool no_group_single_rec, int default_update_interval, int default_rec_show_type);
+                std::string clientname,
+                std::string hostname,
+                int port,
+                bool showinfomsg,
+                std::string username,
+                std::string password,
+                bool add_episode_to_rec_title,
+                bool group_recordings_by_series,
+                bool no_group_single_rec,
+                int default_update_interval,
+                int default_rec_show_type);
   ~DVBLinkClient(void);
 
   PVR_ERROR GetBackendName(std::string& name) override;
@@ -146,15 +161,21 @@ public:
 
   PVR_ERROR GetChannelGroupsAmount(int& amount) override;
   PVR_ERROR GetChannelGroups(bool radio, kodi::addon::PVRChannelGroupsResultSet& results) override;
-  PVR_ERROR GetChannelGroupMembers(const kodi::addon::PVRChannelGroup& group, kodi::addon::PVRChannelGroupMembersResultSet& results) override;
+  PVR_ERROR GetChannelGroupMembers(const kodi::addon::PVRChannelGroup& group,
+                                   kodi::addon::PVRChannelGroupMembersResultSet& results) override;
 
-  PVR_ERROR GetEPGForChannel(int channelUid, time_t start, time_t end, kodi::addon::PVREPGTagsResultSet& results) override;
+  PVR_ERROR GetEPGForChannel(int channelUid,
+                             time_t start,
+                             time_t end,
+                             kodi::addon::PVREPGTagsResultSet& results) override;
 
   PVR_ERROR GetRecordingsAmount(bool deleted, int& amount) override;
   PVR_ERROR GetRecordings(bool deleted, kodi::addon::PVRRecordingsResultSet& results) override;
   PVR_ERROR DeleteRecording(const kodi::addon::PVRRecording& recording) override;
-  PVR_ERROR GetRecordingLastPlayedPosition(const kodi::addon::PVRRecording& recording, int& position) override;
-  PVR_ERROR SetRecordingLastPlayedPosition(const kodi::addon::PVRRecording& recording, int lastplayedposition) override;
+  PVR_ERROR GetRecordingLastPlayedPosition(const kodi::addon::PVRRecording& recording,
+                                           int& position) override;
+  PVR_ERROR SetRecordingLastPlayedPosition(const kodi::addon::PVRRecording& recording,
+                                           int lastplayedposition) override;
 
   PVR_ERROR GetTimerTypes(std::vector<kodi::addon::PVRTimerType>& types) override;
   PVR_ERROR GetTimersAmount(int& amount) override;
@@ -165,18 +186,15 @@ public:
 
   bool OpenLiveStream(const kodi::addon::PVRChannel& channel) override;
   void CloseLiveStream() override;
-  int GetCurrentChannelId();
   int64_t SeekLiveStream(int64_t iPosition, int iWhence) override;
   PVR_ERROR GetStreamTimes(kodi::addon::PVRStreamTimes& stream_times) override;
   int64_t LengthLiveStream() override;
   bool IsRealTimeStream() override;
-  int ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize) override;
-  bool GetRecordingURL(const std::string& recording_id, std::string& url, bool use_transcoder, int width,
-    int height, int bitrate, std::string audiotrack);
+  int ReadLiveStream(unsigned char* pBuffer, unsigned int iBufferSize) override;
 
   bool OpenRecordedStream(const kodi::addon::PVRRecording& recording) override;
   void CloseRecordedStream() override;
-  int ReadRecordedStream(unsigned char *pBuffer, unsigned int iBufferSize) override;
+  int ReadRecordedStream(unsigned char* pBuffer, unsigned int iBufferSize) override;
   int64_t SeekRecordedStream(int64_t iPosition, int iWhence = SEEK_SET) override;
   int64_t LengthRecordedStream() override;
 
@@ -184,17 +202,30 @@ public:
   bool CanSeekStream() override;
 
   bool GetStatus();
+  bool GetRecordingURL(const std::string& recording_id,
+                       std::string& url,
+                       bool use_transcoder,
+                       int width,
+                       int height,
+                       int bitrate,
+                       std::string audiotrack);
 
 private:
-  bool DoEPGSearch(dvblinkremote::EpgSearchResult& epgSearchResult, const std::string& channelId, const long startTime,
-      const long endTime, const std::string & programId = "");
+  bool DoEPGSearch(dvblinkremote::EpgSearchResult& epgSearchResult,
+                   const std::string& channelId,
+                   const long startTime,
+                   const long endTime,
+                   const std::string& programId = "");
   void SetEPGGenre(dvblinkremote::ItemMetadata& metadata, int& genre_type, int& genre_subtype);
   std::string GetBuildInRecorderObjectID();
   std::string GetRecordedTVByDateObjectID(const std::string& buildInRecoderObjectID);
   int GetInternalUniqueIdFromChannelId(const std::string& channelId);
-  virtual void * Process(void);
-  bool get_dvblink_program_id(std::string& channelId, int start_time, std::string& dvblink_program_id);
-  int GetSchedules(kodi::addon::PVRTimersResultSet& results, const dvblinkremote::RecordingList& recordings);
+  virtual void* Process(void);
+  bool get_dvblink_program_id(std::string& channelId,
+                              int start_time,
+                              std::string& dvblink_program_id);
+  int GetSchedules(kodi::addon::PVRTimersResultSet& results,
+                   const dvblinkremote::RecordingList& recordings);
   void get_server_caps();
 
   std::string make_timer_hash(const std::string& timer_id, const std::string& schedule_id);
@@ -204,7 +235,7 @@ private:
   void add_schedule_desc(const std::string& id, const schedule_desc& sd);
   bool get_schedule_desc(const std::string& id, schedule_desc& sd);
 
-  typedef std::map<int, dvblinkremote::Channel* > dvblink_channel_map_t;
+  typedef std::map<int, dvblinkremote::Channel*> dvblink_channel_map_t;
 
   bool m_connected;
   dvblink_channel_map_t m_channels;

@@ -7,11 +7,12 @@
  */
 
 #include "HttpPostClient.h"
+
 #include "base64.h"
-#include "p8-platform/sockets/tcp.h"
 
 #include <kodi/Filesystem.h>
 #include <kodi/General.h>
+#include <p8-platform/sockets/tcp.h>
 
 using namespace dvblinkremotehttp;
 
@@ -30,9 +31,9 @@ char to_hex(char code)
 
 /* Returns a url-encoded version of str */
 /* IMPORTANT: be sure to free() the returned string after use */
-char *url_encode(const char *str)
+char* url_encode(const char* str)
 {
-  char *pstr = (char*) str, *buf = (char *) malloc(strlen(str) * 3 + 1), *pbuf = buf;
+  char *pstr = (char*)str, *buf = (char*)malloc(strlen(str) * 3 + 1), *pbuf = buf;
   while (*pstr)
   {
     if (isalnum(*pstr) || *pstr == '-' || *pstr == '_' || *pstr == '.' || *pstr == '~')
@@ -47,8 +48,10 @@ char *url_encode(const char *str)
   return buf;
 }
 
-HttpPostClient::HttpPostClient(const std::string& server, const int serverport,
-    const std::string& username, const std::string& password)
+HttpPostClient::HttpPostClient(const std::string& server,
+                               const int serverport,
+                               const std::string& username,
+                               const std::string& password)
 {
   m_server = server;
   m_serverport = serverport;
@@ -64,14 +67,14 @@ int HttpPostClient::SendPostRequest(HttpWebRequest& request)
   char content_header[100];
 
   buffer.append("POST /mobile/ HTTP/1.0\r\n");
-  sprintf(content_header, "Host: %s:%d\r\n", m_server.c_str(), (int) m_serverport);
+  sprintf(content_header, "Host: %s:%d\r\n", m_server.c_str(), (int)m_serverport);
   buffer.append(content_header);
   buffer.append("Content-Type: application/x-www-form-urlencoded\r\n");
   if (m_username.compare("") != 0)
   {
     sprintf(content_header, "%s:%s", m_username.c_str(), m_password.c_str());
     sprintf(content_header, "Authorization: Basic %s\r\n",
-        base64_encode((const char*) content_header, strlen(content_header)).c_str());
+            base64_encode((const char*)content_header, strlen(content_header)).c_str());
     buffer.append(content_header);
   }
   sprintf(content_header, "Content-Length: %ld\r\n", request.ContentLength);
@@ -79,9 +82,9 @@ int HttpPostClient::SendPostRequest(HttpWebRequest& request)
   buffer.append("\r\n");
   buffer.append(request.GetRequestData());
 
-  P8PLATFORM::CTcpSocket sock(m_server.c_str(), (unsigned short) m_serverport);
+  P8PLATFORM::CTcpSocket sock(m_server.c_str(), (unsigned short)m_serverport);
 
-  int connect_timeout_ms = 15*1000; //15 seconds
+  int connect_timeout_ms = 15 * 1000; //15 seconds
   if (!sock.Open(connect_timeout_ms))
   {
     return -101;
@@ -184,7 +187,7 @@ HttpWebResponse* HttpPostClient::GetResponse()
 {
   if (m_lastReqeuestErrorCode != 200)
   {
-    return NULL;
+    return nullptr;
   }
   HttpWebResponse* response = new HttpWebResponse(200, m_responseData);
   return response;
@@ -192,7 +195,6 @@ HttpWebResponse* HttpPostClient::GetResponse()
 
 void HttpPostClient::GetLastError(std::string& err)
 {
-
 }
 
 void HttpPostClient::UrlEncode(const std::string& str, std::string& outEncodedStr)
@@ -201,4 +203,3 @@ void HttpPostClient::UrlEncode(const std::string& str, std::string& outEncodedSt
   outEncodedStr.append(encodedstring);
   free(encodedstring);
 }
-

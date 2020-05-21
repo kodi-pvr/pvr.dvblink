@@ -6,14 +6,14 @@
  *  See LICENSE.md for more information.
  */
 
-#include "addon.h"
-
-#include <memory>
 #include "DVBLinkClient.h"
-#include "p8-platform/os.h"
+
+#include "addon.h"
 
 #include <kodi/General.h>
 #include <kodi/gui/General.h>
+#include <memory>
+#include <p8-platform/os.h>
 
 using namespace dvblinkremote;
 using namespace dvblinkremotehttp;
@@ -27,25 +27,27 @@ std::string DVBLinkClient::GetBuildInRecorderObjectID()
   std::string result = "";
   DVBLinkRemoteStatusCode status;
   GetPlaybackObjectRequest getPlaybackObjectRequest(connection_props_.address_.c_str(), "");
-  getPlaybackObjectRequest.RequestedObjectType = GetPlaybackObjectRequest::REQUESTED_OBJECT_TYPE_ALL;
+  getPlaybackObjectRequest.RequestedObjectType =
+      GetPlaybackObjectRequest::REQUESTED_OBJECT_TYPE_ALL;
   getPlaybackObjectRequest.RequestedItemType = GetPlaybackObjectRequest::REQUESTED_ITEM_TYPE_ALL;
   getPlaybackObjectRequest.IncludeChildrenObjectsForRequestedObject = true;
   GetPlaybackObjectResponse getPlaybackObjectResponse;
 
   dvblink_server_connection srv_connection(connection_props_);
-  if ((status = srv_connection.get_connection()->GetPlaybackObject(getPlaybackObjectRequest, getPlaybackObjectResponse,
-      NULL)) == DVBLINK_REMOTE_STATUS_OK)
+  if ((status = srv_connection.get_connection()->GetPlaybackObject(
+           getPlaybackObjectRequest, getPlaybackObjectResponse, nullptr)) ==
+      DVBLINK_REMOTE_STATUS_OK)
   {
-    for (std::vector<PlaybackContainer*>::iterator it = getPlaybackObjectResponse.GetPlaybackContainers().begin();
-        it < getPlaybackObjectResponse.GetPlaybackContainers().end(); it++)
+    for (std::vector<PlaybackContainer*>::iterator it =
+             getPlaybackObjectResponse.GetPlaybackContainers().begin();
+         it < getPlaybackObjectResponse.GetPlaybackContainers().end(); it++)
     {
-      PlaybackContainer * container = (PlaybackContainer *) *it;
+      PlaybackContainer* container = (PlaybackContainer*)*it;
       if (strcmp(container->SourceID.c_str(), DVBLINK_BUILD_IN_RECORDER_SOURCE_ID) == 0)
       {
         result = container->GetObjectID();
         break;
       }
-
     }
   }
   return result;
@@ -60,7 +62,8 @@ void DVBLinkClient::get_server_caps()
   ServerInfo si;
 
   dvblink_server_connection srv_connection(connection_props_);
-  if ((status = srv_connection.get_connection()->GetServerInfo(server_info_request, si, NULL)) == DVBLINK_REMOTE_STATUS_OK)
+  if ((status = srv_connection.get_connection()->GetServerInfo(server_info_request, si, nullptr)) ==
+      DVBLINK_REMOTE_STATUS_OK)
   {
     server_caps_.server_version_ = si.version_;
     server_caps_.server_build_ = si.build_;
@@ -90,17 +93,20 @@ void DVBLinkClient::get_server_caps()
   GetStreamingCapabilitiesRequest streamin_caps_request;
   StreamingCapabilities streaming_caps;
 
-  status = srv_connection.get_connection()->GetStreamingCapabilities(streamin_caps_request, streaming_caps, NULL);
+  status = srv_connection.get_connection()->GetStreamingCapabilities(streamin_caps_request,
+                                                                     streaming_caps, nullptr);
   if (status == DVBLINK_REMOTE_STATUS_OK)
   {
-    server_caps_.transcoding_supported_ = streaming_caps.IsTranscoderSupported(dvblinkremote::StreamingCapabilities::STREAMING_TRANSCODER_H264);
+    server_caps_.transcoding_supported_ = streaming_caps.IsTranscoderSupported(
+        dvblinkremote::StreamingCapabilities::STREAMING_TRANSCODER_H264);
     server_caps_.recordings_supported_ = streaming_caps.SupportsRecording;
     server_caps_.timeshifting_supported_ = streaming_caps.SupportsTimeShifting;
     server_caps_.device_management_supported_ = streaming_caps.SupportsDeviceManagement;
   }
 
   GetFavoritesRequest favorites_request;
-  status = srv_connection.get_connection()->GetFavorites(favorites_request, channel_favorites_, NULL);
+  status =
+      srv_connection.get_connection()->GetFavorites(favorites_request, channel_favorites_, nullptr);
   server_caps_.favorites_supported_ = (status == DVBLINK_REMOTE_STATUS_OK);
 }
 
@@ -133,54 +139,54 @@ DVBLinkClient::DVBLinkClient(const CDVBLinkAddon& base,
 
   switch (default_update_interval)
   {
-  case 0:
-    default_update_interval_sec_ = UPDATE_INTERVAL_60_SEC;
-    break;
-  case 1:
-    default_update_interval_sec_ = UPDATE_INTERVAL_120_SEC;
-    break;
-  case 2:
-    default_update_interval_sec_ = UPDATE_INTERVAL_180_SEC;
-    break;
-  case 3:
-    default_update_interval_sec_ = UPDATE_INTERVAL_240_SEC;
-    break;
-  case 4:
-    default_update_interval_sec_ = UPDATE_INTERVAL_300_SEC;
-    break;
-  case 5:
-    default_update_interval_sec_ = UPDATE_INTERVAL_360_SEC;
-    break;
-  case 6:
-    default_update_interval_sec_ = UPDATE_INTERVAL_420_SEC;
-    break;
-  case 7:
-    default_update_interval_sec_ = UPDATE_INTERVAL_480_SEC;
-    break;
-  case 8:
-    default_update_interval_sec_ = UPDATE_INTERVAL_540_SEC;
-    break;
-  case 9:
-    default_update_interval_sec_ = UPDATE_INTERVAL_600_SEC;
-    break;
-  case 10:
-    default_update_interval_sec_ = UPDATE_INTERVAL_1200_SEC;
-    break;
-  case 11:
-    default_update_interval_sec_ = UPDATE_INTERVAL_1800_SEC;
-    break;
-  case 12:
-    default_update_interval_sec_ = UPDATE_INTERVAL_2400_SEC;
-    break;
-  case 13:
-    default_update_interval_sec_ = UPDATE_INTERVAL_3000_SEC;
-    break;
-  case 14:
-    default_update_interval_sec_ = UPDATE_INTERVAL_3600_SEC;
-    break;
-  default:
-    default_update_interval_sec_ = UPDATE_INTERVAL_300_SEC;
-    break;
+    case 0:
+      default_update_interval_sec_ = UPDATE_INTERVAL_60_SEC;
+      break;
+    case 1:
+      default_update_interval_sec_ = UPDATE_INTERVAL_120_SEC;
+      break;
+    case 2:
+      default_update_interval_sec_ = UPDATE_INTERVAL_180_SEC;
+      break;
+    case 3:
+      default_update_interval_sec_ = UPDATE_INTERVAL_240_SEC;
+      break;
+    case 4:
+      default_update_interval_sec_ = UPDATE_INTERVAL_300_SEC;
+      break;
+    case 5:
+      default_update_interval_sec_ = UPDATE_INTERVAL_360_SEC;
+      break;
+    case 6:
+      default_update_interval_sec_ = UPDATE_INTERVAL_420_SEC;
+      break;
+    case 7:
+      default_update_interval_sec_ = UPDATE_INTERVAL_480_SEC;
+      break;
+    case 8:
+      default_update_interval_sec_ = UPDATE_INTERVAL_540_SEC;
+      break;
+    case 9:
+      default_update_interval_sec_ = UPDATE_INTERVAL_600_SEC;
+      break;
+    case 10:
+      default_update_interval_sec_ = UPDATE_INTERVAL_1200_SEC;
+      break;
+    case 11:
+      default_update_interval_sec_ = UPDATE_INTERVAL_1800_SEC;
+      break;
+    case 12:
+      default_update_interval_sec_ = UPDATE_INTERVAL_2400_SEC;
+      break;
+    case 13:
+      default_update_interval_sec_ = UPDATE_INTERVAL_3000_SEC;
+      break;
+    case 14:
+      default_update_interval_sec_ = UPDATE_INTERVAL_3600_SEC;
+      break;
+    default:
+      default_update_interval_sec_ = UPDATE_INTERVAL_300_SEC;
+      break;
   }
 
   get_server_caps();
@@ -189,17 +195,18 @@ DVBLinkClient::DVBLinkClient(const CDVBLinkAddon& base,
   m_recordingCount = -1;
 
   GetChannelsRequest request;
-  m_live_streamer = NULL;
+  m_live_streamer = nullptr;
 
   std::string error;
   DVBLinkRemoteStatusCode status;
 
   dvblinkremote::ChannelList channels;
   dvblink_server_connection srv_connection(connection_props_);
-  if ((status = srv_connection.get_connection()->GetChannels(request, channels, &error)) == DVBLINK_REMOTE_STATUS_OK)
+  if ((status = srv_connection.get_connection()->GetChannels(request, channels, &error)) ==
+      DVBLINK_REMOTE_STATUS_OK)
   {
 
-    for (size_t i=0; i<channels.size(); i++)
+    for (size_t i = 0; i < channels.size(); i++)
     {
       dvblinkremote::Channel* ch = channels[i];
       int idx = channel_id_start_seed_ + i;
@@ -209,11 +216,14 @@ DVBLinkClient::DVBLinkClient(const CDVBLinkAddon& base,
 
     m_connected = true;
 
-    kodi::Log(ADDON_LOG_INFO, "Connected to DVBLink Server '%s'", connection_props_.address_.c_str());
+    kodi::Log(ADDON_LOG_INFO, "Connected to DVBLink Server '%s'",
+              connection_props_.address_.c_str());
     if (m_showinfomsg)
     {
-      kodi::QueueFormattedNotification(QUEUE_INFO, kodi::GetLocalizedString(32001).c_str(), connection_props_.address_.c_str());
-      kodi::QueueFormattedNotification(QUEUE_INFO, kodi::GetLocalizedString(32002).c_str(), m_channels.size());
+      kodi::QueueFormattedNotification(QUEUE_INFO, kodi::GetLocalizedString(32001).c_str(),
+                                       connection_props_.address_.c_str());
+      kodi::QueueFormattedNotification(QUEUE_INFO, kodi::GetLocalizedString(32002).c_str(),
+                                       m_channels.size());
     }
 
     if (server_caps_.recordings_supported_)
@@ -230,16 +240,18 @@ DVBLinkClient::DVBLinkClient(const CDVBLinkAddon& base,
   }
   else
   {
-    kodi::QueueFormattedNotification(QUEUE_ERROR, kodi::GetLocalizedString(32003).c_str(), connection_props_.address_.c_str(), (int)status);
+    kodi::QueueFormattedNotification(QUEUE_ERROR, kodi::GetLocalizedString(32003).c_str(),
+                                     connection_props_.address_.c_str(), (int)status);
     kodi::Log(ADDON_LOG_ERROR,
-        "Could not connect to DVBLink Server '%s' on port '%i' with username '%s' (Error code : %d Description : %s)",
-        hostname.c_str(), port, username.c_str(), (int) status, error.c_str());
+              "Could not connect to DVBLink Server '%s' on port '%i' with username '%s' (Error "
+              "code : %d Description : %s)",
+              hostname.c_str(), port, username.c_str(), (int)status, error.c_str());
   }
 }
 
 PVR_ERROR DVBLinkClient::GetBackendName(std::string& name)
 {
-  name= "DVBLink Server";
+  name = "DVBLink Server";
   return PVR_ERROR_NO_ERROR;
 }
 
@@ -284,7 +296,7 @@ PVR_ERROR DVBLinkClient::GetCapabilities(kodi::addon::PVRCapabilities& capabilit
   return PVR_ERROR_NO_ERROR;
 }
 
-void *DVBLinkClient::Process()
+void* DVBLinkClient::Process()
 {
   kodi::Log(ADDON_LOG_DEBUG, "DVBLinkUpdateProcess:: thread started");
 
@@ -336,7 +348,7 @@ void *DVBLinkClient::Process()
     Sleep(100);
   }
   kodi::Log(ADDON_LOG_DEBUG, "DVBLinkUpdateProcess:: thread stopped");
-  return NULL;
+  return nullptr;
 }
 
 bool DVBLinkClient::GetStatus()
@@ -402,7 +414,8 @@ PVR_ERROR DVBLinkClient::GetChannelGroupsAmount(int& amount)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR DVBLinkClient::GetChannelGroups(bool radio, kodi::addon::PVRChannelGroupsResultSet& results)
+PVR_ERROR DVBLinkClient::GetChannelGroups(bool radio,
+                                          kodi::addon::PVRChannelGroupsResultSet& results)
 {
   if (!server_caps_.favorites_supported_)
     return PVR_ERROR_NOT_IMPLEMENTED;
@@ -419,7 +432,9 @@ PVR_ERROR DVBLinkClient::GetChannelGroups(bool radio, kodi::addon::PVRChannelGro
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR DVBLinkClient::GetChannelGroupMembers(const kodi::addon::PVRChannelGroup& group, kodi::addon::PVRChannelGroupMembersResultSet& results)
+PVR_ERROR DVBLinkClient::GetChannelGroupMembers(
+    const kodi::addon::PVRChannelGroup& group,
+    kodi::addon::PVRChannelGroupMembersResultSet& results)
 {
   if (!server_caps_.favorites_supported_)
     return PVR_ERROR_NOT_IMPLEMENTED;
@@ -429,7 +444,8 @@ PVR_ERROR DVBLinkClient::GetChannelGroupMembers(const kodi::addon::PVRChannelGro
     if (channel_favorites_.favorites_[i].get_name() != group.GetGroupName())
       continue;
 
-    dvblinkremote::ChannelFavorite::favorite_channel_list_t chlist = channel_favorites_.favorites_[i].get_channels();
+    dvblinkremote::ChannelFavorite::favorite_channel_list_t chlist =
+        channel_favorites_.favorites_[i].get_channels();
 
     for (size_t j = 0; j < chlist.size(); j++)
     {
@@ -461,9 +477,13 @@ namespace
 {
 struct TimerType : kodi::addon::PVRTimerType
 {
-  TimerType(unsigned int id, unsigned int attributes, std::string description,
-      const std::vector<kodi::addon::PVRTypeIntValue> &maxRecordingsValues, int maxRecordingsDefault,
-      const std::vector<kodi::addon::PVRTypeIntValue> &dupEpisodesValues, int dupEpisodesDefault)
+  TimerType(unsigned int id,
+            unsigned int attributes,
+            std::string description,
+            const std::vector<kodi::addon::PVRTypeIntValue>& maxRecordingsValues,
+            int maxRecordingsDefault,
+            const std::vector<kodi::addon::PVRTypeIntValue>& dupEpisodesValues,
+            int dupEpisodesDefault)
   {
     SetId(id);
     SetAttributes(attributes);
@@ -474,8 +494,7 @@ struct TimerType : kodi::addon::PVRTimerType
     SetDescription(description);
   }
 };
-
-}
+} // namespace
 
 PVR_ERROR DVBLinkClient::GetTimerTypes(std::vector<kodi::addon::PVRTimerType>& types)
 {
@@ -504,106 +523,110 @@ PVR_ERROR DVBLinkClient::GetTimerTypes(std::vector<kodi::addon::PVRTimerType>& t
 
   static std::vector<kodi::addon::PVRTypeIntValue> emptyList;
 
-  static const unsigned int TIMER_MANUAL_ATTRIBS = PVR_TIMER_TYPE_IS_MANUAL
-      | PVR_TIMER_TYPE_SUPPORTS_CHANNELS | PVR_TIMER_TYPE_SUPPORTS_START_TIME | PVR_TIMER_TYPE_SUPPORTS_END_TIME
-      | PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN;
+  static const unsigned int TIMER_MANUAL_ATTRIBS =
+      PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
+      PVR_TIMER_TYPE_SUPPORTS_START_TIME | PVR_TIMER_TYPE_SUPPORTS_END_TIME |
+      PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN;
 
-  static const unsigned int TIMER_EPG_ATTRIBS = PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE
-      | PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN;
+  static const unsigned int TIMER_EPG_ATTRIBS =
+      PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE | PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN;
 
-  static const unsigned int TIMER_REPEATING_MANUAL_ATTRIBS = PVR_TIMER_TYPE_IS_REPEATING
-      | PVR_TIMER_TYPE_SUPPORTS_WEEKDAYS | PVR_TIMER_TYPE_SUPPORTS_MAX_RECORDINGS;
+  static const unsigned int TIMER_REPEATING_MANUAL_ATTRIBS = PVR_TIMER_TYPE_IS_REPEATING |
+                                                             PVR_TIMER_TYPE_SUPPORTS_WEEKDAYS |
+                                                             PVR_TIMER_TYPE_SUPPORTS_MAX_RECORDINGS;
 
-  static const unsigned int TIMER_REPEATING_EPG_ATTRIBS = PVR_TIMER_TYPE_IS_REPEATING
-      | PVR_TIMER_TYPE_SUPPORTS_RECORD_ONLY_NEW_EPISODES | PVR_TIMER_TYPE_SUPPORTS_MAX_RECORDINGS;
+  static const unsigned int TIMER_REPEATING_EPG_ATTRIBS =
+      PVR_TIMER_TYPE_IS_REPEATING | PVR_TIMER_TYPE_SUPPORTS_RECORD_ONLY_NEW_EPISODES |
+      PVR_TIMER_TYPE_SUPPORTS_MAX_RECORDINGS;
 
-  static const unsigned int TIMER_REPEATING_KEYWORD_ATTRIBS = PVR_TIMER_TYPE_SUPPORTS_TITLE_EPG_MATCH
-      | PVR_TIMER_TYPE_SUPPORTS_CHANNELS | PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN | PVR_TIMER_TYPE_IS_REPEATING
-      | PVR_TIMER_TYPE_SUPPORTS_MAX_RECORDINGS;
+  static const unsigned int TIMER_REPEATING_KEYWORD_ATTRIBS =
+      PVR_TIMER_TYPE_SUPPORTS_TITLE_EPG_MATCH | PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
+      PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN | PVR_TIMER_TYPE_IS_REPEATING |
+      PVR_TIMER_TYPE_SUPPORTS_MAX_RECORDINGS;
 
-  static const unsigned int TIMER_MANUAL_CHILD_ATTRIBUTES = PVR_TIMER_TYPE_IS_MANUAL
-      | PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES;
+  static const unsigned int TIMER_MANUAL_CHILD_ATTRIBUTES =
+      PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES;
 
-  static const unsigned int TIMER_EPG_CHILD_ATTRIBUTES = PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE
-      | PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES;
+  static const unsigned int TIMER_EPG_CHILD_ATTRIBUTES =
+      PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE | PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES;
 
   static const unsigned int TIMER_KEYWORD_CHILD_ATTRIBUTES = PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES;
 
   /* Timer types definition.*/
-  static std::vector<std::unique_ptr<TimerType> > timerTypes;
+  static std::vector<std::unique_ptr<TimerType>> timerTypes;
   if (timerTypes.size() == 0)
   {
     timerTypes.push_back(
-    /* One-shot manual (time and channel based) */
-    std::unique_ptr<TimerType>(new TimerType(
-    /* Type id. */
-    TIMER_ONCE_MANUAL,
-    /* Attributes. */
-    TIMER_MANUAL_ATTRIBS,
-    /* Description. */
-    kodi::GetLocalizedString(32037),
-    /* Values definitions for attributes. */
-    recordingLimitValues, default_rec_limit_, showTypeValues, default_rec_show_type_)));
+        /* One-shot manual (time and channel based) */
+        std::unique_ptr<TimerType>(new TimerType(
+            /* Type id. */
+            TIMER_ONCE_MANUAL,
+            /* Attributes. */
+            TIMER_MANUAL_ATTRIBS,
+            /* Description. */
+            kodi::GetLocalizedString(32037),
+            /* Values definitions for attributes. */
+            recordingLimitValues, default_rec_limit_, showTypeValues, default_rec_show_type_)));
 
     timerTypes.push_back(
-    /* One-shot epg based */
-    std::unique_ptr<TimerType>(new TimerType(
-    /* Type id. */
-    TIMER_ONCE_EPG,
-    /* Attributes. */
-    TIMER_EPG_ATTRIBS,
-    /* Description. */
-    kodi::GetLocalizedString(32038),
-    /* Values definitions for attributes. */
-    recordingLimitValues, default_rec_limit_, showTypeValues, default_rec_show_type_)));
+        /* One-shot epg based */
+        std::unique_ptr<TimerType>(new TimerType(
+            /* Type id. */
+            TIMER_ONCE_EPG,
+            /* Attributes. */
+            TIMER_EPG_ATTRIBS,
+            /* Description. */
+            kodi::GetLocalizedString(32038),
+            /* Values definitions for attributes. */
+            recordingLimitValues, default_rec_limit_, showTypeValues, default_rec_show_type_)));
 
     timerTypes.push_back(
-    /* Read-only one-shot for timers generated by timerec */
-    std::unique_ptr<TimerType>(new TimerType(
-    /* Type id. */
-    TIMER_ONCE_MANUAL_CHILD,
-    /* Attributes. */
-    TIMER_MANUAL_CHILD_ATTRIBUTES,
-    /* Description. */
-    kodi::GetLocalizedString(32039),
-    /* Values definitions for attributes. */
-    recordingLimitValues, default_rec_limit_, showTypeValues, default_rec_show_type_)));
+        /* Read-only one-shot for timers generated by timerec */
+        std::unique_ptr<TimerType>(new TimerType(
+            /* Type id. */
+            TIMER_ONCE_MANUAL_CHILD,
+            /* Attributes. */
+            TIMER_MANUAL_CHILD_ATTRIBUTES,
+            /* Description. */
+            kodi::GetLocalizedString(32039),
+            /* Values definitions for attributes. */
+            recordingLimitValues, default_rec_limit_, showTypeValues, default_rec_show_type_)));
 
     timerTypes.push_back(
-    /* Read-only one-shot for timers generated by autorec */
-    std::unique_ptr<TimerType>(new TimerType(
-    /* Type id. */
-    TIMER_ONCE_EPG_CHILD,
-    /* Attributes. */
-    TIMER_EPG_CHILD_ATTRIBUTES,
-    /* Description. */
-    kodi::GetLocalizedString(32040),
-    /* Values definitions for attributes. */
-    recordingLimitValues, default_rec_limit_, showTypeValues, default_rec_show_type_)));
+        /* Read-only one-shot for timers generated by autorec */
+        std::unique_ptr<TimerType>(new TimerType(
+            /* Type id. */
+            TIMER_ONCE_EPG_CHILD,
+            /* Attributes. */
+            TIMER_EPG_CHILD_ATTRIBUTES,
+            /* Description. */
+            kodi::GetLocalizedString(32040),
+            /* Values definitions for attributes. */
+            recordingLimitValues, default_rec_limit_, showTypeValues, default_rec_show_type_)));
 
     timerTypes.push_back(
-    /* Child Keyword based */
-    std::unique_ptr<TimerType>(new TimerType(
-    /* Type id. */
-    TIMER_ONCE_KEYWORD_CHILD,
-    /* Attributes. */
-    TIMER_KEYWORD_CHILD_ATTRIBUTES,
-    /* Description. */
-    kodi::GetLocalizedString(32041),
-    /* Values definitions for attributes. */
-    recordingLimitValues, default_rec_limit_, showTypeValues, default_rec_show_type_)));
+        /* Child Keyword based */
+        std::unique_ptr<TimerType>(new TimerType(
+            /* Type id. */
+            TIMER_ONCE_KEYWORD_CHILD,
+            /* Attributes. */
+            TIMER_KEYWORD_CHILD_ATTRIBUTES,
+            /* Description. */
+            kodi::GetLocalizedString(32041),
+            /* Values definitions for attributes. */
+            recordingLimitValues, default_rec_limit_, showTypeValues, default_rec_show_type_)));
 
     timerTypes.push_back(
-    /* Repeating manual (time and channel based) Parent */
-    std::unique_ptr<TimerType>(new TimerType(
-    /* Type id. */
-    TIMER_REPEATING_MANUAL,
-    /* Attributes. */
-    TIMER_MANUAL_ATTRIBS | TIMER_REPEATING_MANUAL_ATTRIBS,
-    /* Description. */
-    kodi::GetLocalizedString(32042),
-    /* Values definitions for attributes. */
-    recordingLimitValues, default_rec_limit_, showTypeValues, default_rec_show_type_)));
+        /* Repeating manual (time and channel based) Parent */
+        std::unique_ptr<TimerType>(new TimerType(
+            /* Type id. */
+            TIMER_REPEATING_MANUAL,
+            /* Attributes. */
+            TIMER_MANUAL_ATTRIBS | TIMER_REPEATING_MANUAL_ATTRIBS,
+            /* Description. */
+            kodi::GetLocalizedString(32042),
+            /* Values definitions for attributes. */
+            recordingLimitValues, default_rec_limit_, showTypeValues, default_rec_show_type_)));
 
     unsigned int repeating_epg_attrs = TIMER_EPG_ATTRIBS | TIMER_REPEATING_EPG_ATTRIBS;
     //start timer anytime is supported only in v6
@@ -611,28 +634,28 @@ PVR_ERROR DVBLinkClient::GetTimerTypes(std::vector<kodi::addon::PVRTimerType>& t
       repeating_epg_attrs |= PVR_TIMER_TYPE_SUPPORTS_START_ANYTIME;
 
     timerTypes.push_back(
-    /* Repeating epg based Parent*/
-    std::unique_ptr<TimerType>(new TimerType(
-    /* Type id. */
-    TIMER_REPEATING_EPG,
-    /* Attributes. */
-    repeating_epg_attrs,
-    /* Description. */
-    kodi::GetLocalizedString(32043),
-    /* Values definitions for attributes. */
-    recordingLimitValues, default_rec_limit_, showTypeValues, default_rec_show_type_)));
+        /* Repeating epg based Parent*/
+        std::unique_ptr<TimerType>(new TimerType(
+            /* Type id. */
+            TIMER_REPEATING_EPG,
+            /* Attributes. */
+            repeating_epg_attrs,
+            /* Description. */
+            kodi::GetLocalizedString(32043),
+            /* Values definitions for attributes. */
+            recordingLimitValues, default_rec_limit_, showTypeValues, default_rec_show_type_)));
 
     timerTypes.push_back(
-    /* Repeating Keyword (Generic) based */
-    std::unique_ptr<TimerType>(new TimerType(
-    /* Type id. */
-    TIMER_REPEATING_KEYWORD,
-    /* Attributes. */
-    TIMER_REPEATING_KEYWORD_ATTRIBS,
-    /* Description. */
-    kodi::GetLocalizedString(32044),
-    /* Values definitions for attributes. */
-    recordingLimitValues, default_rec_limit_, showTypeValues, default_rec_show_type_)));
+        /* Repeating Keyword (Generic) based */
+        std::unique_ptr<TimerType>(new TimerType(
+            /* Type id. */
+            TIMER_REPEATING_KEYWORD,
+            /* Attributes. */
+            TIMER_REPEATING_KEYWORD_ATTRIBS,
+            /* Description. */
+            kodi::GetLocalizedString(32044),
+            /* Values definitions for attributes. */
+            recordingLimitValues, default_rec_limit_, showTypeValues, default_rec_show_type_)));
   }
 
   /* Copy data to target array. */
@@ -653,7 +676,7 @@ int DVBLinkClient::GetInternalUniqueIdFromChannelId(const std::string& channelId
   dvblink_channel_map_t::iterator ch_it = m_channels.begin();
   while (ch_it != m_channels.end())
   {
-    Channel * channel = ch_it->second;
+    Channel* channel = ch_it->second;
     int id = ch_it->first;
 
     if (channelId.compare(channel->GetID()) == 0)
@@ -665,13 +688,16 @@ int DVBLinkClient::GetInternalUniqueIdFromChannelId(const std::string& channelId
   return 0;
 }
 
-std::string DVBLinkClient::make_timer_hash(const std::string& timer_id, const std::string& schedule_id)
+std::string DVBLinkClient::make_timer_hash(const std::string& timer_id,
+                                           const std::string& schedule_id)
 {
   std::string res = schedule_id + "#" + timer_id;
   return res;
 }
 
-bool DVBLinkClient::parse_timer_hash(const char* timer_hash, std::string& timer_id, std::string& schedule_id)
+bool DVBLinkClient::parse_timer_hash(const char* timer_hash,
+                                     std::string& timer_id,
+                                     std::string& schedule_id)
 {
   bool ret_val = false;
 
@@ -717,10 +743,11 @@ bool DVBLinkClient::get_schedule_desc(const std::string& id, schedule_desc& sd)
   return false;
 }
 
-int DVBLinkClient::GetSchedules(kodi::addon::PVRTimersResultSet& results, const RecordingList& recordings)
+int DVBLinkClient::GetSchedules(kodi::addon::PVRTimersResultSet& results,
+                                const RecordingList& recordings)
 {
   //make a map of schedule id->recording list
-  std::map<std::string, std::vector<Recording*> > schedule_to_timer_map;
+  std::map<std::string, std::vector<Recording*>> schedule_to_timer_map;
   for (size_t i = 0; i < recordings.size(); i++)
   {
     Recording* rec = recordings[i];
@@ -745,10 +772,12 @@ int DVBLinkClient::GetSchedules(kodi::addon::PVRTimersResultSet& results, const 
   DVBLinkRemoteStatusCode status;
   std::string error;
 
-  dvblink_server_connection srv_connection( connection_props_);
-  if ((status = srv_connection.get_connection()->GetSchedules(request, response, &error)) != DVBLINK_REMOTE_STATUS_OK)
+  dvblink_server_connection srv_connection(connection_props_);
+  if ((status = srv_connection.get_connection()->GetSchedules(request, response, &error)) !=
+      DVBLINK_REMOTE_STATUS_OK)
   {
-    kodi::Log(ADDON_LOG_ERROR, "Could not get Schedules (Error code : %d Description : %s)", (int) status, error.c_str());
+    kodi::Log(ADDON_LOG_ERROR, "Could not get Schedules (Error code : %d Description : %s)",
+              (int)status, error.c_str());
     return added_count;
   }
 
@@ -758,22 +787,26 @@ int DVBLinkClient::GetSchedules(kodi::addon::PVRTimersResultSet& results, const 
 
   if (m_showinfomsg)
   {
-    kodi::QueueFormattedNotification(QUEUE_INFO, kodi::GetLocalizedString(32007).c_str(), schedule_num);
+    kodi::QueueFormattedNotification(QUEUE_INFO, kodi::GetLocalizedString(32007).c_str(),
+                                     schedule_num);
   }
 
   //manual schedules
   StoredManualScheduleList& manual_schedules = response.GetManualSchedules();
   for (size_t i = 0; i < manual_schedules.size(); i++)
   {
-    add_schedule_desc(manual_schedules[i]->GetID(), schedule_desc(-1, TIMER_ONCE_MANUAL,
-      manual_schedules[i]->MarginBefore, manual_schedules[i]->MarginAfter));
+    add_schedule_desc(manual_schedules[i]->GetID(),
+                      schedule_desc(-1, TIMER_ONCE_MANUAL, manual_schedules[i]->MarginBefore,
+                                    manual_schedules[i]->MarginAfter));
 
     if (manual_schedules[i]->GetDayMask() != 0)
     {
       unsigned int kodi_idx = get_kodi_timer_idx_from_dvblink(manual_schedules[i]->GetID());
 
-      add_schedule_desc(manual_schedules[i]->GetID(), schedule_desc(kodi_idx, TIMER_REPEATING_MANUAL,
-          manual_schedules[i]->MarginBefore, manual_schedules[i]->MarginAfter));
+      add_schedule_desc(manual_schedules[i]->GetID(),
+                        schedule_desc(kodi_idx, TIMER_REPEATING_MANUAL,
+                                      manual_schedules[i]->MarginBefore,
+                                      manual_schedules[i]->MarginAfter));
 
       kodi::addon::PVRTimer timer;
       timer.SetEPGUid(PVR_TIMER_NO_EPG_UID);
@@ -781,7 +814,8 @@ int DVBLinkClient::GetSchedules(kodi::addon::PVRTimersResultSet& results, const 
       //misuse strDirectory to keep id of the timer
       timer.SetDirectory(manual_schedules[i]->GetID());
       timer.SetClientIndex(kodi_idx);
-      timer.SetClientChannelUid(GetInternalUniqueIdFromChannelId(manual_schedules[i]->GetChannelID()));
+      timer.SetClientChannelUid(
+          GetInternalUniqueIdFromChannelId(manual_schedules[i]->GetChannelID()));
       timer.SetState(PVR_TIMER_STATE_SCHEDULED);
       timer.SetTimerType(TIMER_REPEATING_MANUAL);
       timer.SetMarginStart(manual_schedules[i]->MarginBefore / 60);
@@ -812,14 +846,16 @@ int DVBLinkClient::GetSchedules(kodi::addon::PVRTimersResultSet& results, const 
   StoredEpgScheduleList& epg_schedules = response.GetEpgSchedules();
   for (size_t i = 0; i < epg_schedules.size(); i++)
   {
-    add_schedule_desc(epg_schedules[i]->GetID(), schedule_desc(-1, TIMER_ONCE_EPG, epg_schedules[i]->MarginBefore,
-        epg_schedules[i]->MarginAfter));
+    add_schedule_desc(epg_schedules[i]->GetID(),
+                      schedule_desc(-1, TIMER_ONCE_EPG, epg_schedules[i]->MarginBefore,
+                                    epg_schedules[i]->MarginAfter));
 
     if (epg_schedules[i]->Repeat)
     {
       unsigned int kodi_idx = get_kodi_timer_idx_from_dvblink(epg_schedules[i]->GetID());
-      add_schedule_desc(epg_schedules[i]->GetID(), schedule_desc(kodi_idx, TIMER_REPEATING_EPG,
-          epg_schedules[i]->MarginBefore, epg_schedules[i]->MarginAfter));
+      add_schedule_desc(epg_schedules[i]->GetID(),
+                        schedule_desc(kodi_idx, TIMER_REPEATING_EPG, epg_schedules[i]->MarginBefore,
+                                      epg_schedules[i]->MarginAfter));
 
       kodi::addon::PVRTimer timer;
 
@@ -833,15 +869,20 @@ int DVBLinkClient::GetSchedules(kodi::addon::PVRTimersResultSet& results, const 
       timer.SetMarginEnd(epg_schedules[i]->MarginAfter / 60);
 
       timer.SetMaxRecordings(epg_schedules[i]->RecordingsToKeep);
-      timer.SetStartAnyTime(server_caps_.start_any_time_supported_ ? epg_schedules[i]->RecordSeriesAnytime : true);
-      timer.SetPreventDuplicateEpisodes(epg_schedules[i]->NewOnly ? dcrs_record_new_only : dcrs_record_all);
+      timer.SetStartAnyTime(
+          server_caps_.start_any_time_supported_ ? epg_schedules[i]->RecordSeriesAnytime : true);
+      timer.SetPreventDuplicateEpisodes(epg_schedules[i]->NewOnly ? dcrs_record_new_only
+                                                                  : dcrs_record_all);
       timer.SetTitle(epg_schedules[i]->program_name_);
 
       if (schedule_to_timer_map.find(epg_schedules[i]->GetID()) != schedule_to_timer_map.end() &&
-        !schedule_to_timer_map[epg_schedules[i]->GetID()].empty())
+          !schedule_to_timer_map[epg_schedules[i]->GetID()].empty())
       {
-        timer.SetStartTime(schedule_to_timer_map[epg_schedules[i]->GetID()].at(0)->GetProgram().GetStartTime());
-        timer.SetEndTime(timer.GetStartTime() + schedule_to_timer_map[epg_schedules[i]->GetID()].at(0)->GetProgram().GetDuration());
+        timer.SetStartTime(
+            schedule_to_timer_map[epg_schedules[i]->GetID()].at(0)->GetProgram().GetStartTime());
+        timer.SetEndTime(
+            timer.GetStartTime() +
+            schedule_to_timer_map[epg_schedules[i]->GetID()].at(0)->GetProgram().GetDuration());
       }
 
       //the original program, used for scheduling, can already be gone for a long time
@@ -860,8 +901,9 @@ int DVBLinkClient::GetSchedules(kodi::addon::PVRTimersResultSet& results, const 
   for (size_t i = 0; i < bp_schedules.size(); i++)
   {
     unsigned int kodi_idx = get_kodi_timer_idx_from_dvblink(bp_schedules[i]->GetID());
-    add_schedule_desc(bp_schedules[i]->GetID(), schedule_desc(kodi_idx, TIMER_REPEATING_KEYWORD,
-        bp_schedules[i]->MarginBefore, bp_schedules[i]->MarginAfter));
+    add_schedule_desc(bp_schedules[i]->GetID(),
+                      schedule_desc(kodi_idx, TIMER_REPEATING_KEYWORD,
+                                    bp_schedules[i]->MarginBefore, bp_schedules[i]->MarginAfter));
 
     kodi::addon::PVRTimer timer;
 
@@ -880,10 +922,13 @@ int DVBLinkClient::GetSchedules(kodi::addon::PVRTimersResultSet& results, const 
     timer.SetEPGSearchString(bp_schedules[i]->GetKeyphrase());
 
     if (schedule_to_timer_map.find(bp_schedules[i]->GetID()) != schedule_to_timer_map.end() &&
-      !schedule_to_timer_map[bp_schedules[i]->GetID()].empty())
+        !schedule_to_timer_map[bp_schedules[i]->GetID()].empty())
     {
-      timer.SetStartTime(schedule_to_timer_map[bp_schedules[i]->GetID()].at(0)->GetProgram().GetStartTime());
-      timer.SetEndTime(timer.GetStartTime() + schedule_to_timer_map[bp_schedules[i]->GetID()].at(0)->GetProgram().GetDuration());
+      timer.SetStartTime(
+          schedule_to_timer_map[bp_schedules[i]->GetID()].at(0)->GetProgram().GetStartTime());
+      timer.SetEndTime(
+          timer.GetStartTime() +
+          schedule_to_timer_map[bp_schedules[i]->GetID()].at(0)->GetProgram().GetDuration());
     }
 
     timer.SetTitle(bp_schedules[i]->GetKeyphrase());
@@ -912,10 +957,11 @@ PVR_ERROR DVBLinkClient::GetTimers(kodi::addon::PVRTimersResultSet& results)
   std::string error;
 
   dvblink_server_connection srv_connection(connection_props_);
-  if ((status = srv_connection.get_connection()->GetRecordings(recordingsRequest, recordings, &error))
-      != DVBLINK_REMOTE_STATUS_OK)
+  if ((status = srv_connection.get_connection()->GetRecordings(recordingsRequest, recordings,
+                                                               &error)) != DVBLINK_REMOTE_STATUS_OK)
   {
-    kodi::Log(ADDON_LOG_ERROR, "Could not get timers (Error code : %d Description : %s)", (int) status, error.c_str());
+    kodi::Log(ADDON_LOG_ERROR, "Could not get timers (Error code : %d Description : %s)",
+              (int)status, error.c_str());
     return result;
   }
 
@@ -923,7 +969,8 @@ PVR_ERROR DVBLinkClient::GetTimers(kodi::addon::PVRTimersResultSet& results)
 
   if (m_showinfomsg)
   {
-    kodi::QueueFormattedNotification(QUEUE_INFO, kodi::GetLocalizedString(32007).c_str(), recordings.size());
+    kodi::QueueFormattedNotification(QUEUE_INFO, kodi::GetLocalizedString(32007).c_str(),
+                                     recordings.size());
   }
 
   //get and process schedules first
@@ -952,19 +999,19 @@ PVR_ERROR DVBLinkClient::GetTimers(kodi::addon::PVRTimersResultSet& results)
         case TIMER_ONCE_EPG:
           //for once timers - copy parent attribute (there was no separate schedule submitted to kodi)
           xbmcTimer.SetTimerType(schedule_type);
-        break;
+          break;
         case TIMER_REPEATING_MANUAL:
           xbmcTimer.SetTimerType(TIMER_ONCE_MANUAL_CHILD);
           xbmcTimer.SetParentClientIndex(get_kodi_timer_idx_from_dvblink(rec->GetScheduleID()));
-        break;
+          break;
         case TIMER_REPEATING_EPG:
           xbmcTimer.SetTimerType(TIMER_ONCE_EPG_CHILD);
           xbmcTimer.SetParentClientIndex(get_kodi_timer_idx_from_dvblink(rec->GetScheduleID()));
-        break;
+          break;
         case TIMER_REPEATING_KEYWORD:
           xbmcTimer.SetTimerType(TIMER_ONCE_KEYWORD_CHILD);
           xbmcTimer.SetParentClientIndex(get_kodi_timer_idx_from_dvblink(rec->GetScheduleID()));
-        break;
+          break;
       }
       //copy margins
       xbmcTimer.SetMarginStart(sd.schedule_margin_before / 60);
@@ -1015,7 +1062,9 @@ PVR_ERROR DVBLinkClient::GetTimers(kodi::addon::PVRTimersResultSet& results)
   return result;
 }
 
-bool DVBLinkClient::get_dvblink_program_id(std::string& channelId, int start_time, std::string& dvblink_program_id)
+bool DVBLinkClient::get_dvblink_program_id(std::string& channelId,
+                                           int start_time,
+                                           std::string& dvblink_program_id)
 {
   bool ret_val = false;
 
@@ -1043,7 +1092,7 @@ PVR_ERROR DVBLinkClient::AddTimer(const kodi::addon::PVRTimer& timer)
   PVR_ERROR result = PVR_ERROR_FAILED;
 
   DVBLinkRemoteStatusCode status;
-  AddScheduleRequest * addScheduleRequest = NULL;
+  AddScheduleRequest* addScheduleRequest = nullptr;
 
   int marginBefore = -1;
   int marginAfter = -1;
@@ -1069,8 +1118,9 @@ PVR_ERROR DVBLinkClient::AddTimer(const kodi::addon::PVRTimer& timer)
 
       time_t duration = timer.GetEndTime() - start_time;
       long day_mask = 0;
-      addScheduleRequest = new AddManualScheduleRequest(channelId, start_time, duration, day_mask, timer.GetTitle(), 0,
-          marginBefore, marginAfter);
+      addScheduleRequest =
+          new AddManualScheduleRequest(channelId, start_time, duration, day_mask, timer.GetTitle(),
+                                       0, marginBefore, marginAfter);
     }
     break;
     case TIMER_REPEATING_MANUAL:
@@ -1079,7 +1129,7 @@ PVR_ERROR DVBLinkClient::AddTimer(const kodi::addon::PVRTimer& timer)
       time_t start_time = timer.GetStartTime();
       time_t duration = timer.GetEndTime() - timer.GetStartTime();
       long day_mask = 0;
-      if (timer.GetWeekdays() > 0)  // repeating timer?
+      if (timer.GetWeekdays() > 0) // repeating timer?
       {
         //change day mask to DVBLink server format (Sun - first day)
         bool bcarry = (timer.GetWeekdays() & 0x40) == 0x40;
@@ -1087,17 +1137,19 @@ PVR_ERROR DVBLinkClient::AddTimer(const kodi::addon::PVRTimer& timer)
         if (bcarry)
           day_mask |= 0x01;
         //find first now/future time, which matches the day mask
-        start_time = timer.GetStartTime() > timer.GetFirstDay() ? timer.GetStartTime() : timer.GetFirstDay();
+        start_time =
+            timer.GetStartTime() > timer.GetFirstDay() ? timer.GetStartTime() : timer.GetFirstDay();
         for (size_t i = 0; i < 7; i++)
         {
           tm* local_start_time = localtime(&start_time);
-          if (is_bit_set(local_start_time->tm_wday, (unsigned char) day_mask))
+          if (is_bit_set(local_start_time->tm_wday, (unsigned char)day_mask))
             break;
           start_time += time_t(24 * 3600);
         }
       }
-      addScheduleRequest = new AddManualScheduleRequest(channelId, start_time, duration, day_mask, timer.GetTitle(),
-          numberToKeep, marginBefore, marginAfter);
+      addScheduleRequest =
+          new AddManualScheduleRequest(channelId, start_time, duration, day_mask, timer.GetTitle(),
+                                       numberToKeep, marginBefore, marginAfter);
     }
     break;
     case TIMER_ONCE_EPG:
@@ -1107,8 +1159,9 @@ PVR_ERROR DVBLinkClient::AddTimer(const kodi::addon::PVRTimer& timer)
       std::string dvblink_program_id;
       if (get_dvblink_program_id(channelId, timer.GetEPGUid(), dvblink_program_id))
       {
-        addScheduleRequest = new AddScheduleByEpgRequest(channelId, dvblink_program_id, false, true, true,
-            dcrn_keep_all, marginBefore, marginAfter);
+        addScheduleRequest =
+            new AddScheduleByEpgRequest(channelId, dvblink_program_id, false, true, true,
+                                        dcrn_keep_all, marginBefore, marginAfter);
       }
     }
     break;
@@ -1122,8 +1175,9 @@ PVR_ERROR DVBLinkClient::AddTimer(const kodi::addon::PVRTimer& timer)
       std::string dvblink_program_id;
       if (get_dvblink_program_id(channelId, timer.GetEPGUid(), dvblink_program_id))
       {
-        addScheduleRequest = new AddScheduleByEpgRequest(channelId, dvblink_program_id, record_series, newOnly, anytime,
-            numberToKeep, marginBefore, marginAfter);
+        addScheduleRequest =
+            new AddScheduleByEpgRequest(channelId, dvblink_program_id, record_series, newOnly,
+                                        anytime, numberToKeep, marginBefore, marginAfter);
       }
     }
     break;
@@ -1135,20 +1189,21 @@ PVR_ERROR DVBLinkClient::AddTimer(const kodi::addon::PVRTimer& timer)
         channelId = m_channels[timer.GetClientChannelUid()]->GetID();
 
       std::string key_phrase = timer.GetEPGSearchString();
-      long genre_mask = 0;  //any genre
+      long genre_mask = 0; //any genre
 
-      addScheduleRequest = new AddScheduleByPatternRequest(channelId, key_phrase, genre_mask, numberToKeep,
-          marginBefore, marginAfter);
+      addScheduleRequest = new AddScheduleByPatternRequest(channelId, key_phrase, genre_mask,
+                                                           numberToKeep, marginBefore, marginAfter);
     }
     break;
   }
 
-  if (addScheduleRequest != NULL)
+  if (addScheduleRequest != nullptr)
   {
     std::string error;
 
     dvblink_server_connection srv_connection(connection_props_);
-    if ((status = srv_connection.get_connection()->AddSchedule(*addScheduleRequest, &error)) == DVBLINK_REMOTE_STATUS_OK)
+    if ((status = srv_connection.get_connection()->AddSchedule(*addScheduleRequest, &error)) ==
+        DVBLINK_REMOTE_STATUS_OK)
     {
       kodi::Log(ADDON_LOG_INFO, "Timer added");
       m_update_timers_repeat = true;
@@ -1157,7 +1212,8 @@ PVR_ERROR DVBLinkClient::AddTimer(const kodi::addon::PVRTimer& timer)
     else
     {
       result = PVR_ERROR_FAILED;
-      kodi::Log(ADDON_LOG_ERROR, "Could not add timer (Error code : %d Description : %s)", (int) status, error.c_str());
+      kodi::Log(ADDON_LOG_ERROR, "Could not add timer (Error code : %d Description : %s)",
+                (int)status, error.c_str());
     }
     SAFE_DELETE(addScheduleRequest);
   }
@@ -1217,7 +1273,8 @@ PVR_ERROR DVBLinkClient::DeleteTimer(const kodi::addon::PVRTimer& timer, bool fo
   }
   else
   {
-    kodi::Log(ADDON_LOG_ERROR, "Timer could not be deleted (Error code : %d Description : %s)", (int) status, error.c_str());
+    kodi::Log(ADDON_LOG_ERROR, "Timer could not be deleted (Error code : %d Description : %s)",
+              (int)status, error.c_str());
   }
   return result;
 }
@@ -1253,7 +1310,7 @@ PVR_ERROR DVBLinkClient::UpdateTimer(const kodi::addon::PVRTimer& timer)
     case TIMER_ONCE_EPG_CHILD:
     case TIMER_ONCE_KEYWORD_CHILD:
       //children entities are not editable
-    break;
+      break;
   }
 
   if (schedule_id.size() > 0)
@@ -1268,17 +1325,19 @@ PVR_ERROR DVBLinkClient::UpdateTimer(const kodi::addon::PVRTimer& timer)
       if (timer.GetTimerType() == schedule_type)
       {
         bool new_only = timer.GetPreventDuplicateEpisodes() == dcrs_record_new_only;
-        bool recordSeriesAnytime = server_caps_.start_any_time_supported_ ? timer.GetStartAnyTime() : true;
+        bool recordSeriesAnytime =
+            server_caps_.start_any_time_supported_ ? timer.GetStartAnyTime() : true;
         int recordingsToKeep = timer.GetMaxRecordings();
         int margin_before = timer.GetMarginStart() * 60;
         int margin_after = timer.GetMarginEnd() * 60;
 
-        UpdateScheduleRequest update_request(schedule_id, new_only, recordSeriesAnytime, recordingsToKeep, margin_before,
-            margin_after);
+        UpdateScheduleRequest update_request(schedule_id, new_only, recordSeriesAnytime,
+                                             recordingsToKeep, margin_before, margin_after);
 
         std::string error;
         dvblink_server_connection srv_connection(connection_props_);
-        DVBLinkRemoteStatusCode status = srv_connection.get_connection()->UpdateSchedule(update_request, &error);
+        DVBLinkRemoteStatusCode status =
+            srv_connection.get_connection()->UpdateSchedule(update_request, &error);
 
         if (status == DVBLINK_REMOTE_STATUS_OK)
         {
@@ -1288,8 +1347,8 @@ PVR_ERROR DVBLinkClient::UpdateTimer(const kodi::addon::PVRTimer& timer)
         }
         else
         {
-          kodi::Log(ADDON_LOG_ERROR, "Schedule %s update failed (Error code : %d Description : %s)", schedule_id.c_str(),
-              (int) status, error.c_str());
+          kodi::Log(ADDON_LOG_ERROR, "Schedule %s update failed (Error code : %d Description : %s)",
+                    schedule_id.c_str(), (int)status, error.c_str());
         }
       }
       else
@@ -1313,20 +1372,24 @@ std::string DVBLinkClient::GetRecordedTVByDateObjectID(const std::string& buildI
   std::string result = "";
   DVBLinkRemoteStatusCode status;
 
-  GetPlaybackObjectRequest getPlaybackObjectRequest(connection_props_.address_.c_str(), buildInRecoderObjectID);
+  GetPlaybackObjectRequest getPlaybackObjectRequest(connection_props_.address_.c_str(),
+                                                    buildInRecoderObjectID);
   getPlaybackObjectRequest.IncludeChildrenObjectsForRequestedObject = true;
   GetPlaybackObjectResponse getPlaybackObjectResponse;
 
   dvblink_server_connection srv_connection(connection_props_);
-  if ((status = srv_connection.get_connection()->GetPlaybackObject(getPlaybackObjectRequest, getPlaybackObjectResponse,
-      NULL)) == DVBLINK_REMOTE_STATUS_OK)
+  if ((status = srv_connection.get_connection()->GetPlaybackObject(
+           getPlaybackObjectRequest, getPlaybackObjectResponse, nullptr)) ==
+      DVBLINK_REMOTE_STATUS_OK)
   {
-    for (std::vector<PlaybackContainer*>::iterator it = getPlaybackObjectResponse.GetPlaybackContainers().begin();
-        it < getPlaybackObjectResponse.GetPlaybackContainers().end(); it++)
+    for (std::vector<PlaybackContainer*>::iterator it =
+             getPlaybackObjectResponse.GetPlaybackContainers().begin();
+         it < getPlaybackObjectResponse.GetPlaybackContainers().end(); it++)
     {
-      PlaybackContainer * container = (PlaybackContainer *) *it;
+      PlaybackContainer* container = (PlaybackContainer*)*it;
 
-      if (container->GetObjectID().find("F6F08949-2A07-4074-9E9D-423D877270BB") != std::string::npos)
+      if (container->GetObjectID().find("F6F08949-2A07-4074-9E9D-423D877270BB") !=
+          std::string::npos)
       {
         result = container->GetObjectID();
         break;
@@ -1344,10 +1407,12 @@ PVR_ERROR DVBLinkClient::DeleteRecording(const kodi::addon::PVRRecording& record
 
   std::string error;
   dvblink_server_connection srv_connection(connection_props_);
-  if ((status = srv_connection.get_connection()->RemovePlaybackObject(remoteObj, &error)) != DVBLINK_REMOTE_STATUS_OK)
+  if ((status = srv_connection.get_connection()->RemovePlaybackObject(remoteObj, &error)) !=
+      DVBLINK_REMOTE_STATUS_OK)
   {
-    kodi::Log(ADDON_LOG_ERROR, "Recording %s could not be deleted (Error code: %d Description : %s)", recording.GetTitle().c_str(),
-        (int) status, error.c_str());
+    kodi::Log(ADDON_LOG_ERROR,
+              "Recording %s could not be deleted (Error code: %d Description : %s)",
+              recording.GetTitle().c_str(), (int)status, error.c_str());
     return result;
   }
 
@@ -1411,37 +1476,42 @@ PVR_ERROR DVBLinkClient::GetRecordings(bool deleted, kodi::addon::PVRRecordingsR
     m_recording_id_to_url_map.clear();
   }
 
-  GetPlaybackObjectRequest getPlaybackObjectRequest(connection_props_.address_.c_str(), m_recordingsid_by_date);
+  GetPlaybackObjectRequest getPlaybackObjectRequest(connection_props_.address_.c_str(),
+                                                    m_recordingsid_by_date);
   getPlaybackObjectRequest.IncludeChildrenObjectsForRequestedObject = true;
   GetPlaybackObjectResponse getPlaybackObjectResponse;
 
   std::string error;
 
-  dvblink_server_connection srv_connection( connection_props_);
-  if ((status = srv_connection.get_connection()->GetPlaybackObject(getPlaybackObjectRequest, getPlaybackObjectResponse,
-      &error)) != DVBLINK_REMOTE_STATUS_OK)
+  dvblink_server_connection srv_connection(connection_props_);
+  if ((status = srv_connection.get_connection()->GetPlaybackObject(
+           getPlaybackObjectRequest, getPlaybackObjectResponse, &error)) !=
+      DVBLINK_REMOTE_STATUS_OK)
   {
-    kodi::Log(ADDON_LOG_ERROR, "Could not get recordings (Error code : %d Description : %s)", (int) status, error.c_str());
+    kodi::Log(ADDON_LOG_ERROR, "Could not get recordings (Error code : %d Description : %s)",
+              (int)status, error.c_str());
     //kodi::QueueFormattedNotification(QUEUE_ERROR, kodi::GetLocalizedString(32004).c_str(), (int)status);
     return result;
   }
 
-  kodi::Log(ADDON_LOG_INFO, "Found %d recordings", getPlaybackObjectResponse.GetPlaybackItems().size());
+  kodi::Log(ADDON_LOG_INFO, "Found %d recordings",
+            getPlaybackObjectResponse.GetPlaybackItems().size());
 
   if (m_showinfomsg)
   {
     kodi::QueueFormattedNotification(QUEUE_INFO, kodi::GetLocalizedString(32009).c_str(),
-        getPlaybackObjectResponse.GetPlaybackItems().size());
+                                     getPlaybackObjectResponse.GetPlaybackItems().size());
   }
 
   std::map<std::string, int> schedule_to_num_map;
   if (no_group_single_rec_)
   {
     //build a map with scheule id -> number of recordings
-    for (std::vector<PlaybackItem*>::iterator it = getPlaybackObjectResponse.GetPlaybackItems().begin();
-        it < getPlaybackObjectResponse.GetPlaybackItems().end(); it++)
+    for (std::vector<PlaybackItem*>::iterator it =
+             getPlaybackObjectResponse.GetPlaybackItems().begin();
+         it < getPlaybackObjectResponse.GetPlaybackItems().end(); it++)
     {
-      RecordedTvItem * tvitem = (RecordedTvItem *) *it;
+      RecordedTvItem* tvitem = (RecordedTvItem*)*it;
       if (tvitem->ScheduleId.size() > 0 && tvitem->SeriesSchedule)
       {
         if (schedule_to_num_map.find(tvitem->ScheduleId) == schedule_to_num_map.end())
@@ -1452,10 +1522,11 @@ PVR_ERROR DVBLinkClient::GetRecordings(bool deleted, kodi::addon::PVRRecordingsR
     }
   }
 
-  for (std::vector<PlaybackItem*>::iterator it = getPlaybackObjectResponse.GetPlaybackItems().begin();
-      it < getPlaybackObjectResponse.GetPlaybackItems().end(); it++)
+  for (std::vector<PlaybackItem*>::iterator it =
+           getPlaybackObjectResponse.GetPlaybackItems().begin();
+       it < getPlaybackObjectResponse.GetPlaybackItems().end(); it++)
   {
-    RecordedTvItem * tvitem = (RecordedTvItem *) *it;
+    RecordedTvItem* tvitem = (RecordedTvItem*)*it;
     kodi::addon::PVRRecording xbmcRecording;
 
     xbmcRecording.SetRecordingId(tvitem->GetObjectID());
@@ -1464,8 +1535,9 @@ PVR_ERROR DVBLinkClient::GetRecordings(bool deleted, kodi::addon::PVRRecordingsR
     if (m_add_episode_to_rec_title)
     {
       //form a title as "name - (SxxExx) subtitle" because XBMC does not display episode/season information almost anywhere
-      std::string se_str = get_subtitle(tvitem->GetMetadata().SeasonNumber, tvitem->GetMetadata().EpisodeNumber,
-          tvitem->GetMetadata().SubTitle, (int) tvitem->GetMetadata().Year);
+      std::string se_str =
+          get_subtitle(tvitem->GetMetadata().SeasonNumber, tvitem->GetMetadata().EpisodeNumber,
+                       tvitem->GetMetadata().SubTitle, (int)tvitem->GetMetadata().Year);
       if (se_str.size() > 0)
         title += " - " + se_str;
     }
@@ -1507,12 +1579,14 @@ PVR_ERROR DVBLinkClient::GetRecordings(bool deleted, kodi::addon::PVRRecordingsR
 
     if (m_group_recordings_by_series)
     {
-      if (tvitem->ScheduleId.size() > 0 && tvitem->SeriesSchedule && tvitem->ScheduleName.size() > 0)
+      if (tvitem->ScheduleId.size() > 0 && tvitem->SeriesSchedule &&
+          tvitem->ScheduleName.size() > 0)
       {
         bool b = true;
 
-        if (no_group_single_rec_ && schedule_to_num_map.find(tvitem->ScheduleId) != schedule_to_num_map.end()
-            && schedule_to_num_map[tvitem->ScheduleId] < 2)
+        if (no_group_single_rec_ &&
+            schedule_to_num_map.find(tvitem->ScheduleId) != schedule_to_num_map.end() &&
+            schedule_to_num_map[tvitem->ScheduleId] < 2)
           b = false;
 
         if (b)
@@ -1527,7 +1601,8 @@ PVR_ERROR DVBLinkClient::GetRecordings(bool deleted, kodi::addon::PVRRecordingsR
 
       dvblinkremote::Channel* ch = m_channels[chid];
       bool isRadio = (ch->GetChannelType() == dvblinkremote::Channel::CHANNEL_TYPE_RADIO);
-      xbmcRecording.SetChannelType(isRadio ? PVR_RECORDING_CHANNEL_TYPE_RADIO : PVR_RECORDING_CHANNEL_TYPE_TV);
+      xbmcRecording.SetChannelType(isRadio ? PVR_RECORDING_CHANNEL_TYPE_RADIO
+                                           : PVR_RECORDING_CHANNEL_TYPE_TV);
     }
     else
     {
@@ -1536,18 +1611,23 @@ PVR_ERROR DVBLinkClient::GetRecordings(bool deleted, kodi::addon::PVRRecordingsR
     }
 
     results.Add(xbmcRecording);
-
   }
   m_recordingCount = getPlaybackObjectResponse.GetPlaybackItems().size();
   result = PVR_ERROR_NO_ERROR;
   return result;
 }
 
-bool DVBLinkClient::GetRecordingURL(const std::string& recording_id, std::string& url, bool use_transcoder, int width,
-                                    int height, int bitrate, std::string audiotrack)
+bool DVBLinkClient::GetRecordingURL(const std::string& recording_id,
+                                    std::string& url,
+                                    bool use_transcoder,
+                                    int width,
+                                    int height,
+                                    int bitrate,
+                                    std::string audiotrack)
 {
   //if transcoding is requested and no transcoder is supported return false
-  if ((use_transcoder && !server_caps_.transcoding_supported_) || (use_transcoder && !server_caps_.transcoding_recordings_supported_))
+  if ((use_transcoder && !server_caps_.transcoding_supported_) ||
+      (use_transcoder && !server_caps_.transcoding_recordings_supported_))
   {
     kodi::QueueNotification(QUEUE_ERROR, "", kodi::GetLocalizedString(32024));
     return false;
@@ -1567,7 +1647,8 @@ bool DVBLinkClient::GetRecordingURL(const std::string& recording_id, std::string
     int h = height == 0 ? kodi::gui::GetScreenHeight() : height;
 
     char buf[1024];
-    sprintf(buf, "%s&transcoder=hls&client_id=%s&width=%d&height=%d&bitrate=%d", url.c_str(), connection_props_.client_id_.c_str(), w, h, bitrate);
+    sprintf(buf, "%s&transcoder=hls&client_id=%s&width=%d&height=%d&bitrate=%d", url.c_str(),
+            connection_props_.client_id_.c_str(), w, h, bitrate);
     url = buf;
 
     if (audiotrack.size() > 0)
@@ -1586,19 +1667,14 @@ PVR_ERROR DVBLinkClient::GetDriveSpace(uint64_t& total, uint64_t& used)
   DVBLinkRemoteStatusCode status;
 
   dvblink_server_connection srv_connection(connection_props_);
-  if ((status = srv_connection.get_connection()->GetRecordingSettings(recordingsettingsrequest, settings, NULL))
-      == DVBLINK_REMOTE_STATUS_OK)
+  if ((status = srv_connection.get_connection()->GetRecordingSettings(
+           recordingsettingsrequest, settings, nullptr)) == DVBLINK_REMOTE_STATUS_OK)
   {
     total = settings.TotalSpace;
     used = (settings.TotalSpace - settings.AvailableSpace);
   }
 
   return PVR_ERROR_NO_ERROR;
-}
-
-int DVBLinkClient::GetCurrentChannelId()
-{
-  return m_currentChannelId;
 }
 
 bool DVBLinkClient::OpenLiveStream(const kodi::addon::PVRChannel& channel)
@@ -1627,7 +1703,8 @@ bool DVBLinkClient::OpenLiveStream(const kodi::addon::PVRChannel& channel)
     SAFE_DELETE(m_live_streamer);
 
   if (use_timeshift)
-    m_live_streamer = new TimeShiftBuffer(connection_props_, server_caps_.timeshift_commands_supported_);
+    m_live_streamer =
+        new TimeShiftBuffer(connection_props_, server_caps_.timeshift_commands_supported_);
   else
     m_live_streamer = new LiveTVStreamer(connection_props_);
 
@@ -1635,7 +1712,7 @@ bool DVBLinkClient::OpenLiveStream(const kodi::addon::PVRChannel& channel)
   int w = width == 0 ? kodi::gui::GetScreenWidth() : width;
   int h = height == 0 ? kodi::gui::GetScreenHeight() : height;
 
-  Channel * c = m_channels[channel.GetUniqueId()];
+  Channel* c = m_channels[channel.GetUniqueId()];
 
   if (m_live_streamer->Start(c, use_transcoder, w, h, bitrate, audiotrack))
   {
@@ -1645,12 +1722,12 @@ bool DVBLinkClient::OpenLiveStream(const kodi::addon::PVRChannel& channel)
   else
   {
     delete m_live_streamer;
-    m_live_streamer = NULL;
+    m_live_streamer = nullptr;
   }
   return ret_val;
 }
 
-int DVBLinkClient::ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize)
+int DVBLinkClient::ReadLiveStream(unsigned char* pBuffer, unsigned int iBufferSize)
 {
   if (m_live_streamer)
     return m_live_streamer->ReadData(pBuffer, iBufferSize);
@@ -1701,15 +1778,17 @@ void DVBLinkClient::CloseLiveStream()
 {
   P8PLATFORM::CLockObject critsec(live_mutex_);
 
-  if (m_live_streamer != NULL)
+  if (m_live_streamer != nullptr)
   {
     m_live_streamer->Stop();
     SAFE_DELETE(m_live_streamer);
-    m_live_streamer = NULL;
+    m_live_streamer = nullptr;
   }
 }
 
-void DVBLinkClient::SetEPGGenre(dvblinkremote::ItemMetadata& metadata, int& genre_type, int& genre_subtype)
+void DVBLinkClient::SetEPGGenre(dvblinkremote::ItemMetadata& metadata,
+                                int& genre_type,
+                                int& genre_subtype)
 {
   genre_type = EPG_GENRE_USE_STRING;
   genre_subtype = 0x00;
@@ -1739,9 +1818,18 @@ void DVBLinkClient::SetEPGGenre(dvblinkremote::ItemMetadata& metadata, int& genr
   if (metadata.IsCatMovie)
   {
     genre_type = EPG_EVENT_CONTENTMASK_MOVIEDRAMA;
-    genre_subtype = metadata.IsCatThriller ? 0x01 : metadata.IsCatScifi ? 0x03 : metadata.IsCatHorror ? 0x03 :
-                    metadata.IsCatComedy ? 0x04 : metadata.IsCatSoap ? 0x05 : metadata.IsCatRomance ? 0x06 :
-                    metadata.IsCatDrama ? 0x08 : 0;
+    genre_subtype =
+        metadata.IsCatThriller
+            ? 0x01
+            : metadata.IsCatScifi
+                  ? 0x03
+                  : metadata.IsCatHorror
+                        ? 0x03
+                        : metadata.IsCatComedy
+                              ? 0x04
+                              : metadata.IsCatSoap
+                                    ? 0x05
+                                    : metadata.IsCatRomance ? 0x06 : metadata.IsCatDrama ? 0x08 : 0;
   }
 
   if (metadata.IsCatKids)
@@ -1760,8 +1848,11 @@ void DVBLinkClient::SetEPGGenre(dvblinkremote::ItemMetadata& metadata, int& genr
   }
 }
 
-bool DVBLinkClient::DoEPGSearch(EpgSearchResult& epgSearchResult, const std::string& channelId, const long startTime,
-    const long endTime, const std::string& programId)
+bool DVBLinkClient::DoEPGSearch(EpgSearchResult& epgSearchResult,
+                                const std::string& channelId,
+                                const long startTime,
+                                const long endTime,
+                                const std::string& programId)
 {
   EpgSearchRequest epgSearchRequest(channelId, startTime, endTime);
   if (programId.compare("") != 0)
@@ -1772,8 +1863,8 @@ bool DVBLinkClient::DoEPGSearch(EpgSearchResult& epgSearchResult, const std::str
   DVBLinkRemoteStatusCode status;
 
   dvblink_server_connection srv_connection(connection_props_);
-  if ((status = srv_connection.get_connection()->SearchEpg(epgSearchRequest, epgSearchResult, NULL))
-      == DVBLINK_REMOTE_STATUS_OK)
+  if ((status = srv_connection.get_connection()->SearchEpg(epgSearchRequest, epgSearchResult,
+                                                           nullptr)) == DVBLINK_REMOTE_STATUS_OK)
   {
     return true;
   }
@@ -1785,7 +1876,10 @@ bool DVBLinkClient::is_valid_ch_idx(int ch_idx)
   return m_channels.find(ch_idx) != m_channels.end();
 }
 
-PVR_ERROR DVBLinkClient::GetEPGForChannel(int channelUid, time_t start, time_t end, kodi::addon::PVREPGTagsResultSet& results)
+PVR_ERROR DVBLinkClient::GetEPGForChannel(int channelUid,
+                                          time_t start,
+                                          time_t end,
+                                          kodi::addon::PVREPGTagsResultSet& results)
 {
   if (!m_connected)
     return PVR_ERROR_SERVER_ERROR;
@@ -1795,18 +1889,19 @@ PVR_ERROR DVBLinkClient::GetEPGForChannel(int channelUid, time_t start, time_t e
   if (!is_valid_ch_idx(channelUid))
     return result;
 
-  Channel * c = m_channels[channelUid];
+  Channel* c = m_channels[channelUid];
   EpgSearchResult epgSearchResult;
 
   if (DoEPGSearch(epgSearchResult, c->GetID(), start, end))
   {
-    for (std::vector<ChannelEpgData*>::iterator it = epgSearchResult.begin(); it < epgSearchResult.end(); it++)
+    for (std::vector<ChannelEpgData*>::iterator it = epgSearchResult.begin();
+         it < epgSearchResult.end(); it++)
     {
-      ChannelEpgData* channelEpgData = (ChannelEpgData*) *it;
+      ChannelEpgData* channelEpgData = (ChannelEpgData*)*it;
       EpgData& epgData = channelEpgData->GetEpgData();
       for (std::vector<Program*>::iterator pIt = epgData.begin(); pIt < epgData.end(); pIt++)
       {
-        Program* p = (Program*) *pIt;
+        Program* p = (Program*)*pIt;
         kodi::addon::PVREPGTag broadcast;
 
         broadcast.SetUniqueBroadcastId(p->GetStartTime());
@@ -1830,8 +1925,8 @@ PVR_ERROR DVBLinkClient::GetEPGForChannel(int channelUid, time_t start, time_t e
         broadcast.SetEpisodeNumber(p->EpisodeNumber);
         broadcast.SetEpisodePartNumber(EPG_TAG_INVALID_SERIES_EPISODE);
         broadcast.SetEpisodeName(p->SubTitle);
-        broadcast.SetIMDBNumber("");  // unused
-        broadcast.SetOriginalTitle("");  // unused
+        broadcast.SetIMDBNumber(""); // unused
+        broadcast.SetOriginalTitle(""); // unused
         broadcast.SetPlotOutline("");
 
         int genre_type, genre_subtype;
@@ -1875,14 +1970,16 @@ DVBLinkClient::~DVBLinkClient(void)
   }
 }
 
-PVR_ERROR DVBLinkClient::GetRecordingLastPlayedPosition(const kodi::addon::PVRRecording& recording, int& position)
+PVR_ERROR DVBLinkClient::GetRecordingLastPlayedPosition(const kodi::addon::PVRRecording& recording,
+                                                        int& position)
 {
   GetObjectResumeInfoRequest request(recording.GetRecordingId());
   ResumeInfo response;
 
   DVBLinkRemoteStatusCode status;
   dvblink_server_connection srv_connection(connection_props_);
-  if ((status = srv_connection.get_connection()->GetObjectResumeInfo(request, response, NULL)) == DVBLINK_REMOTE_STATUS_OK)
+  if ((status = srv_connection.get_connection()->GetObjectResumeInfo(request, response, nullptr)) ==
+      DVBLINK_REMOTE_STATUS_OK)
   {
     position = response.m_positionSec;
     return PVR_ERROR_NO_ERROR;
@@ -1890,13 +1987,15 @@ PVR_ERROR DVBLinkClient::GetRecordingLastPlayedPosition(const kodi::addon::PVRRe
   return PVR_ERROR_SERVER_ERROR;
 }
 
-PVR_ERROR DVBLinkClient::SetRecordingLastPlayedPosition(const kodi::addon::PVRRecording& recording, int lastplayedposition)
+PVR_ERROR DVBLinkClient::SetRecordingLastPlayedPosition(const kodi::addon::PVRRecording& recording,
+                                                        int lastplayedposition)
 {
   SetObjectResumeInfoRequest request(recording.GetRecordingId(), lastplayedposition);
 
   DVBLinkRemoteStatusCode status;
   dvblink_server_connection srv_connection(connection_props_);
-  if ((status = srv_connection.get_connection()->SetObjectResumeInfo(request, NULL)) == DVBLINK_REMOTE_STATUS_OK)
+  if ((status = srv_connection.get_connection()->SetObjectResumeInfo(request, nullptr)) ==
+      DVBLINK_REMOTE_STATUS_OK)
   {
     m_update_recordings = true;
     return PVR_ERROR_NO_ERROR;
@@ -1918,9 +2017,12 @@ bool DVBLinkClient::OpenRecordedStream(const kodi::addon::PVRRecording& recordin
 
   bool ret_val = false;
   std::string url;
-  if (GetRecordingURL(recording.GetRecordingId(), url, use_transcoder, width, height, bitrate, audiotrack))
+  if (GetRecordingURL(recording.GetRecordingId(), url, use_transcoder, width, height, bitrate,
+                      audiotrack))
   {
-    m_recording_streamer = new RecordingStreamer(connection_props_.client_id_, connection_props_.address_, connection_props_.port_, connection_props_.username_, connection_props_.password_);
+    m_recording_streamer = new RecordingStreamer(
+        connection_props_.client_id_, connection_props_.address_, connection_props_.port_,
+        connection_props_.username_, connection_props_.password_);
     if (m_recording_streamer->OpenRecordedStream(recording.GetRecordingId(), url))
     {
       ret_val = true;
@@ -1944,7 +2046,7 @@ void DVBLinkClient::CloseRecordedStream()
   }
 }
 
-int DVBLinkClient::ReadRecordedStream(unsigned char *pBuffer, unsigned int iBufferSize)
+int DVBLinkClient::ReadRecordedStream(unsigned char* pBuffer, unsigned int iBufferSize)
 {
   if (m_recording_streamer != nullptr)
     return m_recording_streamer->ReadRecordedStream(pBuffer, iBufferSize);
@@ -1970,10 +2072,12 @@ int64_t DVBLinkClient::LengthRecordedStream()
 
 bool DVBLinkClient::CanPauseStream()
 {
-  return m_recording_streamer != nullptr || (m_live_streamer != nullptr && m_base.GetSettings().UseTimeshift());
+  return m_recording_streamer != nullptr ||
+         (m_live_streamer != nullptr && m_base.GetSettings().UseTimeshift());
 }
 
 bool DVBLinkClient::CanSeekStream()
 {
-  return m_recording_streamer != nullptr || (m_live_streamer != nullptr && m_base.GetSettings().UseTimeshift());
+  return m_recording_streamer != nullptr ||
+         (m_live_streamer != nullptr && m_base.GetSettings().UseTimeshift());
 }
