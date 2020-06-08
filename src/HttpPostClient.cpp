@@ -10,8 +10,10 @@
 #include "base64.h"
 #include "p8-platform/sockets/tcp.h"
 
+#include <kodi/Filesystem.h>
+#include <kodi/General.h>
+
 using namespace dvblinkremotehttp;
-using namespace ADDON;
 
 /* Converts a hex character to its integer value */
 char from_hex(char ch)
@@ -45,10 +47,9 @@ char *url_encode(const char *str)
   return buf;
 }
 
-HttpPostClient::HttpPostClient(CHelper_libXBMC_addon *XBMC, const std::string& server, const int serverport,
+HttpPostClient::HttpPostClient(const std::string& server, const int serverport,
     const std::string& username, const std::string& password)
 {
-  this->XBMC = XBMC;
   m_server = server;
   m_serverport = serverport;
   m_username = username;
@@ -143,33 +144,32 @@ int HttpPostClient::SendPostRequest(HttpWebRequest& request)
 
   //TODO: Use xbmc file code when it allows to post content-type application/x-www-form-urlencoded and authentication
   /*
-   void* hFile = XBMC->OpenFileForWrite(request.GetUrl().c_str(), 0);
-   if (hFile != NULL)
-   {
+  kodi::vfs::CFile file;
+  if (file.OpenFileForWrite(request.GetUrl()))
+  {
+    int rc = file.Write(buffer.c_str(), buffer.length());
+    if (rc >= 0)
+    {
+      std::string result;
+      result.clear();
+      std::string buffer;
+      while (file.ReadLine(buffer))
+        result.append(buffer);
 
-   int rc = XBMC->WriteFile(hFile, buffer.c_str(), buffer.length());
-   if (rc >= 0)
-   {
-   std::string result;
-   result.clear();
-   char buffer[1024];
-   while (XBMC->ReadFileString(hFile, buffer, 1023))
-   result.append(buffer);
+    }
+    else
+    {
+      kodi::Log(ADDON_LOG_ERROR, "can not write to %s",request.GetUrl().c_str());
+    }
 
-   }
-   else
-   {
-   XBMC->Log(LOG_ERROR, "can not write to %s",request.GetUrl().c_str());
-   }
+    file.Close();
+  }
+  else
+  {
+    kodi::Log(ADDON_LOG_ERROR, "can not open %s for write", request.GetUrl().c_str());
+  }
 
-   XBMC->CloseFile(hFile);
-   }
-   else
-   {
-   XBMC->Log(LOG_ERROR, "can not open %s for write", request.GetUrl().c_str());
-   }
-
-   */
+  */
 
   return ret_code;
 }

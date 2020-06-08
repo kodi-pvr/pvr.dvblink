@@ -8,15 +8,13 @@
 
 #include "TimeShiftBuffer.h"
 
-using namespace ADDON;
 using namespace dvblinkremote;
 
 //base live streaming class
 
-LiveStreamerBase::LiveStreamerBase(CHelper_libXBMC_addon * XBMC, const server_connection_properties& connection_props) :
-m_streamHandle(NULL), connection_props_(connection_props), server_connection_(XBMC, connection_props), stream_start_(0)
+LiveStreamerBase::LiveStreamerBase(const server_connection_properties& connection_props) :
+connection_props_(connection_props), server_connection_(connection_props), stream_start_(0)
 {
-  this->XBMC = XBMC;
 }
 
 LiveStreamerBase::~LiveStreamerBase(void)
@@ -26,12 +24,12 @@ LiveStreamerBase::~LiveStreamerBase(void)
 
 int LiveStreamerBase::ReadData(unsigned char *pBuffer, unsigned int iBufferSize)
 {
-  return XBMC->ReadFile(m_streamHandle, pBuffer, iBufferSize);
+  return m_streamHandle.Read(pBuffer, iBufferSize);
 }
 
 bool LiveStreamerBase::Start(Channel* channel, bool use_transcoder, int width, int height, int bitrate, const std::string& audiotrack)
 {
-  m_streamHandle = NULL;
+  m_streamHandle.Close();
   stream_start_ = time(nullptr);
 
   StreamRequest* sr = GetStreamRequest(channel->GetDvbLinkID(), use_transcoder, width, height, bitrate, audiotrack);
@@ -43,28 +41,32 @@ bool LiveStreamerBase::Start(Channel* channel, bool use_transcoder, int width, i
     if ((status = server_connection_.get_connection()->PlayChannel(*sr, stream_, &error)) == DVBLINK_REMOTE_STATUS_OK)
     {
       streampath_ = stream_.GetUrl();
-      m_streamHandle = XBMC->OpenFile(streampath_.c_str(), 0);
+      if (!m_streamHandle.OpenFile(streampath_))
+      {
+        kodi::Log(ADDON_LOG_ERROR, "Could not open streaming for channel %s (Error code : %d)", channel->GetDvbLinkID().c_str(), (int)status, error.c_str());
+        return false;
+      }
     }
     else
     {
-      XBMC->Log(LOG_ERROR, "Could not start streaming for channel %s (Error code : %d)", channel->GetDvbLinkID().c_str(), (int)status, error.c_str());
+      kodi::Log(ADDON_LOG_ERROR, "Could not start streaming for channel %s (Error code : %d)", channel->GetDvbLinkID().c_str(), (int)status, error.c_str());
     }
 
     SAFE_DELETE(sr);
-  } else
+  }
+  else
   {
-    XBMC->Log(LOG_ERROR, "m_live_streamer->GetStreamRequest returned NULL. (channel %s)", channel->GetDvbLinkID().c_str());
+    kodi::Log(ADDON_LOG_ERROR, "m_live_streamer->GetStreamRequest returned NULL. (channel %s)", channel->GetDvbLinkID().c_str());
   }
 
-  return m_streamHandle != NULL;
+  return m_streamHandle.IsOpen();
 }
 
 void LiveStreamerBase::Stop()
 {
-  if (m_streamHandle != NULL)
+  if (m_streamHandle.IsOpen())
   {
-    XBMC->CloseFile(m_streamHandle);
-    m_streamHandle = NULL;
+    m_streamHandle.Close();
 
     StopStreamRequest * request = new StopStreamRequest(stream_.GetChannelHandle());
 
@@ -72,7 +74,7 @@ void LiveStreamerBase::Stop()
     std::string error;
     if ((status = server_connection_.get_connection()->StopChannel(*request, &error)) != DVBLINK_REMOTE_STATUS_OK)
     {
-      XBMC->Log(LOG_ERROR, "Could not stop stream (Error code : %d Description : %s)", (int)status, error.c_str());
+      kodi::Log(ADDON_LOG_ERROR, "Could not stop stream (Error code : %d Description : %s)", (int)status, error.c_str());
     }
 
     SAFE_DELETE(request);
@@ -80,8 +82,8 @@ void LiveStreamerBase::Stop()
 }
 
 //live streaming class
-LiveTVStreamer::LiveTVStreamer(CHelper_libXBMC_addon* XBMC, const server_connection_properties& connection_props) :
-  LiveStreamerBase(XBMC, connection_props)
+LiveTVStreamer::LiveTVStreamer(const server_connection_properties& connection_props) :
+  LiveStreamerBase(connection_props)
 {
 }
 
@@ -107,8 +109,8 @@ StreamRequest* LiveTVStreamer::GetStreamRequest(const std::string& dvblink_chann
 
 //timeshifted live streaming class
 
-TimeShiftBuffer::TimeShiftBuffer(CHelper_libXBMC_addon* XBMC, const server_connection_properties& connection_props, bool use_dvblink_timeshift_cmds) :
-LiveStreamerBase(XBMC, connection_props), last_pos_req_time_(-1), use_dvblink_timeshift_cmds_(use_dvblink_timeshift_cmds)
+TimeShiftBuffer::TimeShiftBuffer(const server_connection_properties& connection_props, bool use_dvblink_timeshift_cmds) :
+LiveStreamerBase(connection_props), last_pos_req_time_(-1), use_dvblink_timeshift_cmds_(use_dvblink_timeshift_cmds)
 {
 }
 
@@ -146,7 +148,7 @@ long long TimeShiftBuffer::Seek(long long iPosition, int iWhence)
   long long ret_val = 0;
 
   //close streaming handle before executing seek
-  XBMC->CloseFile(m_streamHandle);
+  m_streamHandle.Close();
 
   if (use_dvblink_timeshift_cmds_)
   {
@@ -156,8 +158,8 @@ long long TimeShiftBuffer::Seek(long long iPosition, int iWhence)
     std::string error;
     if ((status = server_connection_.get_connection()->TimeshiftSeek(*request, &error)) != DVBLINK_REMOTE_STATUS_OK)
     {
-      XBMC->Log(LOG_ERROR, "TimeshiftSeek failed (Error code : %d Description : %s)", (int)status, error.c_str());
-    } else 
+      kodi::Log(ADDON_LOG_ERROR, "TimeshiftSeek failed (Error code : %d Description : %s)", (int)status, error.c_str());
+    } else
     {
       //update current playback position
       buffer_params_t buffer_params;
@@ -182,7 +184,7 @@ long long TimeShiftBuffer::Seek(long long iPosition, int iWhence)
   }
 
   //restart streaming
-  m_streamHandle = XBMC->OpenFile(streampath_.c_str(), 0);
+  m_streamHandle.OpenFile(streampath_);
 
   return ret_val;
 }
@@ -203,11 +205,11 @@ bool TimeShiftBuffer::ExecuteServerRequest(const std::string& url, std::vector<s
   bool ret_val = false;
   response_values.clear();
 
-  void* req_handle = XBMC->OpenFile(url.c_str(), 0);
-  if (req_handle != NULL)
+  kodi::vfs::CFile req_handle;
+  if (req_handle.OpenFile(url))
   {
     char resp_buf[1024];
-    unsigned int read = XBMC->ReadFile(req_handle, resp_buf, sizeof(resp_buf));
+    unsigned int read = req_handle.Read(resp_buf, sizeof(resp_buf));
 
     if (read > 0)
     {
@@ -223,7 +225,7 @@ bool TimeShiftBuffer::ExecuteServerRequest(const std::string& url, std::vector<s
       ret_val = response_values.size() > 0;
     }
 
-    XBMC->CloseFile(req_handle);
+    req_handle.Close();
   }
 
   return ret_val;
@@ -240,7 +242,7 @@ long long TimeShiftBuffer::Length()
   return ret_val;
 }
 
-void TimeShiftBuffer::GetStreamTimes(PVR_STREAM_TIMES* stream_times)
+void TimeShiftBuffer::GetStreamTimes(kodi::addon::PVRStreamTimes& stream_times)
 {
   time_t now;
   now = time(NULL);
@@ -248,16 +250,16 @@ void TimeShiftBuffer::GetStreamTimes(PVR_STREAM_TIMES* stream_times)
   buffer_params_t buffer_params;
   GetBufferParams(buffer_params);
 
-  stream_times->startTime = stream_start_;
-  stream_times->ptsStart = 0;
+  stream_times.SetStartTime(stream_start_);
+  stream_times.SetPTSStart(0);
   if (now >= buffer_params.buffer_duration + stream_start_ && now >= stream_start_)
   {
-    stream_times->ptsBegin = (int64_t)(now - buffer_params.buffer_duration - stream_start_) * DVD_TIME_BASE;
-    stream_times->ptsEnd = (int64_t)(now - stream_start_) * DVD_TIME_BASE;
+    stream_times.SetPTSBegin((int64_t)(now - buffer_params.buffer_duration - stream_start_) * DVD_TIME_BASE);
+    stream_times.SetPTSEnd((int64_t)(now - stream_start_) * DVD_TIME_BASE);
   } else
   {
-    stream_times->ptsBegin = 0;
-    stream_times->ptsEnd = 0;
+    stream_times.SetPTSBegin(0);
+    stream_times.SetPTSEnd(0);
   }
 }
 
@@ -286,7 +288,7 @@ bool TimeShiftBuffer::GetBufferParams(buffer_params_t& buffer_params)
       TimeshiftStats response;
       if ((status = server_connection_.get_connection()->GetTimeshiftStats(*request, response, &error)) != DVBLINK_REMOTE_STATUS_OK)
       {
-        XBMC->Log(LOG_ERROR, "GetTimeshiftStats failed (Error code : %d Description : %s)", (int)status, error.c_str());
+        kodi::Log(ADDON_LOG_ERROR, "GetTimeshiftStats failed (Error code : %d Description : %s)", (int)status, error.c_str());
       } else
       {
         buffer_params.buffer_length = response.curBufferLength;
@@ -317,7 +319,7 @@ bool TimeShiftBuffer::GetBufferParams(buffer_params_t& buffer_params)
         ret_val = true;
       }
     }
-  
+
     if (ret_val)
     {
       last_pos_req_time_ = now;

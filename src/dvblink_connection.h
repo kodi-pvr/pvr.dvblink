@@ -14,10 +14,6 @@
 #include "p8-platform/util/util.h"
 #include "libdvblinkremote/dvblinkremote.h"
 #include "HttpPostClient.h"
-#include "kodi/xbmc_pvr_types.h"
-#include "kodi/libXBMC_addon.h"
-#include "kodi/libXBMC_pvr.h"
-#include "kodi/libKODI_guilib.h"
 
 struct server_connection_properties
 {
@@ -35,9 +31,9 @@ struct server_connection_properties
 class dvblink_server_connection : public dvblinkremote::DVBLinkRemoteLocker
 {
   public:
-    dvblink_server_connection(ADDON::CHelper_libXBMC_addon* xbmc, const server_connection_properties& connection_props)
+    dvblink_server_connection(const server_connection_properties& connection_props)
     {
-      http_client_ = new HttpPostClient(xbmc, connection_props.address_, connection_props.port_, connection_props.username_, connection_props.password_);
+      http_client_ = new HttpPostClient(connection_props.address_, connection_props.port_, connection_props.username_, connection_props.password_);
 
       dvblink_connection_ = dvblinkremote::DVBLinkRemote::Connect(*http_client_, connection_props.address_.c_str(), connection_props.port_,
         connection_props.username_.c_str(), connection_props.password_.c_str(), this);

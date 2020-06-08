@@ -11,14 +11,13 @@
 
 using namespace dvblinkremotehttp;
 using namespace dvblinkremote;
-using namespace ADDON;
 
-RecordingStreamer::RecordingStreamer(ADDON::CHelper_libXBMC_addon* xbmc, const std::string& client_id,
-    const std::string& hostname, long port, const std::string& username, const std::string& password) :
-    xbmc_(xbmc), playback_handle_(NULL), client_id_(client_id), hostname_(hostname), username_(username), password_(
+RecordingStreamer::RecordingStreamer(const std::string& client_id,
+    const std::string& hostname, int port, const std::string& username, const std::string& password) :
+    client_id_(client_id), hostname_(hostname), username_(username), password_(
         password), port_(port), check_delta_(30)
 {
-  http_client_ = new HttpPostClient(xbmc_, hostname_, port_, username_, password_);
+  http_client_ = new HttpPostClient(hostname_, port_, username_, password_);
   dvblink_remote_con_ = DVBLinkRemote::Connect((HttpClient&) *http_client_, hostname_.c_str(), port_, username_.c_str(),
       password_.c_str(), this);
 }
@@ -29,7 +28,7 @@ RecordingStreamer::~RecordingStreamer()
   delete http_client_;
 }
 
-bool RecordingStreamer::OpenRecordedStream(const char* recording_id, std::string& url)
+bool RecordingStreamer::OpenRecordedStream(const std::string& recording_id, std::string& url)
 {
   recording_id_ = recording_id;
   url_ = url;
@@ -38,18 +37,12 @@ bool RecordingStreamer::OpenRecordedStream(const char* recording_id, std::string
   prev_check_ = time(NULL);
   get_recording_info(recording_id_, recording_size_, recording_duration_, is_in_recording_);
 
-  playback_handle_ = xbmc_->OpenFile(url_.c_str(), 0);
-
-  return playback_handle_ != NULL;
+  return playback_handle_.OpenFile(url);
 }
 
 void RecordingStreamer::CloseRecordedStream(void)
 {
-  if (playback_handle_ != NULL)
-  {
-    xbmc_->CloseFile(playback_handle_);
-    playback_handle_ = NULL;
-  }
+  playback_handle_.Close();
 }
 
 int RecordingStreamer::ReadRecordedStream(unsigned char *pBuffer, unsigned int iBufferSize)
@@ -63,15 +56,15 @@ int RecordingStreamer::ReadRecordedStream(unsigned char *pBuffer, unsigned int i
       get_recording_info(recording_id_, recording_size_, recording_duration_, is_in_recording_);
 
       //reopen original data connection to refresh its file size
-      xbmc_->CloseFile(playback_handle_);
-      playback_handle_ = xbmc_->OpenFile(url_.c_str(), 0);
-      xbmc_->SeekFile(playback_handle_, cur_pos_, SEEK_SET);
+      playback_handle_.Close();
+      playback_handle_.OpenFile(url_);
+      playback_handle_.Seek(cur_pos_, SEEK_SET);
 
       prev_check_ = now;
     }
   }
 
-  unsigned int n = xbmc_->ReadFile(playback_handle_, pBuffer, iBufferSize);
+  unsigned int n = playback_handle_.Read(pBuffer, iBufferSize);
   cur_pos_ += n;
 
   return n;
@@ -79,7 +72,7 @@ int RecordingStreamer::ReadRecordedStream(unsigned char *pBuffer, unsigned int i
 
 long long RecordingStreamer::SeekRecordedStream(long long iPosition, int iWhence /* = SEEK_SET */)
 {
-  cur_pos_ = xbmc_->SeekFile(playback_handle_, iPosition, iWhence);
+  cur_pos_ = playback_handle_.Seek(iPosition, iWhence);
   return cur_pos_;
 }
 
@@ -88,18 +81,13 @@ long long RecordingStreamer::LengthRecordedStream(void)
   return recording_size_;
 }
 
-PVR_ERROR RecordingStreamer::GetStreamTimes(PVR_STREAM_TIMES* stream_times)
+PVR_ERROR RecordingStreamer::GetStreamTimes(kodi::addon::PVRStreamTimes& stream_times)
 {
-  if (stream_times != NULL)
-  {
-    stream_times->startTime = 0;
-    stream_times->ptsStart = 0;
-    stream_times->ptsBegin = 0;
-    stream_times->ptsEnd = (int64_t)recording_duration_ * DVD_TIME_BASE;
-    return PVR_ERROR_NO_ERROR;
-  }
-
-  return PVR_ERROR_SERVER_ERROR;
+  stream_times.SetStartTime(0);
+  stream_times.SetPTSStart(0);
+  stream_times.SetPTSBegin(0);
+  stream_times.SetPTSEnd((int64_t)recording_duration_ * DVD_TIME_BASE);
+  return PVR_ERROR_NO_ERROR;
 }
 
 bool RecordingStreamer::get_recording_info(const std::string& recording_id, long long& recording_size, long& recording_duration, bool& is_in_recording)
@@ -116,7 +104,7 @@ bool RecordingStreamer::get_recording_info(const std::string& recording_id, long
   if (dvblink_remote_con_->GetPlaybackObject(getPlaybackObjectRequest, getPlaybackObjectResponse, &error)
       != DVBLINK_REMOTE_STATUS_OK)
   {
-    xbmc_->Log(LOG_ERROR, "RecordingStreamer::get_recording_info: Could not get recording info for recording id %s",
+    kodi::Log(ADDON_LOG_ERROR, "RecordingStreamer::get_recording_info: Could not get recording info for recording id %s",
         recording_id.c_str());
   }
   else

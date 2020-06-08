@@ -8,15 +8,17 @@
 
 #pragma once
 
-#include "kodi/libXBMC_addon.h"
 #include "p8-platform/os.h"
 #include "p8-platform/util/util.h"
 #include "dvblink_connection.h"
 
+#include <kodi/Filesystem.h>
+#include <kodi/addon-instance/pvr/Stream.h>
+
 class LiveStreamerBase
 {
 public:
-  LiveStreamerBase(ADDON::CHelper_libXBMC_addon * XBMC, const server_connection_properties& connection_props);
+  LiveStreamerBase(const server_connection_properties& connection_props);
   virtual ~LiveStreamerBase();
 
   bool Start(dvblinkremote::Channel* channel, bool use_transcoder, int width, int height, int bitrate, const std::string& audiotrack);
@@ -36,12 +38,12 @@ public:
   {
     return -1;
   }
-  virtual void GetStreamTimes(PVR_STREAM_TIMES* stream_times)
+  virtual void GetStreamTimes(kodi::addon::PVRStreamTimes& stream_times)
   {
-    stream_times->startTime = stream_start_;
-    stream_times->ptsStart = 0;
-    stream_times->ptsBegin = 0;
-    stream_times->ptsEnd = 0;
+    stream_times.SetStartTime(stream_start_);
+    stream_times.SetPTSStart(0);
+    stream_times.SetPTSBegin(0);
+    stream_times.SetPTSEnd(0);
   }
   virtual bool IsLive()
   {
@@ -54,8 +56,7 @@ protected:
     return NULL;
   }
 
-  void * m_streamHandle;
-  ADDON::CHelper_libXBMC_addon * XBMC;
+  kodi::vfs::CFile m_streamHandle;
   std::string streampath_;
   server_connection_properties connection_props_;
   dvblink_server_connection server_connection_;
@@ -66,7 +67,7 @@ protected:
 class LiveTVStreamer: public LiveStreamerBase
 {
 public:
-  LiveTVStreamer(ADDON::CHelper_libXBMC_addon * XBMC, const server_connection_properties& connection_props);
+  LiveTVStreamer(const server_connection_properties& connection_props);
 
 protected:
   virtual dvblinkremote::StreamRequest* GetStreamRequest(const std::string& dvblink_channel_id, bool use_transcoder, int width, int height, int bitrate, std::string audiotrack);
@@ -83,13 +84,13 @@ class TimeShiftBuffer: public LiveStreamerBase
   };
 
 public:
-  TimeShiftBuffer(ADDON::CHelper_libXBMC_addon * XBMC, const server_connection_properties& connection_props, bool use_dvblink_timeshift_cmds);
+  TimeShiftBuffer(const server_connection_properties& connection_props, bool use_dvblink_timeshift_cmds);
   ~TimeShiftBuffer(void);
 
   virtual long long Seek(long long iPosition, int iWhence);
   virtual long long Position();
   virtual long long Length();
-  virtual void GetStreamTimes(PVR_STREAM_TIMES* stream_times);
+  virtual void GetStreamTimes(kodi::addon::PVRStreamTimes& stream_times);
   virtual bool IsLive();
 
 protected:
