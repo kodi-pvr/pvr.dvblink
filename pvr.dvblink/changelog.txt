@@ -1,3 +1,10 @@
+[B]Version 7.0.0[/B]
+Update: PVR API 7.0.0
+Update: Rework addon to support new API interface
+Update: Code cleanup
+Update: Change settings.xml to new Kodi format
+Added: Message "Playback failed, please ensure you are using TV MOSAIC PLUS" if not PLUS (Note: possible to show also in other cases)
+
 [B]Version 6.0.0[/B]
 Update: PVR API 6.5.1
 Update: Global API 1.2.0

@@ -14,18 +14,20 @@ include_directories(${p8-platform_INCLUDE_DIRS}
 
 add_definitions(-D__STDC_FORMAT_MACROS)
 
-set(DVBLINK_SOURCES src/base64.cpp
-                    src/client.cpp
-                    src/DVBLinkClient.cpp
+set(DVBLINK_SOURCES src/addon.cpp
+                    src/base64.cpp
                     src/HttpPostClient.cpp
+                    src/Settings.cpp
+                    src/DVBLinkClient.cpp
                     src/RecordingStreamer.cpp
                     src/TimeShiftBuffer.cpp)
 
-set(DVBLINK_HEADERS src/base64.h
-                    src/client.h
-                    src/DVBLinkClient.h
+set(DVBLINK_HEADERS src/addon.h
+                    src/base64.h
                     src/dvblink_connection.h
                     src/HttpPostClient.h
+                    src/Settings.h
+                    src/DVBLinkClient.h
                     src/RecordingStreamer.h
                     src/TimeShiftBuffer.h)
 

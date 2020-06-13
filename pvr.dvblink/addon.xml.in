@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="pvr.dvblink"
-  version="6.0.0"
+  version="7.0.0"
   name="TVMosaic/DVBLink PVR Client"
   provider-name="DVBLogic">
   <requires>@ADDON_DEPENDS@</requires>
   <extension
-    point="xbmc.pvrclient"
+    point="kodi.pvrclient"
     library_@PLATFORM@="@LIBRARY_FILENAME@"/>
   <extension point="xbmc.addon.metadata">
     <summary lang="af_ZA">PVR Inprop vir TVMosaic/DVBLink</summary>
