@@ -16,7 +16,7 @@
 #include <p8-platform/threads/threads.h>
 #include <p8-platform/util/util.h>
 
-struct server_connection_properties
+struct ATTRIBUTE_HIDDEN server_connection_properties
 {
   server_connection_properties(const std::string& address,
                                long port,
@@ -38,7 +38,7 @@ struct server_connection_properties
   std::string client_id_;
 };
 
-class dvblink_server_connection : public dvblinkremote::DVBLinkRemoteLocker
+class ATTRIBUTE_HIDDEN dvblink_server_connection : public dvblinkremote::DVBLinkRemoteLocker
 {
 public:
   dvblink_server_connection(const server_connection_properties& connection_props)

@@ -11,7 +11,9 @@
 #include "libdvblinkremote/dvblinkremote.h"
 #include "libdvblinkremote/dvblinkremotehttp.h"
 
-class HttpPostClient : public dvblinkremotehttp::HttpClient
+#include <kodi/AddonBase.h>
+
+class ATTRIBUTE_HIDDEN HttpPostClient : public dvblinkremotehttp::HttpClient
 {
 public:
   bool SendRequest(dvblinkremotehttp::HttpWebRequest& request);
