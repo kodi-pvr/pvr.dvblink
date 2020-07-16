@@ -9,6 +9,7 @@
 #include "TimeShiftBuffer.h"
 
 #include <kodi/General.h>
+#include <kodi/addon-instance/inputstream/TimingConstants.h>
 
 using namespace dvblinkremote;
 
@@ -297,8 +298,8 @@ void LiveStreamerBase::Stop()
     if (now >= buffer_params.buffer_duration + stream_start_ && now >= stream_start_)
     {
       stream_times.SetPTSBegin((int64_t)(now - buffer_params.buffer_duration - stream_start_) *
-                               DVD_TIME_BASE);
-      stream_times.SetPTSEnd((int64_t)(now - stream_start_) * DVD_TIME_BASE);
+                               STREAM_TIME_BASE);
+      stream_times.SetPTSEnd((int64_t)(now - stream_start_) * STREAM_TIME_BASE);
     }
     else
     {

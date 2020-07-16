@@ -8,6 +8,7 @@
 
 #include "RecordingStreamer.h"
 
+#include <kodi/addon-instance/inputstream/TimingConstants.h>
 #include <time.h>
 
 using namespace dvblinkremotehttp;
@@ -94,7 +95,7 @@ void RecordingStreamer::CloseRecordedStream(void)
     stream_times.SetStartTime(0);
     stream_times.SetPTSStart(0);
     stream_times.SetPTSBegin(0);
-    stream_times.SetPTSEnd((int64_t)recording_duration_ * DVD_TIME_BASE);
+    stream_times.SetPTSEnd((int64_t)recording_duration_ * STREAM_TIME_BASE);
     return PVR_ERROR_NO_ERROR;
   }
 
