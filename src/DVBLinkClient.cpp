@@ -13,7 +13,6 @@
 #include <kodi/General.h>
 #include <kodi/gui/General.h>
 #include <memory>
-#include <p8-platform/os.h>
 
 using namespace dvblinkremote;
 using namespace dvblinkremotehttp;

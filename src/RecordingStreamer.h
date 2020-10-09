@@ -13,7 +13,6 @@
 
 #include <kodi/Filesystem.h>
 #include <kodi/addon-instance/PVR.h>
-#include <p8-platform/os.h>
 #include <p8-platform/threads/mutex.h>
 #include <p8-platform/threads/threads.h>
 
