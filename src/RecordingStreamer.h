@@ -16,7 +16,6 @@
 #include <p8-platform/os.h>
 #include <p8-platform/threads/mutex.h>
 #include <p8-platform/threads/threads.h>
-#include <p8-platform/util/util.h>
 
 class ATTRIBUTE_HIDDEN RecordingStreamer : public dvblinkremote::DVBLinkRemoteLocker
 {

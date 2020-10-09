@@ -14,7 +14,15 @@
 #include <p8-platform/os.h>
 #include <p8-platform/threads/mutex.h>
 #include <p8-platform/threads/threads.h>
-#include <p8-platform/util/util.h>
+
+template<typename T> void SafeDelete(T*& p)
+{
+  if (p)
+  {
+    delete p;
+    p = nullptr;
+  }
+}
 
 struct ATTRIBUTE_HIDDEN server_connection_properties
 {
@@ -53,8 +61,8 @@ public:
 
   ~dvblink_server_connection()
   {
-    SAFE_DELETE(dvblink_connection_);
-    SAFE_DELETE(http_client_);
+    SafeDelete(dvblink_connection_);
+    SafeDelete(http_client_);
   }
 
   dvblinkremote::IDVBLinkRemoteConnection* get_connection() { return dvblink_connection_; }

@@ -66,7 +66,7 @@ bool LiveStreamerBase::Start(Channel* channel,
         kodi::QueueNotification(QUEUE_ERROR, "", kodi::GetLocalizedString(30007));
     }
 
-    SAFE_DELETE(sr);
+    SafeDelete(sr);
   }
   else
   {
@@ -94,7 +94,7 @@ void LiveStreamerBase::Stop()
                 (int)status, error.c_str());
     }
 
-    SAFE_DELETE(request);
+    SafeDelete(request);
   }
   }
 
@@ -209,7 +209,7 @@ void LiveStreamerBase::Stop()
         ret_val = buffer_params.cur_pos;
       }
 
-      SAFE_DELETE(request);
+      SafeDelete(request);
     }
     else
     {
@@ -348,7 +348,7 @@ void LiveStreamerBase::Stop()
           ret_val = true;
         }
 
-        SAFE_DELETE(request);
+        SafeDelete(request);
       } else
       {
         std::string req_url = streampath_;

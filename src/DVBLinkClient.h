@@ -19,7 +19,6 @@
 #include <p8-platform/os.h>
 #include <p8-platform/threads/mutex.h>
 #include <p8-platform/threads/threads.h>
-#include <p8-platform/util/util.h>
 
 #define DVBLINK_BUILD_IN_RECORDER_SOURCE_ID "8F94B459-EFC0-4D91-9B29-EC3D72E92677"
 #define DVBLINK_RECODINGS_BY_DATA_ID "F6F08949-2A07-4074-9E9D-423D877270BB"

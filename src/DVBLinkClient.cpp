@@ -1215,7 +1215,7 @@ PVR_ERROR DVBLinkClient::AddTimer(const kodi::addon::PVRTimer& timer)
       kodi::Log(ADDON_LOG_ERROR, "Could not add timer (Error code : %d Description : %s)",
                 (int)status, error.c_str());
     }
-    SAFE_DELETE(addScheduleRequest);
+    SafeDelete(addScheduleRequest);
   }
   else
   {
@@ -1700,7 +1700,7 @@ bool DVBLinkClient::OpenLiveStream(const kodi::addon::PVRChannel& channel)
   P8PLATFORM::CLockObject critsec(live_mutex_);
 
   if (m_live_streamer)
-    SAFE_DELETE(m_live_streamer);
+    SafeDelete(m_live_streamer);
 
   if (use_timeshift)
     m_live_streamer =
@@ -1781,7 +1781,7 @@ void DVBLinkClient::CloseLiveStream()
   if (m_live_streamer != nullptr)
   {
     m_live_streamer->Stop();
-    SAFE_DELETE(m_live_streamer);
+    SafeDelete(m_live_streamer);
     m_live_streamer = nullptr;
   }
 }
@@ -1959,7 +1959,7 @@ DVBLinkClient::~DVBLinkClient(void)
   if (m_live_streamer)
   {
     m_live_streamer->Stop();
-    SAFE_DELETE(m_live_streamer);
+    SafeDelete(m_live_streamer);
   }
 
   dvblink_channel_map_t::iterator ch_it = m_channels.begin();
