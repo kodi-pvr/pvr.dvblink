@@ -12,7 +12,6 @@
 #include "libdvblinkremote/dvblinkremote.h"
 
 #include <mutex>
-#include <p8-platform/threads/threads.h>
 
 template<typename T> void SafeDelete(T*& p)
 {

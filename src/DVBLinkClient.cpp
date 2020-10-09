@@ -234,8 +234,8 @@ DVBLinkClient::DVBLinkClient(const CDVBLinkAddon& base,
     m_recordingsid_by_series = m_recordingsid;
     m_recordingsid_by_series.append(DVBLINK_RECODINGS_BY_SERIES_ID);
 
-    m_updating = true;
-    CreateThread();
+    m_running = true;
+    m_thread = std::thread([&] { Process(); });
   }
   else
   {
@@ -295,7 +295,7 @@ PVR_ERROR DVBLinkClient::GetCapabilities(kodi::addon::PVRCapabilities& capabilit
   return PVR_ERROR_NO_ERROR;
 }
 
-void* DVBLinkClient::Process()
+void DVBLinkClient::Process()
 {
   kodi::Log(ADDON_LOG_DEBUG, "DVBLinkUpdateProcess:: thread started");
 
@@ -306,7 +306,7 @@ void* DVBLinkClient::Process()
   time_t next_update_time_timers = now + default_update_interval_sec_;
   time_t next_update_time_recordings = now + default_update_interval_sec_;
 
-  while (m_updating)
+  while (m_running)
   {
     time(&now);
 
@@ -344,10 +344,9 @@ void* DVBLinkClient::Process()
       next_update_time_recordings = now + default_update_interval_sec_;
     }
 
-    Sleep(100);
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
   kodi::Log(ADDON_LOG_DEBUG, "DVBLinkUpdateProcess:: thread stopped");
-  return nullptr;
 }
 
 bool DVBLinkClient::GetStatus()
@@ -1952,8 +1951,9 @@ PVR_ERROR DVBLinkClient::GetEPGForChannel(int channelUid,
 
 DVBLinkClient::~DVBLinkClient(void)
 {
-  m_updating = false;
-  StopThread();
+  m_running = false;
+  if (m_thread.joinable())
+    m_thread.join();  
 
   if (m_live_streamer)
   {

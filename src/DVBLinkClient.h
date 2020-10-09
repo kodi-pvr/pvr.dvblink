@@ -14,10 +14,11 @@
 #include "dvblink_connection.h"
 #include "libdvblinkremote/dvblinkremote.h"
 
+#include <atomic>
 #include <kodi/addon-instance/PVR.h>
 #include <map>
 #include <mutex>
-#include <p8-platform/threads/threads.h>
+#include <thread>
 
 #define DVBLINK_BUILD_IN_RECORDER_SOURCE_ID "8F94B459-EFC0-4D91-9B29-EC3D72E92677"
 #define DVBLINK_RECODINGS_BY_DATA_ID "F6F08949-2A07-4074-9E9D-423D877270BB"
@@ -127,8 +128,7 @@ struct ATTRIBUTE_HIDDEN dvblink_server_caps
   bool start_any_time_supported_;
 };
 
-class ATTRIBUTE_HIDDEN DVBLinkClient : public kodi::addon::CInstancePVRClient,
-                                       public P8PLATFORM::CThread
+class ATTRIBUTE_HIDDEN DVBLinkClient : public kodi::addon::CInstancePVRClient
 {
 public:
   DVBLinkClient(const CDVBLinkAddon& base,
@@ -218,7 +218,7 @@ private:
   std::string GetBuildInRecorderObjectID();
   std::string GetRecordedTVByDateObjectID(const std::string& buildInRecoderObjectID);
   int GetInternalUniqueIdFromChannelId(const std::string& channelId);
-  virtual void* Process(void);
+  void Process();
   bool get_dvblink_program_id(std::string& channelId,
                               int start_time,
                               std::string& dvblink_program_id);
@@ -248,7 +248,6 @@ private:
   bool m_add_episode_to_rec_title;
   bool m_group_recordings_by_series;
   bool m_showinfomsg;
-  bool m_updating;
   bool m_update_timers_now;
   bool m_update_timers_repeat;
   bool m_update_recordings;
@@ -265,6 +264,9 @@ private:
   std::map<std::string, schedule_desc> schedule_map_;
   std::map<std::string, unsigned int> timer_idx_map_;
   unsigned int timer_idx_seed_;
+
+  std::atomic<bool> m_running = {false};
+  std::thread m_thread;  
 
   const CDVBLinkAddon& m_base;
 };

@@ -14,7 +14,6 @@
 #include <kodi/Filesystem.h>
 #include <kodi/addon-instance/PVR.h>
 #include <mutex>
-#include <p8-platform/threads/threads.h>
 
 class ATTRIBUTE_HIDDEN RecordingStreamer : public dvblinkremote::DVBLinkRemoteLocker
 {
