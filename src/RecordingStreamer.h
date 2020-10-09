@@ -13,7 +13,7 @@
 
 #include <kodi/Filesystem.h>
 #include <kodi/addon-instance/PVR.h>
-#include <p8-platform/threads/mutex.h>
+#include <mutex>
 #include <p8-platform/threads/threads.h>
 
 class ATTRIBUTE_HIDDEN RecordingStreamer : public dvblinkremote::DVBLinkRemoteLocker
@@ -50,14 +50,14 @@ protected:
   int port_;
   time_t prev_check_;
   time_t check_delta_;
-  P8PLATFORM::CMutex m_comm_mutex;
+  std::mutex m_comm_mutex;
 
   bool get_recording_info(const std::string& recording_id,
                           long long& recording_size,
                           long& recording_duration,
                           bool& is_in_recording);
 
-  virtual void lock() { m_comm_mutex.Lock(); }
+  virtual void lock() { m_comm_mutex.lock(); }
 
-  virtual void unlock() { m_comm_mutex.Unlock(); }
+  virtual void unlock() { m_comm_mutex.unlock(); }
 };

@@ -16,7 +16,7 @@
 
 #include <kodi/addon-instance/PVR.h>
 #include <map>
-#include <p8-platform/threads/mutex.h>
+#include <mutex>
 #include <p8-platform/threads/threads.h>
 
 #define DVBLINK_BUILD_IN_RECORDER_SOURCE_ID "8F94B459-EFC0-4D91-9B29-EC3D72E92677"
@@ -240,8 +240,8 @@ private:
   int m_currentChannelId;
   long m_timerCount;
   long m_recordingCount;
-  P8PLATFORM::CMutex m_mutex;
-  P8PLATFORM::CMutex live_mutex_;
+  std::mutex m_mutex;
+  std::mutex live_mutex_;
   server_connection_properties connection_props_;
   LiveStreamerBase* m_live_streamer;
   RecordingStreamer* m_recording_streamer = nullptr;

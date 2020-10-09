@@ -11,7 +11,7 @@
 #include "HttpPostClient.h"
 #include "libdvblinkremote/dvblinkremote.h"
 
-#include <p8-platform/threads/mutex.h>
+#include <mutex>
 #include <p8-platform/threads/threads.h>
 
 template<typename T> void SafeDelete(T*& p)
@@ -67,11 +67,11 @@ public:
   dvblinkremote::IDVBLinkRemoteConnection* get_connection() { return dvblink_connection_; }
 
 protected:
-  virtual void lock() { m_comm_mutex.Lock(); }
+  virtual void lock() { m_comm_mutex.lock(); }
 
-  virtual void unlock() { m_comm_mutex.Unlock(); }
+  virtual void unlock() { m_comm_mutex.unlock(); }
 
-  P8PLATFORM::CMutex m_comm_mutex;
+  std::mutex m_comm_mutex;
   HttpPostClient* http_client_;
   dvblinkremote::IDVBLinkRemoteConnection* dvblink_connection_;
 };
