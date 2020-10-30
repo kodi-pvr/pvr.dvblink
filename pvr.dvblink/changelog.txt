@@ -1,3 +1,7 @@
+[B]Version 9.0.0[/B]
+Update: PVR API 7.0.2
+Fixed: Some compile warnings about missing ATTRIBUTE_HIDDEN
+
 [B]Version 8.0.0[/B]
 Update: GUI API 5.15.0
 

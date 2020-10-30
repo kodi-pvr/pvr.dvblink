@@ -15,7 +15,7 @@
 #include <p8-platform/os.h>
 #include <p8-platform/util/util.h>
 
-class LiveStreamerBase
+class ATTRIBUTE_HIDDEN LiveStreamerBase
 {
 public:
   LiveStreamerBase(const server_connection_properties& connection_props);
@@ -62,7 +62,7 @@ protected:
   time_t stream_start_;
 };
 
-class LiveTVStreamer : public LiveStreamerBase
+class ATTRIBUTE_HIDDEN LiveTVStreamer : public LiveStreamerBase
 {
 public:
   LiveTVStreamer(const server_connection_properties& connection_props);
@@ -76,7 +76,7 @@ protected:
                                                          std::string audiotrack);
 };
 
-class TimeShiftBuffer : public LiveStreamerBase
+class ATTRIBUTE_HIDDEN TimeShiftBuffer : public LiveStreamerBase
 {
   struct buffer_params_t
   {

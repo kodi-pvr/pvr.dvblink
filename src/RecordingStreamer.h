@@ -18,7 +18,7 @@
 #include <p8-platform/threads/threads.h>
 #include <p8-platform/util/util.h>
 
-class RecordingStreamer : public dvblinkremote::DVBLinkRemoteLocker
+class ATTRIBUTE_HIDDEN RecordingStreamer : public dvblinkremote::DVBLinkRemoteLocker
 {
 public:
   RecordingStreamer(const std::string& client_id,

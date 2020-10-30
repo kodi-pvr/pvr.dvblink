@@ -75,7 +75,7 @@ const int UPDATE_INTERVAL_2400_SEC = 2400;
 const int UPDATE_INTERVAL_3000_SEC = 3000;
 const int UPDATE_INTERVAL_3600_SEC = 3600;
 
-struct schedule_desc
+struct ATTRIBUTE_HIDDEN schedule_desc
 {
   schedule_desc(unsigned int idx, int type, int margin_before, int margin_after)
   {
@@ -99,7 +99,7 @@ struct schedule_desc
   int schedule_margin_after;
 };
 
-struct dvblink_server_caps
+struct ATTRIBUTE_HIDDEN dvblink_server_caps
 {
   dvblink_server_caps()
     : setting_margins_supported_(false),
