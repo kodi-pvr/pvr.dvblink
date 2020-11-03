@@ -37,7 +37,7 @@ ADDON_STATUS CDVBLinkAddon::CreateInstance(int instanceType,
 
     addonInstance = client;
 
-    if (client->GetStatus())
+    if (!client->GetStatus())
       return ADDON_STATUS_LOST_CONNECTION;
 
     return ADDON_STATUS_OK;
