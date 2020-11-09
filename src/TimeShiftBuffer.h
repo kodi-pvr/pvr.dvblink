@@ -12,8 +12,6 @@
 
 #include <kodi/Filesystem.h>
 #include <kodi/addon-instance/pvr/Stream.h>
-#include <p8-platform/os.h>
-#include <p8-platform/util/util.h>
 
 class ATTRIBUTE_HIDDEN LiveStreamerBase
 {

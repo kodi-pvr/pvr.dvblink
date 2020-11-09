@@ -1,3 +1,13 @@
+[B]Version 9.0.1[/B]
+Update: Remove p8-platform dependency
+Update: Use different socket implementation
+Update: Use std::thread
+Update: Use std::mutex
+Update: Remove p8 os header
+Update: Remove use of SAFE_DELETE and p8 util header
+Fixed: Fix proper return value if connected
+Update: Update inputstream API 3.0.1 - Fix wrong flags bit shift
+
 [B]Version 9.0.0[/B]
 Update: PVR API 7.0.2
 Fixed: Some compile warnings about missing ATTRIBUTE_HIDDEN

@@ -11,10 +11,16 @@
 #include "HttpPostClient.h"
 #include "libdvblinkremote/dvblinkremote.h"
 
-#include <p8-platform/os.h>
-#include <p8-platform/threads/mutex.h>
-#include <p8-platform/threads/threads.h>
-#include <p8-platform/util/util.h>
+#include <mutex>
+
+template<typename T> void SafeDelete(T*& p)
+{
+  if (p)
+  {
+    delete p;
+    p = nullptr;
+  }
+}
 
 struct ATTRIBUTE_HIDDEN server_connection_properties
 {
@@ -53,18 +59,18 @@ public:
 
   ~dvblink_server_connection()
   {
-    SAFE_DELETE(dvblink_connection_);
-    SAFE_DELETE(http_client_);
+    SafeDelete(dvblink_connection_);
+    SafeDelete(http_client_);
   }
 
   dvblinkremote::IDVBLinkRemoteConnection* get_connection() { return dvblink_connection_; }
 
 protected:
-  virtual void lock() { m_comm_mutex.Lock(); }
+  virtual void lock() { m_comm_mutex.lock(); }
 
-  virtual void unlock() { m_comm_mutex.Unlock(); }
+  virtual void unlock() { m_comm_mutex.unlock(); }
 
-  P8PLATFORM::CMutex m_comm_mutex;
+  std::mutex m_comm_mutex;
   HttpPostClient* http_client_;
   dvblinkremote::IDVBLinkRemoteConnection* dvblink_connection_;
 };

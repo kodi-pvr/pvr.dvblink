@@ -13,7 +13,6 @@
 #include <kodi/General.h>
 #include <kodi/gui/General.h>
 #include <memory>
-#include <p8-platform/os.h>
 
 using namespace dvblinkremote;
 using namespace dvblinkremotehttp;
@@ -235,8 +234,8 @@ DVBLinkClient::DVBLinkClient(const CDVBLinkAddon& base,
     m_recordingsid_by_series = m_recordingsid;
     m_recordingsid_by_series.append(DVBLINK_RECODINGS_BY_SERIES_ID);
 
-    m_updating = true;
-    CreateThread();
+    m_running = true;
+    m_thread = std::thread([&] { Process(); });
   }
   else
   {
@@ -296,7 +295,7 @@ PVR_ERROR DVBLinkClient::GetCapabilities(kodi::addon::PVRCapabilities& capabilit
   return PVR_ERROR_NO_ERROR;
 }
 
-void* DVBLinkClient::Process()
+void DVBLinkClient::Process()
 {
   kodi::Log(ADDON_LOG_DEBUG, "DVBLinkUpdateProcess:: thread started");
 
@@ -307,7 +306,7 @@ void* DVBLinkClient::Process()
   time_t next_update_time_timers = now + default_update_interval_sec_;
   time_t next_update_time_recordings = now + default_update_interval_sec_;
 
-  while (m_updating)
+  while (m_running)
   {
     time(&now);
 
@@ -345,10 +344,9 @@ void* DVBLinkClient::Process()
       next_update_time_recordings = now + default_update_interval_sec_;
     }
 
-    Sleep(100);
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
   kodi::Log(ADDON_LOG_DEBUG, "DVBLinkUpdateProcess:: thread stopped");
-  return nullptr;
 }
 
 bool DVBLinkClient::GetStatus()
@@ -715,7 +713,7 @@ bool DVBLinkClient::parse_timer_hash(const char* timer_hash,
 
 unsigned int DVBLinkClient::get_kodi_timer_idx_from_dvblink(const std::string& id)
 {
-  P8PLATFORM::CLockObject critsec(m_mutex);
+  std::lock_guard<std::mutex> critsec(m_mutex);
 
   if (timer_idx_map_.find(id) == timer_idx_map_.end())
     timer_idx_map_[id] = timer_idx_seed_++;
@@ -725,14 +723,14 @@ unsigned int DVBLinkClient::get_kodi_timer_idx_from_dvblink(const std::string& i
 
 void DVBLinkClient::add_schedule_desc(const std::string& id, const schedule_desc& sd)
 {
-  P8PLATFORM::CLockObject critsec(m_mutex);
+  std::lock_guard<std::mutex> critsec(m_mutex);
 
   schedule_map_[id] = sd;
 }
 
 bool DVBLinkClient::get_schedule_desc(const std::string& id, schedule_desc& sd)
 {
-  P8PLATFORM::CLockObject critsec(m_mutex);
+  std::lock_guard<std::mutex> critsec(m_mutex);
 
   if (schedule_map_.find(id) != schedule_map_.end())
   {
@@ -761,7 +759,7 @@ int DVBLinkClient::GetSchedules(kodi::addon::PVRTimersResultSet& results,
   int total_count = 0;
 
   {
-    P8PLATFORM::CLockObject critsec(m_mutex);
+    std::lock_guard<std::mutex> critsec(m_mutex);
 
     schedule_map_.clear();
   }
@@ -1215,7 +1213,7 @@ PVR_ERROR DVBLinkClient::AddTimer(const kodi::addon::PVRTimer& timer)
       kodi::Log(ADDON_LOG_ERROR, "Could not add timer (Error code : %d Description : %s)",
                 (int)status, error.c_str());
     }
-    SAFE_DELETE(addScheduleRequest);
+    SafeDelete(addScheduleRequest);
   }
   else
   {
@@ -1471,7 +1469,7 @@ PVR_ERROR DVBLinkClient::GetRecordings(bool deleted, kodi::addon::PVRRecordingsR
   DVBLinkRemoteStatusCode status;
 
   {
-    P8PLATFORM::CLockObject critsec(m_mutex);
+    std::lock_guard<std::mutex> critsec(m_mutex);
 
     m_recording_id_to_url_map.clear();
   }
@@ -1558,7 +1556,7 @@ PVR_ERROR DVBLinkClient::GetRecordings(bool deleted, kodi::addon::PVRRecordingsR
     xbmcRecording.SetPlot(tvitem->GetMetadata().ShortDescription);
     xbmcRecording.SetPlotOutline(tvitem->GetMetadata().SubTitle);
     {
-      P8PLATFORM::CLockObject critsec(m_mutex);
+      std::lock_guard<std::mutex> critsec(m_mutex);
 
       m_recording_id_to_url_map[xbmcRecording.GetRecordingId()] = tvitem->GetPlaybackUrl();
     }
@@ -1634,7 +1632,7 @@ bool DVBLinkClient::GetRecordingURL(const std::string& recording_id,
   }
 
   {
-    P8PLATFORM::CLockObject critsec(m_mutex);
+    std::lock_guard<std::mutex>critsec(m_mutex);
     if (m_recording_id_to_url_map.find(recording_id) == m_recording_id_to_url_map.end())
       return false;
 
@@ -1697,10 +1695,10 @@ bool DVBLinkClient::OpenLiveStream(const kodi::addon::PVRChannel& channel)
     return false;
   }
 
-  P8PLATFORM::CLockObject critsec(live_mutex_);
+  std::lock_guard<std::mutex> critsec(live_mutex_);
 
   if (m_live_streamer)
-    SAFE_DELETE(m_live_streamer);
+    SafeDelete(m_live_streamer);
 
   if (use_timeshift)
     m_live_streamer =
@@ -1750,7 +1748,7 @@ bool DVBLinkClient::IsRealTimeStream()
 
 PVR_ERROR DVBLinkClient::GetStreamTimes(kodi::addon::PVRStreamTimes& stream_times)
 {
-  P8PLATFORM::CLockObject critsec(live_mutex_);
+  std::lock_guard<std::mutex> critsec(live_mutex_);
 
   if (m_live_streamer)
   {
@@ -1767,7 +1765,7 @@ PVR_ERROR DVBLinkClient::GetStreamTimes(kodi::addon::PVRStreamTimes& stream_time
 
 int64_t DVBLinkClient::LengthLiveStream()
 {
-  P8PLATFORM::CLockObject critsec(live_mutex_);
+  std::lock_guard<std::mutex> critsec(live_mutex_);
 
   if (m_live_streamer)
     return m_live_streamer->Length();
@@ -1776,12 +1774,12 @@ int64_t DVBLinkClient::LengthLiveStream()
 
 void DVBLinkClient::CloseLiveStream()
 {
-  P8PLATFORM::CLockObject critsec(live_mutex_);
+  std::lock_guard<std::mutex> critsec(live_mutex_);
 
   if (m_live_streamer != nullptr)
   {
     m_live_streamer->Stop();
-    SAFE_DELETE(m_live_streamer);
+    SafeDelete(m_live_streamer);
     m_live_streamer = nullptr;
   }
 }
@@ -1953,13 +1951,14 @@ PVR_ERROR DVBLinkClient::GetEPGForChannel(int channelUid,
 
 DVBLinkClient::~DVBLinkClient(void)
 {
-  m_updating = false;
-  StopThread();
+  m_running = false;
+  if (m_thread.joinable())
+    m_thread.join();  
 
   if (m_live_streamer)
   {
     m_live_streamer->Stop();
-    SAFE_DELETE(m_live_streamer);
+    SafeDelete(m_live_streamer);
   }
 
   dvblink_channel_map_t::iterator ch_it = m_channels.begin();

@@ -10,10 +10,12 @@
 
 #include "base64.h"
 
+#include "Socket.h"
+
 #include <kodi/Filesystem.h>
 #include <kodi/General.h>
-#include <p8-platform/sockets/tcp.h>
 
+using namespace dvblink;
 using namespace dvblinkremotehttp;
 
 /* Converts a hex character to its integer value */
@@ -82,19 +84,24 @@ int HttpPostClient::SendPostRequest(HttpWebRequest& request)
   buffer.append("\r\n");
   buffer.append(request.GetRequestData());
 
-  P8PLATFORM::CTcpSocket sock(m_server.c_str(), (unsigned short)m_serverport);
+  Socket sock;
 
-  int connect_timeout_ms = 15 * 1000; //15 seconds
-  if (!sock.Open(connect_timeout_ms))
+  if (!sock.create())
   {
     return -101;
   }
 
-  ssize_t written_length = sock.Write((void*)buffer.c_str(), buffer.length());
+  int connect_timeout_ms = 15 * 1000; //15 seconds
+  if (!sock.connect(m_server, (int)m_serverport))
+  {
+    return -101;
+  }
+
+  ssize_t written_length = sock.send(buffer.c_str(), buffer.length());
 
   if (written_length != buffer.length())
   {
-    sock.Shutdown();
+    sock.close();
     return -102;
   }
 
@@ -103,10 +110,10 @@ int HttpPostClient::SendPostRequest(HttpWebRequest& request)
   char read_buffer[read_buffer_size];
   ssize_t read_size = 0;
   std::string response;
-  while ((read_size = sock.Read(read_buffer, read_buffer_size, read_timeout_ms)) > 0)
+  while ((read_size = sock.receive(read_buffer, read_buffer_size, 0, read_timeout_ms)) > 0)
     response.append(read_buffer, read_buffer + read_size);
 
-  sock.Shutdown();
+  sock.close();
 
   if (response.size() > 0)
   {
