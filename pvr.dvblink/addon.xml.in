@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="pvr.dvblink"
-  version="9.1.1"
+  version="9.1.2"
   name="TVMosaic/DVBLink PVR Client"
   provider-name="DVBLogic">
   <requires>@ADDON_DEPENDS@</requires>
@@ -180,5 +180,9 @@
     <assets>
       <icon>icon.png</icon>
     </assets>
+    <news>
+v9.1.2
+- Language update from Weblate
+    </news>
   </extension>
 </addon>

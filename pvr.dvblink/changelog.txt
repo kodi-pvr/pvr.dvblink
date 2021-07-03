@@ -1,3 +1,6 @@
+v9.1.2
+- Language update from Weblate
+
 [B]Version 9.1.0[/B]
 - Update PVR API 7.0.2
 
