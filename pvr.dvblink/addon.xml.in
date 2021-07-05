@@ -180,9 +180,5 @@
     <assets>
       <icon>icon.png</icon>
     </assets>
-    <news>
-v9.1.2
-- Language update from Weblate
-    </news>
   </extension>
 </addon>
