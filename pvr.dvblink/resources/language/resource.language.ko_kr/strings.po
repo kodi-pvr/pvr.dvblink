@@ -19,15 +19,15 @@ msgstr ""
 
 msgctxt "Addon Summary"
 msgid "PVR Plugin for TVMosaic/DVBLink"
-msgstr ""
+msgstr "TVMosaic/DVBLink를 위한 PVR 플러그인"
 
 msgctxt "Addon Description"
 msgid "PVR Plugin for TVMosaic/DVBLink from DVBLogic (www.tv-mosaic.com); supporting streaming of Live TV &amp; Recordings, EPG, Timers"
-msgstr ""
+msgstr "DVBLogic (www.tv-mosaic.com)의 TVMosaic/DVBLink를 위한 PVR 플러그인. 라이브 TV 스트리밍, 녹화, EPG, 타이머를 지원합니다."
 
 msgctxt "Addon Disclaimer"
-msgid "This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects.."
-msgstr ""
+msgid "This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects."
+msgstr "이 소프트웨어는 불안정합니다! 제작자는 녹화 실패, 부정확한 타이머, 시간 낭비 및 기타 예상하지 못한 결과에 대해 책임지지 않습니다."
 
 msgctxt "#30000"
 msgid "General"

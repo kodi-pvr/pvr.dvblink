@@ -18,15 +18,15 @@ msgstr ""
 
 msgctxt "Addon Summary"
 msgid "PVR Plugin for TVMosaic/DVBLink"
-msgstr ""
+msgstr "PVR-innstikk til TVMosaic/DVBLink"
 
 msgctxt "Addon Description"
 msgid "PVR Plugin for TVMosaic/DVBLink from DVBLogic (www.tv-mosaic.com); supporting streaming of Live TV &amp; Recordings, EPG, Timers"
-msgstr ""
+msgstr "PVR-innstikk til TVMosaic/DVBLink fra DVBLogic (www.tv-mosaic.com) - støtter strømming av direkte-TV, opptak, EPG og tidsur."
 
 msgctxt "Addon Disclaimer"
-msgid "This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects.."
-msgstr ""
+msgid "This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects."
+msgstr "Dette er ustabil programvare! Skaperen har ikke på noen måte ansvar for mislykkede opptak, uriktige tidsur, bortkastede timer, eller andre uønskede effekter."
 
 msgctxt "#30000"
 msgid "General"
