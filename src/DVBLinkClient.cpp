@@ -282,6 +282,7 @@ PVR_ERROR DVBLinkClient::GetCapabilities(kodi::addon::PVRCapabilities& capabilit
 
   capabilities.SetSupportsEPG(true);
   capabilities.SetSupportsRecordings(server_caps_.recordings_supported_);
+  capabilities.SetSupportsRecordingsDelete(server_caps_.recordings_supported_);
   capabilities.SetSupportsRecordingsUndelete(false);
   capabilities.SetSupportsTimers(server_caps_.recordings_supported_);
   capabilities.SetSupportsTV(true);
