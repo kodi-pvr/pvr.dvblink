@@ -74,7 +74,7 @@ const int UPDATE_INTERVAL_2400_SEC = 2400;
 const int UPDATE_INTERVAL_3000_SEC = 3000;
 const int UPDATE_INTERVAL_3600_SEC = 3600;
 
-struct ATTRIBUTE_HIDDEN schedule_desc
+struct ATTR_DLL_LOCAL schedule_desc
 {
   schedule_desc(unsigned int idx, int type, int margin_before, int margin_after)
   {
@@ -98,7 +98,7 @@ struct ATTRIBUTE_HIDDEN schedule_desc
   int schedule_margin_after;
 };
 
-struct ATTRIBUTE_HIDDEN dvblink_server_caps
+struct ATTR_DLL_LOCAL dvblink_server_caps
 {
   dvblink_server_caps()
     : setting_margins_supported_(false),
@@ -128,12 +128,11 @@ struct ATTRIBUTE_HIDDEN dvblink_server_caps
   bool start_any_time_supported_;
 };
 
-class ATTRIBUTE_HIDDEN DVBLinkClient : public kodi::addon::CInstancePVRClient
+class ATTR_DLL_LOCAL DVBLinkClient : public kodi::addon::CInstancePVRClient
 {
 public:
   DVBLinkClient(const CDVBLinkAddon& base,
-                KODI_HANDLE instance,
-                const std::string& kodiVersion,
+                const kodi::addon::IInstanceInfo& instance,
                 std::string clientname,
                 std::string hostname,
                 int port,

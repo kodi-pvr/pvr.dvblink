@@ -22,7 +22,7 @@ template<typename T> void SafeDelete(T*& p)
   }
 }
 
-struct ATTRIBUTE_HIDDEN server_connection_properties
+struct ATTR_DLL_LOCAL server_connection_properties
 {
   server_connection_properties(const std::string& address,
                                long port,
@@ -44,7 +44,7 @@ struct ATTRIBUTE_HIDDEN server_connection_properties
   std::string client_id_;
 };
 
-class ATTRIBUTE_HIDDEN dvblink_server_connection : public dvblinkremote::DVBLinkRemoteLocker
+class ATTR_DLL_LOCAL dvblink_server_connection : public dvblinkremote::DVBLinkRemoteLocker
 {
 public:
   dvblink_server_connection(const server_connection_properties& connection_props)
