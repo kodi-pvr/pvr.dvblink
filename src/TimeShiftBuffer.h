@@ -13,7 +13,7 @@
 #include <kodi/Filesystem.h>
 #include <kodi/addon-instance/pvr/Stream.h>
 
-class ATTRIBUTE_HIDDEN LiveStreamerBase
+class ATTR_DLL_LOCAL LiveStreamerBase
 {
 public:
   LiveStreamerBase(const server_connection_properties& connection_props);
@@ -60,7 +60,7 @@ protected:
   time_t stream_start_;
 };
 
-class ATTRIBUTE_HIDDEN LiveTVStreamer : public LiveStreamerBase
+class ATTR_DLL_LOCAL LiveTVStreamer : public LiveStreamerBase
 {
 public:
   LiveTVStreamer(const server_connection_properties& connection_props);
@@ -74,7 +74,7 @@ protected:
                                                          std::string audiotrack);
 };
 
-class ATTRIBUTE_HIDDEN TimeShiftBuffer : public LiveStreamerBase
+class ATTR_DLL_LOCAL TimeShiftBuffer : public LiveStreamerBase
 {
   struct buffer_params_t
   {

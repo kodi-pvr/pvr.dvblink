@@ -9,7 +9,7 @@
 
 bool CSettings::Load()
 {
-  if (!kodi::CheckSettingString("host", m_szHostname))
+  if (!kodi::addon::CheckSettingString("host", m_szHostname))
   {
     /* If setting is unknown fallback to defaults */
     kodi::Log(ADDON_LOG_ERROR, "Couldn't get 'host' setting, falling back to '%s' as default",
@@ -18,7 +18,7 @@ bool CSettings::Load()
   }
 
   /* read setting "username" from settings.xml */
-  if (!kodi::CheckSettingString("username", m_szUsername))
+  if (!kodi::addon::CheckSettingString("username", m_szUsername))
   {
     /* If setting is unknown fallback to defaults */
     kodi::Log(ADDON_LOG_ERROR, "Couldn't get 'username' setting, falling back to default");
@@ -26,7 +26,7 @@ bool CSettings::Load()
   }
 
   /* read setting "password" from settings.xml */
-  if (!kodi::CheckSettingString("password", m_szPassword))
+  if (!kodi::addon::CheckSettingString("password", m_szPassword))
   {
     /* If setting is unknown fallback to defaults */
     kodi::Log(ADDON_LOG_ERROR, "Couldn't get 'password' setting, leaved empty");
@@ -34,7 +34,7 @@ bool CSettings::Load()
   }
 
   /* Read setting "enable_transcoding" from settings.xml */
-  if (!kodi::CheckSettingBoolean("enable_transcoding", m_bUseTranscoding))
+  if (!kodi::addon::CheckSettingBoolean("enable_transcoding", m_bUseTranscoding))
   {
     /* If setting is unknown fallback to defaults */
     kodi::Log(ADDON_LOG_ERROR,
@@ -44,7 +44,7 @@ bool CSettings::Load()
   }
 
   /* Read setting "port" from settings.xml */
-  if (!kodi::CheckSettingInt("port", m_iPort))
+  if (!kodi::addon::CheckSettingInt("port", m_iPort))
   {
     /* If setting is unknown fallback to defaults */
     kodi::Log(ADDON_LOG_ERROR, "Couldn't get 'port' setting, falling back to '%i' as default",
@@ -53,7 +53,7 @@ bool CSettings::Load()
   }
 
   /* Read setting "timeshift" from settings.xml */
-  if (!kodi::CheckSettingBoolean("timeshift", m_bUseTimeshift))
+  if (!kodi::addon::CheckSettingBoolean("timeshift", m_bUseTimeshift))
   {
     /* If setting is unknown fallback to defaults */
     kodi::Log(ADDON_LOG_ERROR, "Couldn't get 'timeshift' setting, falling back to '%s' as default",
@@ -62,7 +62,7 @@ bool CSettings::Load()
   }
 
   /* Read setting "showinfomsg" from settings.xml */
-  if (!kodi::CheckSettingBoolean("showinfomsg", m_bShowInfoMSG))
+  if (!kodi::addon::CheckSettingBoolean("showinfomsg", m_bShowInfoMSG))
   {
     /* If setting is unknown fallback to defaults */
     kodi::Log(ADDON_LOG_ERROR,
@@ -72,7 +72,7 @@ bool CSettings::Load()
   }
 
   /* Read setting "add_rec_episode_info" from settings.xml */
-  if (!kodi::CheckSettingBoolean("add_rec_episode_info", m_bAddRecEpisode2title))
+  if (!kodi::addon::CheckSettingBoolean("add_rec_episode_info", m_bAddRecEpisode2title))
   {
     /* If setting is unknown fallback to defaults */
     kodi::Log(ADDON_LOG_ERROR,
@@ -82,7 +82,7 @@ bool CSettings::Load()
   }
 
   /* Read setting "group_recordings_by_series" from settings.xml */
-  if (!kodi::CheckSettingBoolean("group_recordings_by_series", m_bGroupRecBySeries))
+  if (!kodi::addon::CheckSettingBoolean("group_recordings_by_series", m_bGroupRecBySeries))
   {
     /* If setting is unknown fallback to defaults */
     kodi::Log(ADDON_LOG_ERROR,
@@ -92,7 +92,7 @@ bool CSettings::Load()
   }
 
   /* Read setting "no_group_for_single_record" from settings.xml */
-  if (!kodi::CheckSettingBoolean("no_group_for_single_record", m_bNoGroupSingleRec))
+  if (!kodi::addon::CheckSettingBoolean("no_group_for_single_record", m_bNoGroupSingleRec))
   {
     /* If setting is unknown fallback to defaults */
     kodi::Log(ADDON_LOG_ERROR,
@@ -102,7 +102,7 @@ bool CSettings::Load()
   }
 
   /* Read setting "height" from settings.xml */
-  if (!kodi::CheckSettingInt("height", m_iHeight))
+  if (!kodi::addon::CheckSettingInt("height", m_iHeight))
   {
     /* If setting is unknown fallback to defaults */
     kodi::Log(ADDON_LOG_ERROR, "Couldn't get 'height' setting, falling back to '%i' as default",
@@ -111,7 +111,7 @@ bool CSettings::Load()
   }
 
   /* Read setting "width" from settings.xml */
-  if (!kodi::CheckSettingInt("width", m_iWidth))
+  if (!kodi::addon::CheckSettingInt("width", m_iWidth))
   {
     /* If setting is unknown fallback to defaults */
     kodi::Log(ADDON_LOG_ERROR, "Couldn't get 'width' setting, falling back to '%i' as default",
@@ -120,7 +120,7 @@ bool CSettings::Load()
   }
 
   /* Read setting "bitrate" from settings.xml */
-  if (!kodi::CheckSettingInt("bitrate", m_iBitrate))
+  if (!kodi::addon::CheckSettingInt("bitrate", m_iBitrate))
   {
     /* If setting is unknown fallback to defaults */
     kodi::Log(ADDON_LOG_ERROR, "Couldn't get 'bitrate' setting, falling back to '%i' as default",
@@ -129,7 +129,7 @@ bool CSettings::Load()
   }
 
   /* Read setting "audiotrack" from settings.xml */
-  if (!kodi::CheckSettingString("audiotrack", m_szAudiotrack))
+  if (!kodi::addon::CheckSettingString("audiotrack", m_szAudiotrack))
   {
     /* If setting is unknown fallback to defaults */
     kodi::Log(ADDON_LOG_ERROR, "Couldn't get 'audiotrack' setting, falling back to '%s' as default",
@@ -138,7 +138,7 @@ bool CSettings::Load()
   }
 
   /* Read setting "default_update_interval" from settings.xml */
-  if (!kodi::CheckSettingInt("default_update_interval", m_iDefaultUpdateInterval))
+  if (!kodi::addon::CheckSettingInt("default_update_interval", m_iDefaultUpdateInterval))
   {
     /* If setting is unknown fallback to defaults */
     kodi::Log(ADDON_LOG_ERROR,
@@ -148,7 +148,7 @@ bool CSettings::Load()
   }
 
   /* Read setting "bitrate" from settings.xml */
-  if (!kodi::CheckSettingInt("default_record_show_type", m_iDefaultRecShowType))
+  if (!kodi::addon::CheckSettingInt("default_record_show_type", m_iDefaultRecShowType))
   {
     /* If setting is unknown fallback to defaults */
     kodi::Log(ADDON_LOG_ERROR,
@@ -165,7 +165,7 @@ bool CSettings::Load()
 }
 
 ADDON_STATUS CSettings::SetSetting(const std::string& settingName,
-                                   const kodi::CSettingValue& settingValue)
+                                   const kodi::addon::CSettingValue& settingValue)
 {
   if (settingName == "host")
   {

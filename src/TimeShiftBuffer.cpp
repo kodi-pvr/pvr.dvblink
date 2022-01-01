@@ -63,7 +63,7 @@ bool LiveStreamerBase::Start(Channel* channel,
       kodi::Log(ADDON_LOG_ERROR, "Could not start streaming for channel %s (Error code : %d Description : %s)",
                 channel->GetDvbLinkID().c_str(), (int)status, error.c_str());
       if (status == DVBLINK_REMOTE_STATUS_INVALID_DATA)
-        kodi::QueueNotification(QUEUE_ERROR, "", kodi::GetLocalizedString(30007));
+        kodi::QueueNotification(QUEUE_ERROR, "", kodi::addon::GetLocalizedString(30007));
     }
 
     SafeDelete(sr);

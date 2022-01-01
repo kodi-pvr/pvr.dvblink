@@ -21,7 +21,7 @@ msgid "PVR Plugin for TVMosaic/DVBLink"
 msgstr "TVMosaic/DVBLink PVR 插件"
 
 msgctxt "Addon Description"
-msgid "PVR Plugin for TVMosaic/DVBLink from DVBLogic (www.tv-mosaic.com); supporting streaming of Live TV &amp; Recordings, EPG, Timers"
+msgid "PVR Plugin for TVMosaic/DVBLink from DVBLogic (www.tv-mosaic.com); supporting streaming of Live TV & Recordings, EPG, Timers"
 msgstr "来自 DVBLogic (www.tv-mosaic.com) 的 TVMosaic/DVBLink 的 PVR 插件，支持直播电视播放和录制、电子节目单、定时器"
 
 msgctxt "Addon Disclaimer"

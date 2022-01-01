@@ -27,13 +27,14 @@
 #define DEFAULT_UPDATE_INTERVAL 4
 #define DEFAULT_RECORD_SHOW_TYPE 1
 
-class ATTRIBUTE_HIDDEN CSettings
+class ATTR_DLL_LOCAL CSettings
 {
 public:
   CSettings() = default;
 
   bool Load();
-  ADDON_STATUS SetSetting(const std::string& settingName, const kodi::CSettingValue& settingValue);
+  ADDON_STATUS SetSetting(const std::string& settingName,
+                          const kodi::addon::CSettingValue& settingValue);
 
   const std::string& Hostname() const { return m_szHostname; }
   int Port() const { return m_iPort; }

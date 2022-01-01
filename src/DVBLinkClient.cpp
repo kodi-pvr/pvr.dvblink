@@ -110,8 +110,7 @@ void DVBLinkClient::get_server_caps()
 }
 
 DVBLinkClient::DVBLinkClient(const CDVBLinkAddon& base,
-                             KODI_HANDLE instance,
-                             const std::string& kodiVersion,
+                             const kodi::addon::IInstanceInfo& instance,
                              std::string clientname,
                              std::string hostname,
                              int port,
@@ -123,7 +122,7 @@ DVBLinkClient::DVBLinkClient(const CDVBLinkAddon& base,
                              bool no_group_single_rec,
                              int default_update_interval,
                              int default_rec_show_type)
-  : kodi::addon::CInstancePVRClient(instance, kodiVersion),
+  : kodi::addon::CInstancePVRClient(instance),
     connection_props_(hostname, port, username, password, clientname),
     m_base(base)
 {
@@ -219,9 +218,9 @@ DVBLinkClient::DVBLinkClient(const CDVBLinkAddon& base,
               connection_props_.address_.c_str());
     if (m_showinfomsg)
     {
-      kodi::QueueFormattedNotification(QUEUE_INFO, kodi::GetLocalizedString(32001).c_str(),
+      kodi::QueueFormattedNotification(QUEUE_INFO, kodi::addon::GetLocalizedString(32001).c_str(),
                                        connection_props_.address_.c_str());
-      kodi::QueueFormattedNotification(QUEUE_INFO, kodi::GetLocalizedString(32002).c_str(),
+      kodi::QueueFormattedNotification(QUEUE_INFO, kodi::addon::GetLocalizedString(32002).c_str(),
                                        m_channels.size());
     }
 
@@ -239,7 +238,7 @@ DVBLinkClient::DVBLinkClient(const CDVBLinkAddon& base,
   }
   else
   {
-    kodi::QueueFormattedNotification(QUEUE_ERROR, kodi::GetLocalizedString(32003).c_str(),
+    kodi::QueueFormattedNotification(QUEUE_ERROR, kodi::addon::GetLocalizedString(32003).c_str(),
                                      connection_props_.address_.c_str(), (int)status);
     kodi::Log(ADDON_LOG_ERROR,
               "Could not connect to DVBLink Server '%s' on port '%i' with username '%s' (Error "
@@ -501,23 +500,23 @@ PVR_ERROR DVBLinkClient::GetTimerTypes(std::vector<kodi::addon::PVRTimerType>& t
   static std::vector<kodi::addon::PVRTypeIntValue> recordingLimitValues;
   if (recordingLimitValues.size() == 0)
   {
-    recordingLimitValues.emplace_back(dcrn_keep_all, kodi::GetLocalizedString(32026));
-    recordingLimitValues.emplace_back(dcrn_keep_1, kodi::GetLocalizedString(32027));
-    recordingLimitValues.emplace_back(dcrn_keep_2, kodi::GetLocalizedString(32028));
-    recordingLimitValues.emplace_back(dcrn_keep_3, kodi::GetLocalizedString(32029));
-    recordingLimitValues.emplace_back(dcrn_keep_4, kodi::GetLocalizedString(32030));
-    recordingLimitValues.emplace_back(dcrn_keep_5, kodi::GetLocalizedString(32031));
-    recordingLimitValues.emplace_back(dcrn_keep_6, kodi::GetLocalizedString(32032));
-    recordingLimitValues.emplace_back(dcrn_keep_7, kodi::GetLocalizedString(32033));
-    recordingLimitValues.emplace_back(dcrn_keep_10, kodi::GetLocalizedString(32034));
+    recordingLimitValues.emplace_back(dcrn_keep_all, kodi::addon::GetLocalizedString(32026));
+    recordingLimitValues.emplace_back(dcrn_keep_1, kodi::addon::GetLocalizedString(32027));
+    recordingLimitValues.emplace_back(dcrn_keep_2, kodi::addon::GetLocalizedString(32028));
+    recordingLimitValues.emplace_back(dcrn_keep_3, kodi::addon::GetLocalizedString(32029));
+    recordingLimitValues.emplace_back(dcrn_keep_4, kodi::addon::GetLocalizedString(32030));
+    recordingLimitValues.emplace_back(dcrn_keep_5, kodi::addon::GetLocalizedString(32031));
+    recordingLimitValues.emplace_back(dcrn_keep_6, kodi::addon::GetLocalizedString(32032));
+    recordingLimitValues.emplace_back(dcrn_keep_7, kodi::addon::GetLocalizedString(32033));
+    recordingLimitValues.emplace_back(dcrn_keep_10, kodi::addon::GetLocalizedString(32034));
   }
 
   /* PVR_Timer.iPreventDuplicateEpisodes values and presentation.*/
   static std::vector<kodi::addon::PVRTypeIntValue> showTypeValues;
   if (showTypeValues.size() == 0)
   {
-    showTypeValues.emplace_back(dcrs_record_all, kodi::GetLocalizedString(32035));
-    showTypeValues.emplace_back(dcrs_record_new_only, kodi::GetLocalizedString(32036));
+    showTypeValues.emplace_back(dcrs_record_all, kodi::addon::GetLocalizedString(32035));
+    showTypeValues.emplace_back(dcrs_record_new_only, kodi::addon::GetLocalizedString(32036));
   }
 
   static std::vector<kodi::addon::PVRTypeIntValue> emptyList;
@@ -563,7 +562,7 @@ PVR_ERROR DVBLinkClient::GetTimerTypes(std::vector<kodi::addon::PVRTimerType>& t
             /* Attributes. */
             TIMER_MANUAL_ATTRIBS,
             /* Description. */
-            kodi::GetLocalizedString(32037),
+            kodi::addon::GetLocalizedString(32037),
             /* Values definitions for attributes. */
             recordingLimitValues, default_rec_limit_, showTypeValues, default_rec_show_type_)));
 
@@ -575,7 +574,7 @@ PVR_ERROR DVBLinkClient::GetTimerTypes(std::vector<kodi::addon::PVRTimerType>& t
             /* Attributes. */
             TIMER_EPG_ATTRIBS,
             /* Description. */
-            kodi::GetLocalizedString(32038),
+            kodi::addon::GetLocalizedString(32038),
             /* Values definitions for attributes. */
             recordingLimitValues, default_rec_limit_, showTypeValues, default_rec_show_type_)));
 
@@ -587,7 +586,7 @@ PVR_ERROR DVBLinkClient::GetTimerTypes(std::vector<kodi::addon::PVRTimerType>& t
             /* Attributes. */
             TIMER_MANUAL_CHILD_ATTRIBUTES,
             /* Description. */
-            kodi::GetLocalizedString(32039),
+            kodi::addon::GetLocalizedString(32039),
             /* Values definitions for attributes. */
             recordingLimitValues, default_rec_limit_, showTypeValues, default_rec_show_type_)));
 
@@ -599,7 +598,7 @@ PVR_ERROR DVBLinkClient::GetTimerTypes(std::vector<kodi::addon::PVRTimerType>& t
             /* Attributes. */
             TIMER_EPG_CHILD_ATTRIBUTES,
             /* Description. */
-            kodi::GetLocalizedString(32040),
+            kodi::addon::GetLocalizedString(32040),
             /* Values definitions for attributes. */
             recordingLimitValues, default_rec_limit_, showTypeValues, default_rec_show_type_)));
 
@@ -611,7 +610,7 @@ PVR_ERROR DVBLinkClient::GetTimerTypes(std::vector<kodi::addon::PVRTimerType>& t
             /* Attributes. */
             TIMER_KEYWORD_CHILD_ATTRIBUTES,
             /* Description. */
-            kodi::GetLocalizedString(32041),
+            kodi::addon::GetLocalizedString(32041),
             /* Values definitions for attributes. */
             recordingLimitValues, default_rec_limit_, showTypeValues, default_rec_show_type_)));
 
@@ -623,7 +622,7 @@ PVR_ERROR DVBLinkClient::GetTimerTypes(std::vector<kodi::addon::PVRTimerType>& t
             /* Attributes. */
             TIMER_MANUAL_ATTRIBS | TIMER_REPEATING_MANUAL_ATTRIBS,
             /* Description. */
-            kodi::GetLocalizedString(32042),
+            kodi::addon::GetLocalizedString(32042),
             /* Values definitions for attributes. */
             recordingLimitValues, default_rec_limit_, showTypeValues, default_rec_show_type_)));
 
@@ -640,7 +639,7 @@ PVR_ERROR DVBLinkClient::GetTimerTypes(std::vector<kodi::addon::PVRTimerType>& t
             /* Attributes. */
             repeating_epg_attrs,
             /* Description. */
-            kodi::GetLocalizedString(32043),
+            kodi::addon::GetLocalizedString(32043),
             /* Values definitions for attributes. */
             recordingLimitValues, default_rec_limit_, showTypeValues, default_rec_show_type_)));
 
@@ -652,7 +651,7 @@ PVR_ERROR DVBLinkClient::GetTimerTypes(std::vector<kodi::addon::PVRTimerType>& t
             /* Attributes. */
             TIMER_REPEATING_KEYWORD_ATTRIBS,
             /* Description. */
-            kodi::GetLocalizedString(32044),
+            kodi::addon::GetLocalizedString(32044),
             /* Values definitions for attributes. */
             recordingLimitValues, default_rec_limit_, showTypeValues, default_rec_show_type_)));
   }
@@ -786,7 +785,7 @@ int DVBLinkClient::GetSchedules(kodi::addon::PVRTimersResultSet& results,
 
   if (m_showinfomsg)
   {
-    kodi::QueueFormattedNotification(QUEUE_INFO, kodi::GetLocalizedString(32007).c_str(),
+    kodi::QueueFormattedNotification(QUEUE_INFO, kodi::addon::GetLocalizedString(32007).c_str(),
                                      schedule_num);
   }
 
@@ -968,7 +967,7 @@ PVR_ERROR DVBLinkClient::GetTimers(kodi::addon::PVRTimersResultSet& results)
 
   if (m_showinfomsg)
   {
-    kodi::QueueFormattedNotification(QUEUE_INFO, kodi::GetLocalizedString(32007).c_str(),
+    kodi::QueueFormattedNotification(QUEUE_INFO, kodi::addon::GetLocalizedString(32007).c_str(),
                                      recordings.size());
   }
 
@@ -1489,7 +1488,7 @@ PVR_ERROR DVBLinkClient::GetRecordings(bool deleted, kodi::addon::PVRRecordingsR
   {
     kodi::Log(ADDON_LOG_ERROR, "Could not get recordings (Error code : %d Description : %s)",
               (int)status, error.c_str());
-    //kodi::QueueFormattedNotification(QUEUE_ERROR, kodi::GetLocalizedString(32004).c_str(), (int)status);
+    //kodi::QueueFormattedNotification(QUEUE_ERROR, kodi::addon::GetLocalizedString(32004).c_str(), (int)status);
     return result;
   }
 
@@ -1498,7 +1497,7 @@ PVR_ERROR DVBLinkClient::GetRecordings(bool deleted, kodi::addon::PVRRecordingsR
 
   if (m_showinfomsg)
   {
-    kodi::QueueFormattedNotification(QUEUE_INFO, kodi::GetLocalizedString(32009).c_str(),
+    kodi::QueueFormattedNotification(QUEUE_INFO, kodi::addon::GetLocalizedString(32009).c_str(),
                                      getPlaybackObjectResponse.GetPlaybackItems().size());
   }
 
@@ -1628,7 +1627,7 @@ bool DVBLinkClient::GetRecordingURL(const std::string& recording_id,
   if ((use_transcoder && !server_caps_.transcoding_supported_) ||
       (use_transcoder && !server_caps_.transcoding_recordings_supported_))
   {
-    kodi::QueueNotification(QUEUE_ERROR, "", kodi::GetLocalizedString(32024));
+    kodi::QueueNotification(QUEUE_ERROR, "", kodi::addon::GetLocalizedString(32024));
     return false;
   }
 
@@ -1692,7 +1691,7 @@ bool DVBLinkClient::OpenLiveStream(const kodi::addon::PVRChannel& channel)
   //if transcoding is requested and no transcoder is supported return false
   if (use_transcoder && !server_caps_.transcoding_supported_)
   {
-    kodi::QueueNotification(QUEUE_ERROR, "", kodi::GetLocalizedString(32024));
+    kodi::QueueNotification(QUEUE_ERROR, "", kodi::addon::GetLocalizedString(32024));
     return false;
   }
 

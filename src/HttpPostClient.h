@@ -13,7 +13,7 @@
 
 #include <kodi/AddonBase.h>
 
-class ATTRIBUTE_HIDDEN HttpPostClient : public dvblinkremotehttp::HttpClient
+class ATTR_DLL_LOCAL HttpPostClient : public dvblinkremotehttp::HttpClient
 {
 public:
   bool SendRequest(dvblinkremotehttp::HttpWebRequest& request);

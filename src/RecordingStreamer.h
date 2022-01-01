@@ -15,7 +15,7 @@
 #include <kodi/addon-instance/PVR.h>
 #include <mutex>
 
-class ATTRIBUTE_HIDDEN RecordingStreamer : public dvblinkremote::DVBLinkRemoteLocker
+class ATTR_DLL_LOCAL RecordingStreamer : public dvblinkremote::DVBLinkRemoteLocker
 {
 public:
   RecordingStreamer(const std::string& client_id,

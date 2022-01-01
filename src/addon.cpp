@@ -12,13 +12,10 @@
 
 #include <chrono>
 
-ADDON_STATUS CDVBLinkAddon::CreateInstance(int instanceType,
-                                           const std::string& instanceID,
-                                           KODI_HANDLE instance,
-                                           const std::string& version,
-                                           KODI_HANDLE& addonInstance)
+ADDON_STATUS CDVBLinkAddon::CreateInstance(const kodi::addon::IInstanceInfo& instance,
+                                           KODI_ADDON_INSTANCE_HDL& hdl)
 {
-  if (instanceType == ADDON_INSTANCE_PVR)
+  if (instance.IsType(ADDON_INSTANCE_PVR))
   {
     m_settings.Load();
 
@@ -29,13 +26,13 @@ ADDON_STATUS CDVBLinkAddon::CreateInstance(int instanceType,
               clientname.c_str());
 
     DVBLinkClient* client =
-        new DVBLinkClient(*this, instance, version, clientname, m_settings.Hostname(),
-                          m_settings.Port(), m_settings.ShowInfoMSG(), m_settings.Username(),
-                          m_settings.Password(), m_settings.AddRecEpisode2title(),
-                          m_settings.GroupRecBySeries(), m_settings.NoGroupSingleRec(),
-                          m_settings.DefaultUpdateInterval(), m_settings.DefaultRecShowType());
+        new DVBLinkClient(*this, instance, clientname, m_settings.Hostname(), m_settings.Port(),
+                          m_settings.ShowInfoMSG(), m_settings.Username(), m_settings.Password(),
+                          m_settings.AddRecEpisode2title(), m_settings.GroupRecBySeries(),
+                          m_settings.NoGroupSingleRec(), m_settings.DefaultUpdateInterval(),
+                          m_settings.DefaultRecShowType());
 
-    addonInstance = client;
+    hdl = client;
 
     if (!client->GetStatus())
       return ADDON_STATUS_LOST_CONNECTION;
@@ -47,7 +44,7 @@ ADDON_STATUS CDVBLinkAddon::CreateInstance(int instanceType,
 }
 
 ADDON_STATUS CDVBLinkAddon::SetSetting(const std::string& settingName,
-                                       const kodi::CSettingValue& settingValue)
+                                       const kodi::addon::CSettingValue& settingValue)
 {
   return m_settings.SetSetting(settingName, settingValue);
 }
