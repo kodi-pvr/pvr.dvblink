@@ -32,7 +32,7 @@
     <summary lang="es_AR">Plugin PVR para TVMosaic/DVBLink</summary>
     <summary lang="es_ES">Complemento PVR para TVMosaic/DVBLink</summary>
     <summary lang="es_MX">Complemento PVR para TVMosaic/DVBLink</summary>
-    <summary lang="et_EE">PVR'i plugin DVBLingile</summary>
+    <summary lang="et_EE">PVR&apos;i plugin DVBLingile</summary>
     <summary lang="fi_FI">Kodin TVMosaic/DVBLink-asiakasohjelma</summary>
     <summary lang="fr_CA">Plugiciel de numériscope pour TVMosaic/DVBLink</summary>
     <summary lang="fr_FR">Extension enregistreur vidéo (PVR) pour TVMosaic/DVBLink</summary>
@@ -84,7 +84,7 @@
     <description lang="es_AR">Plugin PVR para TVMosaic/DVBLink de DVBLogic (www.tv-mosaic.com); soporta streaming de TV en vivo, grabaciones, guía de programación (EPG) y temporizadores</description>
     <description lang="es_ES">Complemento PVR para TVMosaic/DVBLink de DVBLogic (www.tv-mosaic.com); soporta emisiones en directo, grabaciones, EPG, programaciones</description>
     <description lang="es_MX">Complemento PVR para TVMosaic/DVBLink de DVBLogic (www.tv-mosaic.com); soporta emisiones de TV en vivo, grabaciones, guía y grabaciones</description>
-    <description lang="et_EE">PVR'i plugin DVBLogic (www.tv-mosaic.com)'ilt DVBLingile ; toetab tv ja salvestuste voogedastust, elektroonilist saatekeava ja taimereid</description>
+    <description lang="et_EE">PVR&apos;i plugin DVBLogic (www.tv-mosaic.com)&apos;ilt DVBLingile ; toetab tv ja salvestuste voogedastust, elektroonilist saatekeava ja taimereid</description>
     <description lang="fi_FI">TVMosaic/DVBLink-asiakasohjelma. Tukee suorien tv-lähetysten ja tallennusten katsomista, ohjelmaopasta ja ohjelmien ajastamista.</description>
     <description lang="fr_CA">Plugiciel de numériscope pour TVMosaic/DVBLink de DVBLogic (www.tv-mosaic.com), prenant en charge la diffusion en continu de la télé en direct et les enregistrements, le GÉP et les minuteries</description>
     <description lang="fr_FR">Extension enregistreur vidéo (PVR) pour TVMosaic/DVBLink de DVBLogic (www.tv-mosaic.com). Gère la diffusion de la TV en direct et des enregistrements en direct, le guide électronique des programmes TV et les programmations.</description>
@@ -101,7 +101,7 @@
     <description lang="lv_LV">PVR spraudnis TVMosaic/DVBLink no DVBLogic (www.tv-mosaic.com); atbalsta tiešraides TV un ierakstu straumēšanu, EPG, taimerus</description>
     <description lang="mk_MK">PVR Plugin за TVMosaic/DVBLink од DVBLogic (www.tv-mosaic.com); поддржува емитување на Live TV &amp; Снимки, EPG, Тајмери</description>
     <description lang="ms_MY">Pemalam PVR untuk TVMosaic/DVBLink dari DVBLogic (www.tv-mosaic.com); menyokong penstriman Siaran Langsung &amp; Rakaman, EPG dan Pemasa</description>
-    <description lang="mt_MT">PVR Plugin għal TVMosaic/DVBLink minn DVBLogic (www.tv-mosaic.com); jiflaħ streaming ta' TV Lajv u Rekordings, EPG, Arloġġi</description>
+    <description lang="mt_MT">PVR Plugin għal TVMosaic/DVBLink minn DVBLogic (www.tv-mosaic.com); jiflaħ streaming ta&apos; TV Lajv u Rekordings, EPG, Arloġġi</description>
     <description lang="nb_NO">PVR-innstikk til TVMosaic/DVBLink fra DVBLogic (www.tv-mosaic.com) - støtter strømming av direkte-TV, opptak, EPG og tidsur.</description>
     <description lang="nl_NL">PVR plug-in voor TVMosaic/DVBLink van DVBLogic (www.tv-mosaic.com); ondersteunt het streamen van Live-TV &amp; opnames, EPG, Timers</description>
     <description lang="pl_PL">Klient telewizji dla TVMosaic/DVBLink od DVBLogic (www.tv-mosaic.com) obsługuje transmisję kanałów radiowych i telewizyjnych, nagrywanie i harmonogram nagrań oraz funkcje przewodnika telewizyjnego</description>
@@ -116,7 +116,7 @@
     <description lang="sr_RS@latin">PVR Priključak za TVMosaic/DVBLink od DVBLogic (www.tv-mosaic.com); podržava strimovanje TV Uživo &amp; Snimaka, EPG, Tajmere</description>
     <description lang="sv_SE">PVR-tillägg för TVMosaic/DVBLink från DVBLogic (www.tv-mosaic.com); stödjer strömmning av Live-TV &amp; Inspelningar, EPG, Timers</description>
     <description lang="szl">Klijynt telewizyjny dlŏ TVMosaic/DVBLink ôd DVBLogic (www.tv-mosaic.com) podpiyrŏ szpricowanie kanałōw radyjowych i telewizyjnych, nagrowanie i harmonogram nagrań aji funkcyje ôkludzŏcza telewizyjnygo.</description>
-    <description lang="tr_TR">DVBLogic (www.tv-mosaic.com)'dan TVMosaic/DVBLink için PVR Eklentisi; Canlı TV akışı ve Kayıtları, EPG, Zamanlayıcıları destekler</description>
+    <description lang="tr_TR">DVBLogic (www.tv-mosaic.com)&apos;dan TVMosaic/DVBLink için PVR Eklentisi; Canlı TV akışı ve Kayıtları, EPG, Zamanlayıcıları destekler</description>
     <description lang="uk_UA">PVR плагін для TVMosaic/DVBLink з DVBLogic (www.tv-mosaic.com); підтримує потоки Live TV, запис, програму передач, таймери.</description>
     <description lang="zh_CN">来自 DVBLogic (www.tv-mosaic.com) 的 TVMosaic/DVBLink 的 PVR 插件，支持直播电视播放和录制、电子节目单、定时器</description>
     <description lang="zh_TW">DVBLogic (www.tv-mosaic.com)所開發的TVMosaic/DVBLink用PVR附加元件; 支援即時電視節目串流及錄影,電子節目表,定時器</description>
@@ -124,7 +124,7 @@
     <disclaimer lang="bg_BG">Тази програма е нестабилна! Авторите не носят отговорност за неуспешно записване, некоректни броячи, пропиляно време и други нежелани ефекти.</disclaimer>
     <disclaimer lang="ca_ES">Això és programari inestable! Els autors no són de cap manera responsables dels enregistraments que han fallat, temporitzadors incorrectes, hores perdudes, o qualssevol altres efectes no desitjats.</disclaimer>
     <disclaimer lang="cs_CZ">Tento software není stabilní! Autoři nejsou žádným způsobem zodpovědní za neúspěšná nahrávání, chybné časovače, ztracený čas nebo jakékoliv jiné nežádoucí výsledky…</disclaimer>
-    <disclaimer lang="cy_GB">Mae hwn yn feddalwedd ansad! Nid yw'r awduron yn gyfrifol mewn unrhyw ffordd am fethu recordio, amseru gwallus, oriau wedi eu gwastraffu nac effeithiau anymunol eraill.</disclaimer>
+    <disclaimer lang="cy_GB">Mae hwn yn feddalwedd ansad! Nid yw&apos;r awduron yn gyfrifol mewn unrhyw ffordd am fethu recordio, amseru gwallus, oriau wedi eu gwastraffu nac effeithiau anymunol eraill.</disclaimer>
     <disclaimer lang="da_DK">Denne software er ustabil. Udviklerne er på ingen måde ansvarlige for mislykkede optagelser, fejlagtige timere, spildte timer eller andre uønskede konsekvenser.</disclaimer>
     <disclaimer lang="de_DE">Dies ist instabile Software! Die Autoren sind in keiner Weise verantwortlich für fehlgeschlagene Aufnahmen, falsche Timer, verschwendete Zeit oder andere ungewünschte Effekte.</disclaimer>
     <disclaimer lang="el_GR">Ασταθές πρόγραμμα! Οι δημιουργοί δεν είναι σε καμία περίπτωση υπεύθυνοι για αποτυχημένες εγγραφές, λανθασμένους χρονοδιακόπτες, χαμένες ώρες, ή κάθε είδους ανεπιθύμητα αποτελέσματα.</disclaimer>
@@ -139,7 +139,7 @@
     <disclaimer lang="eu_ES">Software hau ezegonkorra da! Egilea ez da arduratzen grabazio-erroreetaz, kronometro-erroreetaz, ordu galduetaz edo beste edozein ondorio ezerosoetaz.</disclaimer>
     <disclaimer lang="fi_FI">Tämä on epävakaa ohjelma! Sen tekijät eivät ole millään muotoa vastuussa epäonnistuneista tallennuksista, virheellisistä ajastuksista, haaskatusta ajasta, verenpaineen noususta tai mistään muusta epäsuotuisasta vaikutuksesta.</disclaimer>
     <disclaimer lang="fr_CA">Ce logiciel est instable ! Les auteurs ne sont aucunement responsables des enregistrements défaillants, des minuteries erronées, des heures perdues ou tout autre effet indésirable.</disclaimer>
-    <disclaimer lang="fr_FR">Logiciel en cours d'élaboration ! Les auteurs ne sont en aucun cas responsables de l'échec des enregistrements, programmations défectueuses, temps perdu ou autres effets indésirables.</disclaimer>
+    <disclaimer lang="fr_FR">Logiciel en cours d&apos;élaboration ! Les auteurs ne sont en aucun cas responsables de l&apos;échec des enregistrements, programmations défectueuses, temps perdu ou autres effets indésirables.</disclaimer>
     <disclaimer lang="gl_ES">Este é software non estable, os autores non se fan responsábeis dos erros nas gravacións, temporizadores incorrectos, e outros efectos non desexados.</disclaimer>
     <disclaimer lang="he_IL">זוהי איננה הרחבה יציבה! המפתחים אינם אחראים על כשלון בניגון, זמנים שגויים במדריך השידורים, שעות מבוזבזות או כל תופעה לא רצויה אחרת.</disclaimer>
     <disclaimer lang="hr_HR">Ovo je nestabilan softver! Autori nisu ni na koji način odgovorni za neuspjelo snimanje, netočna vremena snimanja, izgubljene sate, ili bilo koje druge nepoželjne učinke.</disclaimer>
@@ -155,7 +155,7 @@
     <disclaimer lang="mk_MK">Ова е нестабилен софтвер! Авторите на ниту еден начин не одговараат за неуспешни снимки, неточни тајмери, залудно потрошени часови, или било кои други несакани ефекти.</disclaimer>
     <disclaimer lang="mn_MN">Тус програм нь гүйцэд хийгдэж дуусаагүй! Зохиогч нь алдаатай бичлэг, цагийн буруу хөтлөлт, алдагдсан цаг хугацаа эсвэл бусад ямар нэгэн хүсээгүй үр дүнд хариуцлага хүлээхгүй.</disclaimer>
     <disclaimer lang="ms_MY">Ini merupakan perisian tidak stabil! Pengarang tidak bertanggungjawab atas kegagalan rakaman, pemasa tidak betul, masa yang dibazirkan, atau apa jua kesan yang tidak dikehendaki.</disclaimer>
-    <disclaimer lang="mt_MT">Dan il-programm mhuwiex stabbli! L-Awturi m'humiex responsabbli bl-ebda mod għal rekordings li ma jirnexxewx, arloġġi żbaljati, siegħat moħlija, jew kwalunkwe effett ieħor mhux mixtieq.</disclaimer>
+    <disclaimer lang="mt_MT">Dan il-programm mhuwiex stabbli! L-Awturi m&apos;humiex responsabbli bl-ebda mod għal rekordings li ma jirnexxewx, arloġġi żbaljati, siegħat moħlija, jew kwalunkwe effett ieħor mhux mixtieq.</disclaimer>
     <disclaimer lang="nb_NO">Dette er ustabil programvare! Forfatterne er på ingen måte ansvarlige for feilaktig opptak, uriktige tidsur, bortkastet tid, eller alle andre uønskede følger.</disclaimer>
     <disclaimer lang="nl_NL">Dit is instabiele software! De auteurs zijn op geen enkele wijze verantwoordelijk voor mislukte opnames, onjuiste timers, verspilde uren of andere ongewenste effecten .</disclaimer>
     <disclaimer lang="pl_PL">Oprogramowanie nadal jest w fazie rozwoju i jest niestabilne! Autorzy w żaden sposób nie są odpowiedzialni za nieudane nagrania, błędy w harmonogramie nagrań, zmarnowany czas ani jakiekolwiek inne niepożądane efekty.</disclaimer>
