@@ -87,10 +87,10 @@
     <description lang="et_EE">PVR&apos;i plugin DVBLogic (www.tv-mosaic.com)&apos;ilt DVBLingile ; toetab tv ja salvestuste voogedastust, elektroonilist saatekeava ja taimereid</description>
     <description lang="fi_FI">DVBLogic TVMosaic/DVBLink-tallenninlisäosa (www.tv-mosaic.com). Tukee televisiolähetysten ja tallenteiden suoratoistoa, ohjelmaopasta ja ajastuksia.</description>
     <description lang="fr_CA">Plugiciel de numériscope pour TVMosaic/DVBLink de DVBLogic (www.tv-mosaic.com), prenant en charge la diffusion en continu de la télé en direct et les enregistrements, le GÉP et les minuteries</description>
-    <description lang="fr_FR">Extension enregistreur vidéo (PVR) pour TVMosaic/DVBLink de DVBLogic (www.tv-mosaic.com). Gère la diffusion de la TV en direct et des enregistrements en direct, le guide électronique des programmes TV et les programmations.</description>
+    <description lang="fr_FR">Extension enregistreur vidéo (PVR) pour TVMosaic/DVBLink de DVBLogic (www.tv-mosaic.com). Gère la diffusion de la TV en direct et des enregistrements en direct, le guide électronique des programmes TV et les programmations</description>
     <description lang="gl_ES">Complemento PVR do TVMosaic/DVBLink de DVBLogic (www.tv-mosaic.com); soporta transmisión de TV en directo e Gravacións, Guía e temporizadores</description>
     <description lang="he_IL">לקוח טלוויזיה חיה של TVMosaic/DVBLink מ־DVBLogic (www.tv-mosaic.com). תומך בהזרמת שידורים חיים והקלטות, הצגת לוח שידורים ותזמון הקלטות.</description>
-    <description lang="hr_HR">PVR dodatak za TVMosaic/DVBLink od DVBLogic (www.tv-mosaic.com); podržava streamanje TV programa i snimanje, elektronski programski vodič (EPG) i zakazana snimanja</description>
+    <description lang="hr_HR">PVR dodatak za TVMosaic/DVBLink od DVBLogic (www.tv-mosaic.com); podržava strujanje TV programa i snimanje, elektronski programski vodič (EPG) i zakazana snimanja</description>
     <description lang="hu_HU">PVR kiegészítő a TVMosaic/DVBLink-hez a DVBLogic (www.tv-mosaic.com)-tól; támogatja az elő TV adásokat, felvételeket, EPG-t, időzítést.</description>
     <description lang="id_ID">Plugin PVR untuk TVMosaic/DVBLink dari DVBLogic (www.tv-mosaic.com); mendukung siaran dari Live TV dan Perekaman, EPG, dan Timer.</description>
     <description lang="is_IS">Upptökuviðbót (PVR) fyrir TVMosaic/DVBLink frá DVBLogic (www.tv-mosaic.com); styður streymingu á beinum útsendingum &amp; upptökum, rafræna dagskrárvísa (EPG), og tímaupptökur</description>
@@ -142,7 +142,7 @@
     <disclaimer lang="fr_FR">Logiciel en cours d&apos;élaboration ! Les auteurs ne sont en aucun cas responsables de l&apos;échec des enregistrements, programmations défectueuses, temps perdu ou autres effets indésirables.</disclaimer>
     <disclaimer lang="gl_ES">Este é software non estable, os autores non se fan responsábeis dos erros nas gravacións, temporizadores incorrectos, e outros efectos non desexados.</disclaimer>
     <disclaimer lang="he_IL">זוהי איננה הרחבה יציבה! המפתחים אינם אחראים על כשלון בניגון, זמנים שגויים במדריך השידורים, שעות מבוזבזות או כל תופעה לא רצויה אחרת.</disclaimer>
-    <disclaimer lang="hr_HR">Ovo je nestabilan softver! Autori nisu ni na koji način odgovorni za neuspjelo snimanje, netočna vremena snimanja, izgubljene sate, ili bilo koje druge nepoželjne učinke.</disclaimer>
+    <disclaimer lang="hr_HR">Ovo je nestabilan softver! Autori nisu ni na koji način odgovorni za neuspjelo snimanje, netočna zakazana snimanja, izgubljene sate, ili bilo koje druge neželjene učinke.</disclaimer>
     <disclaimer lang="hu_HU">Ez nem stabil szoftver! A készítők nem vállalnak felelősséget, a hibás felvételért, rossz időzítésért, elvesztegetett időért.</disclaimer>
     <disclaimer lang="hy_AM">Սա անկայուն ծրագրային ապահովում է: Հեղինակները պատասխանատու չեն վատ ձայնագրումների, սխալ ժամանակացույցերի, կորած ժամանակի կամ այլ ոչ ցանկալի երևույթների համար:</disclaimer>
     <disclaimer lang="id_ID">Ini merupakan software yang tidak stabil! Penulis tidak bertanggung jawab untuk rekaman gagal, timer salah, waktu terbuang, atau efek tak diinginkan lainnya.</disclaimer>
