@@ -7,15 +7,15 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-03-19 06:52+0000\n"
-"Last-Translator: Kai Sommerfeld <kai.sommerfeld@gmx.com>\n"
+"PO-Revision-Date: 2023-02-01 15:54+0000\n"
+"Last-Translator: Demian <Demian@gmx.co.uk>\n"
 "Language-Team: German <https://kodi.weblate.cloud/projects/kodi-add-ons-pvr-clients/pvr-dvblink/de_de/>\n"
 "Language: de_de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.15.2\n"
 
 msgctxt "Addon Summary"
 msgid "PVR Plugin for TVMosaic/DVBLink"
@@ -23,7 +23,7 @@ msgstr "PVR-Plugin für TVMosaic/DVBLink"
 
 msgctxt "Addon Description"
 msgid "PVR Plugin for TVMosaic/DVBLink from DVBLogic (www.tv-mosaic.com); supporting streaming of Live TV & Recordings, EPG, Timers"
-msgstr "PVR-Plugin für TVMosaic/DVBLink von DVBLogic (www.tv-mosaic.com); unterstützt das Streaming von Live-TV & Aufnahmen, EPG, Timer"
+msgstr "PVR-Plugin für TVMosaic/DVBLink von DVBLogic (www.tv-mosaic.com); unterstützt das Streaming von Live-TV und Aufnahmen, EPG, Timer"
 
 msgctxt "Addon Disclaimer"
 msgid "This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects."
@@ -59,7 +59,7 @@ msgstr "Passwort"
 
 msgctxt "#30007"
 msgid "Playback failed, please ensure you are using TV MOSAIC PLUS"
-msgstr ""
+msgstr "Wiedergabe fehlgeschlagen, bitte sicherstellen, dass TV MOSAIC PLUS verwendet wird"
 
 msgctxt "#30100"
 msgid "Stream"
@@ -67,7 +67,7 @@ msgstr "Stream"
 
 msgctxt "#30102"
 msgid "Enable transcoding"
-msgstr "Transkodierung aktivieren"
+msgstr "Transcoding aktivieren"
 
 msgctxt "#30103"
 msgid "Height"
@@ -112,63 +112,63 @@ msgstr "Timeshift-Puffer-Pfad"
 # empty strings from id 30113 to 30119
 msgctxt "#30120"
 msgid "1 min"
-msgstr ""
+msgstr "1 min"
 
 msgctxt "#30121"
 msgid "2 min"
-msgstr ""
+msgstr "2 min"
 
 msgctxt "#30122"
 msgid "3 min"
-msgstr ""
+msgstr "3 min"
 
 msgctxt "#30123"
 msgid "4 min"
-msgstr ""
+msgstr "4 min"
 
 msgctxt "#30124"
 msgid "5 min"
-msgstr ""
+msgstr "5 min"
 
 msgctxt "#30125"
 msgid "6 min"
-msgstr ""
+msgstr "6 min"
 
 msgctxt "#30126"
 msgid "7 min"
-msgstr ""
+msgstr "7 min"
 
 msgctxt "#30127"
 msgid "8 min"
-msgstr ""
+msgstr "8 min"
 
 msgctxt "#30128"
 msgid "9 min"
-msgstr ""
+msgstr "9 min"
 
 msgctxt "#30129"
 msgid "10 min"
-msgstr ""
+msgstr "10 min"
 
 msgctxt "#30130"
 msgid "20 min"
-msgstr ""
+msgstr "20 min"
 
 msgctxt "#30131"
 msgid "30 min"
-msgstr ""
+msgstr "30 min"
 
 msgctxt "#30132"
 msgid "40 min"
-msgstr ""
+msgstr "40 min"
 
 msgctxt "#30133"
 msgid "50 min"
-msgstr ""
+msgstr "50 min"
 
 msgctxt "#30134"
 msgid "60 min"
-msgstr ""
+msgstr "60 min"
 
 msgctxt "#30200"
 msgid "Advanced"
@@ -176,7 +176,7 @@ msgstr "Erweitert"
 
 msgctxt "#30201"
 msgid "Use channel handle instead of client id"
-msgstr "Senderidentifikator anstatt Client-Kennung verwenden"
+msgstr "Senderidentifikator anstatt Clientkennung verwenden"
 
 msgctxt "#30202"
 msgid "Show information messages"
@@ -184,7 +184,7 @@ msgstr "Informationsmeldungen anzeigen"
 
 msgctxt "#30203"
 msgid "Combine title and episode name for recordings"
-msgstr "Titel und Folgenname für Aufnahmen kombinieren"
+msgstr "Titel und Episodenname für Aufnahmen kombinieren"
 
 msgctxt "#30204"
 msgid "Group Recordings by Series"
@@ -192,23 +192,23 @@ msgstr "Aufnahmen nach Serien gruppieren"
 
 msgctxt "#32001"
 msgid "Connected to DVBLink Server '%s'"
-msgstr "Verbunden mit dem DVBLink-Server '%s'"
+msgstr "Verbunden mit dem DVBLink-Server „%s“"
 
 msgctxt "#32002"
 msgid "Found '%d' channels"
-msgstr "'%d' Sender gefunden"
+msgstr "„%d“ Sender gefunden"
 
 msgctxt "#32003"
 msgid "Could not connect to DVBLink Server '%s' (Error code : %d)"
-msgstr "Konnte nicht mit dem DVBLink-Server '%s' verbinden (Fehlercode : %d)"
+msgstr "Verbindung zu DVBLink-Server „%s“ konnte nicht hergestellt werden (Fehlercode: %d)"
 
 msgctxt "#32004"
 msgid "Could not get recordings (Error code : %d)"
-msgstr "Aufnahmen konnten nicht abgerufen werden (Fehlercode : %d)"
+msgstr "Aufnahmen konnten nicht abgerufen werden (Fehlercode: %d)"
 
 msgctxt "#32006"
 msgid "Could not get timers(Error code : %d)"
-msgstr "Timer konnten nicht abgerufen werden (Fehlercode : %d)"
+msgstr "Timer konnten nicht abgerufen werden (Fehlercode: %d)"
 
 msgctxt "#32007"
 msgid "Found %d EPG timers"
@@ -224,7 +224,7 @@ msgstr "%d Aufnahmen gefunden"
 
 msgctxt "#32010"
 msgid "Could not get stream for channel %s (Error code : %d)"
-msgstr "Stream für Sender %s konnte nicht abgerufen werden (Fehlercode : %d)"
+msgstr "Stream für Sender %s konnte nicht abgerufen werden (Fehlercode: %d)"
 
 msgctxt "#32011"
 msgid "Series recording"
@@ -232,11 +232,11 @@ msgstr "Serienaufnahme"
 
 msgctxt "#32012"
 msgid "Record this episode only"
-msgstr "Nur diese Folge aufnehmen"
+msgstr "Nur diese Episode aufnehmen"
 
 msgctxt "#32013"
 msgid "Record all episodes"
-msgstr "Alle Folgen aufnehmen"
+msgstr "Alle Episoden aufnehmen"
 
 msgctxt "#32014"
 msgid "Delete timer"
@@ -280,7 +280,7 @@ msgstr "Alle behalten"
 
 msgctxt "#32024"
 msgid "Playback failed. Server does not support transcoding"
-msgstr "Wiedergabe fehlgeschlagen. Server unterstützt transcoding nicht"
+msgstr "Wiedergabe fehlgeschlagen. Server unterstützt Transcoding nicht"
 
 msgctxt "#32025"
 msgid "Do not group single recordings"
@@ -332,11 +332,11 @@ msgstr "Nur neue Episoden aufnehmen"
 
 msgctxt "#32037"
 msgid "Single shot manual timer"
-msgstr "Manueller Timer für Einzel-Aufnahme"
+msgstr "Manueller Timer für Einzelaufnahme"
 
 msgctxt "#32038"
 msgid "Single shot EPG-based timer"
-msgstr "EPG-Timer für Einzel-Aufnahmen"
+msgstr "EPG-Timer für Einzelaufnahmen"
 
 msgctxt "#32039"
 msgid "Generated by repeating timer"
@@ -344,11 +344,11 @@ msgstr "Vom mehrmaligen Timer erzeugt"
 
 msgctxt "#32040"
 msgid "Generated by record series timer"
-msgstr "Vom Serien Aufnahme-Timer erzeugt"
+msgstr "Vom Serien Aufnahmetimer erzeugt"
 
 msgctxt "#32041"
 msgid "Generated by repeating keyword timer"
-msgstr "Vom mehrmaligen Schlüsselwort-Timer erzeugt"
+msgstr "Vom mehrmaligen Schlüsselworttimer erzeugt"
 
 msgctxt "#32042"
 msgid "Repeating manual timer"
@@ -356,8 +356,8 @@ msgstr "Mehrmaliger manueller Timer"
 
 msgctxt "#32043"
 msgid "Record series timer"
-msgstr "Serien Aufnahme-Timer"
+msgstr "Serienaufnahmetimer"
 
 msgctxt "#32044"
 msgid "Repeating keyword-based timer"
-msgstr "Mehrmaliger Schlüsselwort-Timer"
+msgstr "Mehrmaliger Schlüsselworttimer"
