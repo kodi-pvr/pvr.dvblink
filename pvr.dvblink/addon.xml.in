@@ -75,14 +75,14 @@
     <description lang="cs_CZ">Doplněk PVR pro TVMosaic/DVBLink od DVBLogic (www.tv-mosaic.com); podporuje streamování živého vysílání a nahrávek, televizní program, časovače</description>
     <description lang="cy_GB">Ategyn amserydd ar gyfer TVMosaic/DVBLink gan DVBLogic (www.tv-mosaic.com); cefnogi ffrydio Teledu Byw a Recordiadau ac Amseryddion</description>
     <description lang="da_DK">PVR plugin til TVMosaic/DVBLink fra DVBLogic (www.tv-mosaic.com); understøtter streaming af direkte tv og optagelser, EPG, timeroptagelser.</description>
-    <description lang="de_DE">PVR-Plugin für TVMosaic/DVBLink von DVBLogic (www.tv-mosaic.com); unterstützt das Streaming von Live-TV &amp; Aufnahmen, EPG, Timer</description>
+    <description lang="de_DE">PVR-Plugin für TVMosaic/DVBLink von DVBLogic (www.tv-mosaic.com); unterstützt das Streaming von Live-TV und Aufnahmen, EPG, Timer</description>
     <description lang="el_GR">Plugin PVR για το TVMosaic/DVBLink από το DVBLogic (www.tv-mosaic.com). Υποστηρίζει ροές πολυμέσων από LiveTV &amp; Εγγραφές, EPG, Χρονοδιακόπτες</description>
     <description lang="en_AU">PVR Plugin for TVMosaic/DVBLink from DVBLogic (www.tv-mosaic.com); supporting streaming of Live TV &amp; Recordings, EPG, Timers</description>
     <description lang="en_GB">PVR Plugin for TVMosaic/DVBLink from DVBLogic (www.tv-mosaic.com); supporting streaming of Live TV &amp; Recordings, EPG, Timers</description>
     <description lang="en_NZ">PVR Plugin for TVMosaic/DVBLink from DVBLogic (www.tv-mosaic.com); supporting streaming of Live TV &amp; Recordings, EPG, Timers</description>
     <description lang="en_US">PVR Plugin for TVMosaic/DVBLink from DVBLogic (www.tv-mosaic.com); supporting streaming of Live TV &amp; Recordings, EPG, Timers</description>
     <description lang="es_AR">Plugin PVR para TVMosaic/DVBLink de DVBLogic (www.tv-mosaic.com); soporta streaming de TV en vivo, grabaciones, guía de programación (EPG) y temporizadores</description>
-    <description lang="es_ES">Complemento PVR para TVMosaic/DVBLink de DVBLogic (www.tv-mosaic.com); soporta emisiones en directo, grabaciones, EPG, programaciones</description>
+    <description lang="es_ES">Complemento PVR para TVMosaic/DVBLink de DVBLogic (www.tv-mosaic.com); compatible con transmisión de TV en directo y grabaciones, EPG, temporizadores</description>
     <description lang="es_MX">Complemento PVR para TVMosaic/DVBLink de DVBLogic (www.tv-mosaic.com); soporta emisiones de TV en vivo, grabaciones, guía y grabaciones</description>
     <description lang="et_EE">PVR&apos;i plugin DVBLogic (www.tv-mosaic.com)&apos;ilt DVBLingile ; toetab tv ja salvestuste voogedastust, elektroonilist saatekeava ja taimereid</description>
     <description lang="fi_FI">DVBLogic TVMosaic/DVBLink-tallenninlisäosa (www.tv-mosaic.com). Tukee televisiolähetysten ja tallenteiden suoratoistoa, ohjelmaopasta ja ajastuksia.</description>
@@ -94,7 +94,7 @@
     <description lang="hu_HU">PVR kiegészítő a TVMosaic/DVBLink-hez a DVBLogic (www.tv-mosaic.com)-tól; támogatja az elő TV adásokat, felvételeket, EPG-t, időzítést.</description>
     <description lang="id_ID">Plugin PVR untuk TVMosaic/DVBLink dari DVBLogic (www.tv-mosaic.com); mendukung siaran dari Live TV dan Perekaman, EPG, dan Timer.</description>
     <description lang="is_IS">Upptökuviðbót (PVR) fyrir TVMosaic/DVBLink frá DVBLogic (www.tv-mosaic.com); styður streymingu á beinum útsendingum &amp; upptökum, rafræna dagskrárvísa (EPG), og tímaupptökur</description>
-    <description lang="it_IT">Plugin PVR per TVMosaic/DVBLink da DVBLogic (www.tv-mosaic.com); supporta lo stream di Live TV e registrazioni, EPG, timer</description>
+    <description lang="it_IT">Plugin PVR per TVMosaic/DVBLink da DVBLogic (www.tv-mosaic.com); supporta lo stream e la registrazione di Live TV, EPG, timer</description>
     <description lang="ja_JP">DvdLogic.com - TVMosaic/DVBLink の PVR プラグインです。ライブTV ストリーミング、録画、EPG、タイマーをサポートしています</description>
     <description lang="ko_KR">DVBLogic (www.tv-mosaic.com)의 TVMosaic/DVBLink를 위한 PVR 플러그인. 라이브 TV 스트리밍, 녹화, EPG, 타이머를 지원합니다</description>
     <description lang="lt_LT">PVR įskiepis skirtas TVMosaic/DVBLink iš DVBLogic (www.tv-mosaic.com); palaiko Live TV transliaciją ir įrašymus, EPG, laikmačius</description>
@@ -133,7 +133,7 @@
     <disclaimer lang="en_NZ">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects.</disclaimer>
     <disclaimer lang="en_US">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects.</disclaimer>
     <disclaimer lang="es_AR">¡Este software es inestable! Los autores no se responsabilizan por grabaciones fallidas, temporizadores incorrectos, horas perdidas, o cualquier otro efecto no deseado.</disclaimer>
-    <disclaimer lang="es_ES">¡Este es un software inestable! Los autores no son de ninguna manera responsables de las grabaciones fallidas o incorrectas, las programaciones perdidas, ni otros efectos no deseables.</disclaimer>
+    <disclaimer lang="es_ES">¡Este software es inestable! Los autores no se hacen responsables de grabaciones fallidas, temporizadores incorrectos, horas perdidas o cualquier otro efecto no deseado...</disclaimer>
     <disclaimer lang="es_MX">¡Esto es software inestable! Los autores no son responsables de ninguna forma por grabaciones fallidas, temporizadores incorrectos, horas perdidas, o cualquier otro efecto no deseado.</disclaimer>
     <disclaimer lang="et_EE">See on ebastabiilne tarkvara! Autorid ei ole kuidagi moodi vastutavad nurjunud salvestiste, vale taimeri, raisatud aja ega muude soovimatute asjade eest.</disclaimer>
     <disclaimer lang="eu_ES">Software hau ezegonkorra da! Egilea ez da arduratzen grabazio-erroreetaz, kronometro-erroreetaz, ordu galduetaz edo beste edozein ondorio ezerosoetaz.</disclaimer>
@@ -147,7 +147,7 @@
     <disclaimer lang="hy_AM">Սա անկայուն ծրագրային ապահովում է: Հեղինակները պատասխանատու չեն վատ ձայնագրումների, սխալ ժամանակացույցերի, կորած ժամանակի կամ այլ ոչ ցանկալի երևույթների համար:</disclaimer>
     <disclaimer lang="id_ID">Ini merupakan software yang tidak stabil! Penulis tidak bertanggung jawab untuk rekaman gagal, timer salah, waktu terbuang, atau efek tak diinginkan lainnya.</disclaimer>
     <disclaimer lang="is_IS">Þetta er óstöðugur hugbúnaður! Höfundar eru á engann hátt ábyrgir fyrir mistökum í upptöku, röngum tíma, klukkustundum sem fara í súginn, eða nokkru öðrum óæskilegum hegðunum.</disclaimer>
-    <disclaimer lang="it_IT">Questo software è instabile! Gli autori non sono in alcun modo responsabili per le registrazioni fallite ì, timer non corretti, ore perse o qualsiasi altro effetto non desiderato.</disclaimer>
+    <disclaimer lang="it_IT">Questo è un software instabile! Gli autori non sono in alcun modo responsabili per registrazioni fallite, timer errati, ore sprecate o qualsiasi altro effetto indesiderato.</disclaimer>
     <disclaimer lang="ja_JP">これは不安定なソフトウェアです！本プログラムの作者は、録画の失敗、正確に作動しなかったタイマー、無駄にした時間、その他あらゆる好ましくない結果について責任を負わないものとします。</disclaimer>
     <disclaimer lang="ko_KR">완성되지 않은 소프트웨어입니다! 개발자는 녹화와 예약의 실패, 시간 허비나 다른 의도하지 않은 결과에 대한 책임을 지지 않습니다.</disclaimer>
     <disclaimer lang="lt_LT">Tai nestabili programinė įranga! Autoriai jokiu būdu neatsako už nepavykusius įrašus, neteisingus laikmačius, sugaištas valandas ar bet kokius kitus nepageidaujamus padarinius.</disclaimer>
