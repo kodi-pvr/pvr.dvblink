@@ -1,8 +1,8 @@
 [![License: GPL-2.0-or-later](https://img.shields.io/badge/License-GPL%20v2+-blue.svg)](LICENSE.md)
 [![Build and run 
-tests](https://github.com/kodi-pvr/pvr.dvblink/actions/workflows/build.yml/badge.svg?branch=Omega)](https://github.com/kodi-pvr/pvr.dvblink/actions/workflows/build.yml)
-[![Build Status](https://dev.azure.com/teamkodi/kodi-pvr/_apis/build/status/kodi-pvr.pvr.dvblink?branchName=Omega)](https://dev.azure.com/teamkodi/kodi-pvr/_build/latest?definitionId=59&branchName=Omega)
-[![Build Status](https://jenkins.kodi.tv/view/Addons/job/kodi-pvr/job/pvr.dvblink/job/Omega/badge/icon)](https://jenkins.kodi.tv/blue/organizations/jenkins/kodi-pvr%2Fpvr.dvblink/branches/)
+tests](https://github.com/kodi-pvr/pvr.dvblink/actions/workflows/build.yml/badge.svg?branch=Piers)](https://github.com/kodi-pvr/pvr.dvblink/actions/workflows/build.yml)
+[![Build Status](https://dev.azure.com/teamkodi/kodi-pvr/_apis/build/status/kodi-pvr.pvr.dvblink?branchName=Piers)](https://dev.azure.com/teamkodi/kodi-pvr/_build/latest?definitionId=59&branchName=Piers)
+[![Build Status](https://jenkins.kodi.tv/view/Addons/job/kodi-pvr/job/pvr.dvblink/job/Piers/badge/icon)](https://jenkins.kodi.tv/blue/organizations/jenkins/kodi-pvr%2Fpvr.dvblink/branches/)
 
 # DVBLink PVR
 DVBLink PVR client addon for [Kodi](https://kodi.tv)
