@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2024-05-25 03:13+0000\n"
+"PO-Revision-Date: 2024-09-11 09:27+0000\n"
 "Last-Translator: roliverosc <roliverosc@hotmail.com>\n"
 "Language-Team: Spanish (Spain) <https://kodi.weblate.cloud/projects/kodi-add-ons-pvr-clients/pvr-dvblink/es_es/>\n"
 "Language: es_es\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.5.4\n"
+"X-Generator: Weblate 5.7.2\n"
 
 msgctxt "Addon Summary"
 msgid "PVR Plugin for TVMosaic/DVBLink"
@@ -27,7 +27,7 @@ msgstr "Complemento PVR para TVMosaic/DVBLink de DVBLogic (www.tv-mosaic.com); c
 
 msgctxt "Addon Disclaimer"
 msgid "This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects."
-msgstr "¡Este software es inestable! Los autores no se hacen responsables de grabaciones fallidas, temporizadores incorrectos, horas perdidas o cualquier otro efecto no deseado."
+msgstr "¡Este software es inestable! Los autores no se hacen responsables de grabaciones erroneas, temporizadores incorrectos, horas perdidas o cualquier otro efecto no deseado."
 
 msgctxt "#30000"
 msgid "General"
@@ -107,7 +107,7 @@ msgstr "Activar TimeShift"
 
 msgctxt "#30112"
 msgid "Timeshift buffer path"
-msgstr "Ruta del búfer de timeshift"
+msgstr "Ruta del búfer para Timeshift"
 
 msgctxt "#30120"
 msgid "1 min"
@@ -175,7 +175,7 @@ msgstr "Avanzado"
 
 msgctxt "#30201"
 msgid "Use channel handle instead of client id"
-msgstr "Usar canales en lugar de ID de cliente"
+msgstr "Usar identificador de canal en lugar de ID de cliente"
 
 msgctxt "#30202"
 msgid "Show information messages"
@@ -191,7 +191,7 @@ msgstr "Agrupar grabaciones por serie"
 
 msgctxt "#32001"
 msgid "Connected to DVBLink Server '%s'"
-msgstr "Conectado a Servidor DVBLink '%s'"
+msgstr "Conectado a servidor DVBLink '%s'"
 
 msgctxt "#32002"
 msgid "Found '%d' channels"
@@ -243,7 +243,7 @@ msgstr "Eliminar temporizador"
 
 msgctxt "#32015"
 msgid "Delete this timer only"
-msgstr "Eliminar solo este temporizador"
+msgstr "Eliminar sólo este temporizador"
 
 msgctxt "#32016"
 msgid "Delete the entire series"
@@ -259,11 +259,11 @@ msgstr "Margen posterior (minutos)"
 
 msgctxt "#32019"
 msgid "New episodes only"
-msgstr "Solo nuevos episodios"
+msgstr "Sólo nuevos episodios"
 
 msgctxt "#32020"
 msgid "Broadcast anytime"
-msgstr "Emitir a cualquier hora"
+msgstr "Transmitir en cualquier momento"
 
 msgctxt "#32021"
 msgid "Number of episodes to keep"
@@ -279,11 +279,11 @@ msgstr "Mantener todo"
 
 msgctxt "#32024"
 msgid "Playback failed. Server does not support transcoding"
-msgstr "Error de reproducción. El servidor no admite la transcodificación"
+msgstr "Error en la reproducción. El servidor no admite la transcodificación"
 
 msgctxt "#32025"
 msgid "Do not group single recordings"
-msgstr "No agrupar grabaciones independientes"
+msgstr "No agrupar grabaciones individuales"
 
 msgctxt "#32026"
 msgid "Keep all recordings"
