@@ -2002,10 +2002,10 @@ PVR_ERROR DVBLinkClient::SetRecordingLastPlayedPosition(const kodi::addon::PVRRe
   return PVR_ERROR_SERVER_ERROR;
 }
 
-bool DVBLinkClient::OpenRecordedStream(const kodi::addon::PVRRecording& recording)
+bool DVBLinkClient::OpenRecordedStream(const kodi::addon::PVRRecording& recording, int64_t& streamId)
 {
   //close previous stream to be sure
-  CloseRecordedStream();
+  CloseRecordedStream(streamId);
 
   bool use_timeshift = m_base.GetSettings().UseTimeshift();
   bool use_transcoder = m_base.GetSettings().UseTranscoding();
@@ -2035,7 +2035,7 @@ bool DVBLinkClient::OpenRecordedStream(const kodi::addon::PVRRecording& recordin
   return ret_val;
 }
 
-void DVBLinkClient::CloseRecordedStream()
+void DVBLinkClient::CloseRecordedStream(int64_t streamId)
 {
   if (m_recording_streamer != nullptr)
   {
@@ -2045,7 +2045,7 @@ void DVBLinkClient::CloseRecordedStream()
   }
 }
 
-int DVBLinkClient::ReadRecordedStream(unsigned char* pBuffer, unsigned int iBufferSize)
+int DVBLinkClient::ReadRecordedStream(int64_t streamId, unsigned char* pBuffer, unsigned int iBufferSize)
 {
   if (m_recording_streamer != nullptr)
     return m_recording_streamer->ReadRecordedStream(pBuffer, iBufferSize);
@@ -2053,7 +2053,7 @@ int DVBLinkClient::ReadRecordedStream(unsigned char* pBuffer, unsigned int iBuff
   return -1;
 }
 
-int64_t DVBLinkClient::SeekRecordedStream(int64_t iPosition, int iWhence /* = SEEK_SET */)
+int64_t DVBLinkClient::SeekRecordedStream(int64_t streamId, int64_t iPosition, int iWhence /* = SEEK_SET */)
 {
   if (m_recording_streamer != nullptr)
     return m_recording_streamer->SeekRecordedStream(iPosition, iWhence);
@@ -2061,7 +2061,7 @@ int64_t DVBLinkClient::SeekRecordedStream(int64_t iPosition, int iWhence /* = SE
   return -1;
 }
 
-int64_t DVBLinkClient::LengthRecordedStream()
+int64_t DVBLinkClient::LengthRecordedStream(int64_t streamId)
 {
   if (m_recording_streamer != nullptr)
     return m_recording_streamer->LengthRecordedStream();
