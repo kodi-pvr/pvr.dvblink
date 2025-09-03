@@ -7,47 +7,47 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2025-01-17 23:04+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2025-09-01 07:29+0000\n"
+"Last-Translator: SecularSteve <fairfull.playing@gmail.com>\n"
 "Language-Team: Bosnian (Bosnia and Herzegovina) <https://kodi.weblate.cloud/projects/kodi-add-ons-pvr-clients/pvr-dvblink/bs_ba/>\n"
 "Language: bs_ba\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 5.9.2\n"
+"X-Generator: Weblate 5.13\n"
 
 msgctxt "Addon Summary"
 msgid "PVR Plugin for TVMosaic/DVBLink"
-msgstr ""
+msgstr "PVR dodatak za TVMosaic/DVBLink"
 
 msgctxt "Addon Description"
 msgid "PVR Plugin for TVMosaic/DVBLink from DVBLogic (www.tv-mosaic.com); supporting streaming of Live TV & Recordings, EPG, Timers"
-msgstr ""
+msgstr "PVR dodatak za TVMosaic/DVBLink od DVBLogic-a (www.tv-mosaic.com); podržava prijenos uživo TV programa i snimaka, EPG, mjerače vremena"
 
 msgctxt "Addon Disclaimer"
 msgid "This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects."
-msgstr ""
+msgstr "Ovo je nestabilan softver! Autori ni na koji način nisu odgovorni za neuspjela snimanja, netačne mjerače vremena, izgubljene sate ili bilo koje druge neželjene efekte."
 
 msgctxt "#30000"
 msgid "General"
-msgstr "Opšte"
+msgstr "Općenito"
 
 msgctxt "#30001"
 msgid "Server Address"
-msgstr ""
+msgstr "Adresa servera"
 
 msgctxt "#30002"
 msgid "Server Port"
-msgstr ""
+msgstr "Port servera"
 
 msgctxt "#30003"
 msgid "Client name"
-msgstr ""
+msgstr "Ime klijenta"
 
 msgctxt "#30004"
 msgid "Connection timeout (s)"
-msgstr ""
+msgstr "Vremensko ograničenje veze (s)"
 
 msgctxt "#30005"
 msgid "Username"
@@ -59,7 +59,7 @@ msgstr "Lozinka"
 
 msgctxt "#30007"
 msgid "Playback failed, please ensure you are using TV MOSAIC PLUS"
-msgstr ""
+msgstr "Reprodukcija nije uspjela, molimo provjerite da li koristite TV MOSAIC PLUS"
 
 msgctxt "#30100"
 msgid "Stream"
@@ -68,15 +68,15 @@ msgstr "Zapis"
 # empty string with id 30101
 msgctxt "#30102"
 msgid "Enable transcoding"
-msgstr ""
+msgstr "Omogući transkodiranje"
 
 msgctxt "#30103"
 msgid "Height"
-msgstr ""
+msgstr "Visina"
 
 msgctxt "#30104"
 msgid "Width"
-msgstr ""
+msgstr "Širina"
 
 msgctxt "#30105"
 msgid "Bitrate"
@@ -84,7 +84,7 @@ msgstr "Brzina protoka"
 
 msgctxt "#30106"
 msgid "Audio track"
-msgstr ""
+msgstr "Zvučni zapis"
 
 msgctxt "#30107"
 msgid "HTTP"
@@ -92,157 +92,157 @@ msgstr "HTTP"
 
 msgctxt "#30108"
 msgid "RTP"
-msgstr ""
+msgstr "RTP"
 
 msgctxt "#30109"
 msgid "HLS"
-msgstr ""
+msgstr "HLS"
 
 msgctxt "#30110"
 msgid "ASF"
-msgstr ""
+msgstr "Afrička frikulija (ASF)"
 
 msgctxt "#30111"
 msgid "Enable Timeshift"
-msgstr ""
+msgstr "Omogući vremenski pomak"
 
 msgctxt "#30112"
 msgid "Timeshift buffer path"
-msgstr ""
+msgstr "Putanja bafera vremenskog pomaka"
 
 # empty strings from id 30113 to 30119
 msgctxt "#30120"
 msgid "1 min"
-msgstr ""
+msgstr "1 minuta"
 
 msgctxt "#30121"
 msgid "2 min"
-msgstr ""
+msgstr "2 minute"
 
 msgctxt "#30122"
 msgid "3 min"
-msgstr ""
+msgstr "3 minute"
 
 msgctxt "#30123"
 msgid "4 min"
-msgstr ""
+msgstr "4 minute"
 
 msgctxt "#30124"
 msgid "5 min"
-msgstr ""
+msgstr "5 minuta"
 
 msgctxt "#30125"
 msgid "6 min"
-msgstr ""
+msgstr "6 minuta"
 
 msgctxt "#30126"
 msgid "7 min"
-msgstr ""
+msgstr "7 minuta"
 
 msgctxt "#30127"
 msgid "8 min"
-msgstr ""
+msgstr "8 minuta"
 
 msgctxt "#30128"
 msgid "9 min"
-msgstr ""
+msgstr "9 minuta"
 
 msgctxt "#30129"
 msgid "10 min"
-msgstr ""
+msgstr "10 minuta"
 
 msgctxt "#30130"
 msgid "20 min"
-msgstr ""
+msgstr "20 minuta"
 
 msgctxt "#30131"
 msgid "30 min"
-msgstr ""
+msgstr "30 minuta"
 
 msgctxt "#30132"
 msgid "40 min"
-msgstr ""
+msgstr "40 minuta"
 
 msgctxt "#30133"
 msgid "50 min"
-msgstr ""
+msgstr "50 minuta"
 
 msgctxt "#30134"
 msgid "60 min"
-msgstr ""
+msgstr "60 minuta"
 
 # empty strings from id 30135 to 30199
 msgctxt "#30200"
 msgid "Advanced"
-msgstr ""
+msgstr "Napredno"
 
 # Messages labels
 msgctxt "#30201"
 msgid "Use channel handle instead of client id"
-msgstr ""
+msgstr "Koristite identifikaciju kanala umjesto ID-a klijenta"
 
 msgctxt "#30202"
 msgid "Show information messages"
-msgstr ""
+msgstr "Prikaži informativne poruke"
 
 msgctxt "#30203"
 msgid "Combine title and episode name for recordings"
-msgstr ""
+msgstr "Kombinujte naslov i naziv epizode za snimke"
 
 msgctxt "#30204"
 msgid "Group Recordings by Series"
-msgstr ""
+msgstr "Grupni snimci po serijama"
 
 # empty strings from id 30205 to 32000
 # category labels
 msgctxt "#32001"
 msgid "Connected to DVBLink Server '%s'"
-msgstr ""
+msgstr "Povezano sa DVBLink serverom '%s'"
 
 msgctxt "#32002"
 msgid "Found '%d' channels"
-msgstr ""
+msgstr "Pronađeni kanali '%d'"
 
 msgctxt "#32003"
 msgid "Could not connect to DVBLink Server '%s' (Error code : %d)"
-msgstr ""
+msgstr "Nije moguće povezati se sa DVBLink serverom '%s' (Kod greške: %d)"
 
 msgctxt "#32004"
 msgid "Could not get recordings (Error code : %d)"
-msgstr ""
+msgstr "Nije moguće preuzeti snimke (Kôd greške: %d)"
 
 # empty string with id 32005
 msgctxt "#32006"
 msgid "Could not get timers(Error code : %d)"
-msgstr ""
+msgstr "Nije moguće preuzeti tajmere (Kôd greške: %d)"
 
 msgctxt "#32007"
 msgid "Found %d EPG timers"
-msgstr ""
+msgstr "Pronađeno je %d EPG tajmera"
 
 msgctxt "#32008"
 msgid "Found %d manual timers"
-msgstr ""
+msgstr "Pronađeno je %d ručnih tajmera"
 
 msgctxt "#32009"
 msgid "Found %d recordings"
-msgstr ""
+msgstr "Pronađeno je %d snimaka"
 
 msgctxt "#32010"
 msgid "Could not get stream for channel %s (Error code : %d)"
-msgstr ""
+msgstr "Nije moguće dobiti stream za kanal %s (Kod greške: %d)"
 
 msgctxt "#32011"
 msgid "Series recording"
-msgstr ""
+msgstr "Snimanje serije"
 
 msgctxt "#32012"
 msgid "Record this episode only"
-msgstr ""
+msgstr "Snimi samo ovu epizodu"
 
 msgctxt "#32013"
 msgid "Record all episodes"
-msgstr ""
+msgstr "Snimi sve epizode"
 
 msgctxt "#32014"
 msgid "Delete timer"
@@ -250,31 +250,31 @@ msgstr "Izbriši tajmer"
 
 msgctxt "#32015"
 msgid "Delete this timer only"
-msgstr ""
+msgstr "Izbriši samo ovaj tajmer"
 
 msgctxt "#32016"
 msgid "Delete the entire series"
-msgstr ""
+msgstr "Izbriši cijelu seriju"
 
 msgctxt "#32017"
 msgid "Margin before (minutes)"
-msgstr ""
+msgstr "Margina prije (minute)"
 
 msgctxt "#32018"
 msgid "Margin after (minutes)"
-msgstr ""
+msgstr "Margina nakon (minute)"
 
 msgctxt "#32019"
 msgid "New episodes only"
-msgstr ""
+msgstr "Samo nove epizode"
 
 msgctxt "#32020"
 msgid "Broadcast anytime"
-msgstr ""
+msgstr "Emitujte bilo kada"
 
 msgctxt "#32021"
 msgid "Number of episodes to keep"
-msgstr ""
+msgstr "Broj epizoda koje treba zadržati"
 
 msgctxt "#32022"
 msgid "Default"
@@ -282,88 +282,88 @@ msgstr "Podrazumjevano"
 
 msgctxt "#32023"
 msgid "Keep all"
-msgstr ""
+msgstr "Zadrži sve"
 
 msgctxt "#32024"
 msgid "Playback failed. Server does not support transcoding"
-msgstr ""
+msgstr "Reprodukcija nije uspjela. Server ne podržava transkodiranje"
 
 msgctxt "#32025"
 msgid "Do not group single recordings"
-msgstr ""
+msgstr "Ne grupišite pojedinačne snimke"
 
 msgctxt "#32026"
 msgid "Keep all recordings"
-msgstr ""
+msgstr "Sačuvaj sve snimke"
 
 msgctxt "#32027"
 msgid "Keep 1 recording"
-msgstr ""
+msgstr "Zadrži 1 snimak"
 
 msgctxt "#32028"
 msgid "Keep 2 recordings"
-msgstr ""
+msgstr "Sačuvajte 2 snimka"
 
 msgctxt "#32029"
 msgid "Keep 3 recordings"
-msgstr ""
+msgstr "Sačuvajte 3 snimka"
 
 msgctxt "#32030"
 msgid "Keep 4 recordings"
-msgstr ""
+msgstr "Sačuvajte 4 snimka"
 
 msgctxt "#32031"
 msgid "Keep 5 recordings"
-msgstr ""
+msgstr "Sačuvajte 5 snimaka"
 
 msgctxt "#32032"
 msgid "Keep 6 recordings"
-msgstr ""
+msgstr "Sačuvajte 6 snimaka"
 
 msgctxt "#32033"
 msgid "Keep 7 recordings"
-msgstr ""
+msgstr "Sačuvajte 7 snimaka"
 
 msgctxt "#32034"
 msgid "Keep 10 recordings"
-msgstr ""
+msgstr "Sačuvajte 10 snimaka"
 
 msgctxt "#32035"
 msgid "Record all episodes"
-msgstr ""
+msgstr "Snimi sve epizode"
 
 msgctxt "#32036"
 msgid "Record only new episodes"
-msgstr ""
+msgstr "Snimaj samo nove epizode"
 
 msgctxt "#32037"
 msgid "Single shot manual timer"
-msgstr ""
+msgstr "Ručni tajmer za jedan snimak"
 
 msgctxt "#32038"
 msgid "Single shot EPG-based timer"
-msgstr ""
+msgstr "Tajmer zasnovan na EPG-u za jedan snimak"
 
 msgctxt "#32039"
 msgid "Generated by repeating timer"
-msgstr ""
+msgstr "Generirano ponavljajućim tajmerom"
 
 msgctxt "#32040"
 msgid "Generated by record series timer"
-msgstr ""
+msgstr "Generirano tajmerom serije snimaka"
 
 msgctxt "#32041"
 msgid "Generated by repeating keyword timer"
-msgstr ""
+msgstr "Generirano ponavljanjem tajmera ključnih riječi"
 
 msgctxt "#32042"
 msgid "Repeating manual timer"
-msgstr ""
+msgstr "Ponavljajući ručni tajmer"
 
 msgctxt "#32043"
 msgid "Record series timer"
-msgstr ""
+msgstr "Tajmer za snimanje serije"
 
 msgctxt "#32044"
 msgid "Repeating keyword-based timer"
-msgstr ""
+msgstr "Ponavljajući tajmer zasnovan na ključnim riječima"
