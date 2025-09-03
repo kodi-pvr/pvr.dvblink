@@ -19,6 +19,7 @@
     <summary lang="af_ZA">PVR Inprop vir TVMosaic/DVBLink</summary>
     <summary lang="be_BY">Убудова PVR для TVMosaic/DVBLink</summary>
     <summary lang="bg_BG">ПВР добавка за TVMosaic/DVBLink</summary>
+    <summary lang="bs_BA">PVR dodatak za TVMosaic/DVBLink</summary>
     <summary lang="ca_ES">Connector PVR per a TVMosaic/DVBLink</summary>
     <summary lang="cs_CZ">Doplněk nahrávač videa pro TVMosaic/DVBLink</summary>
     <summary lang="cy_GB">Ategyn Recordydd ar gyfer TVMosaic/DVBLink</summary>
@@ -71,6 +72,7 @@
     <description lang="af_ZA">PVR Inprop vir TVMosaic/DVBLink van DVBLogic (www.tv-mosaic.com); ondersteun stroom van lewendige TV &amp; opnames, EPG, tydhouers</description>
     <description lang="be_BY">Убудова для TVMosaic/DVBLink from DVBLogic (www.tv-mosaic.com). Падтрымліваецца прагляд струменевага ТБ і відэазапісаў, праслухоўванне радыёканалаў і праца з тэлегідам.</description>
     <description lang="bg_BG">ПВР добавка за TVMosaic/DVBLink от DVBLogic (www.tv-mosaic.com). Поддържа поточна телевизия и записване, електронен програмен справочник и броячи.</description>
+    <description lang="bs_BA">PVR dodatak za TVMosaic/DVBLink od DVBLogic-a (www.tv-mosaic.com); podržava prijenos uživo TV programa i snimaka, EPG, mjerače vremena</description>
     <description lang="ca_ES">Connector PVR per a TVMosaic/DVBLink de DVBLogic (www.tv-mosaic.com); compatible amb les transmissions en línia de TV en directe i enregistraments, guia electrònica de programació (EPG), temporitzadors</description>
     <description lang="cs_CZ">Doplněk PVR pro TVMosaic/DVBLink od DVBLogic (www.tv-mosaic.com); podporuje streamování živého vysílání a nahrávek, televizní program, časovače</description>
     <description lang="cy_GB">Ategyn amserydd ar gyfer TVMosaic/DVBLink gan DVBLogic (www.tv-mosaic.com); cefnogi ffrydio Teledu Byw a Recordiadau ac Amseryddion</description>
@@ -122,6 +124,7 @@
     <description lang="zh_TW">DVBLogic (www.tv-mosaic.com)所開發的TVMosaic/DVBLink用PVR附加元件; 支援即時電視節目串流及錄影,電子節目表,定時器</description>
     <disclaimer lang="af_ZA">Hierdie is onstabiele sagteware! Die outeurs is op geen manier verantwoordelik vir gefaalde opnames, inkorrekte tydhouers, gemorsde ure, of enige ander ongewensde effekte.</disclaimer>
     <disclaimer lang="bg_BG">Тази програма е нестабилна! Авторите не носят отговорност за неуспешно записване, некоректни броячи, пропиляно време и други нежелани ефекти.</disclaimer>
+    <disclaimer lang="bs_BA">Ovo je nestabilan softver! Autori ni na koji način nisu odgovorni za neuspjela snimanja, netačne mjerače vremena, izgubljene sate ili bilo koje druge neželjene efekte.</disclaimer>
     <disclaimer lang="ca_ES">Això és programari inestable! Els autors no són de cap manera responsables dels enregistraments que han fallat, temporitzadors incorrectes, hores perdudes, o qualssevol altres efectes no desitjats.</disclaimer>
     <disclaimer lang="cs_CZ">Tento software není stabilní! Autoři nejsou žádným způsobem zodpovědní za neúspěšná nahrávání, chybné časovače, ztracený čas nebo jakékoliv jiné nežádoucí výsledky.</disclaimer>
     <disclaimer lang="cy_GB">Mae hwn yn feddalwedd ansad! Nid yw&apos;r awduron yn gyfrifol mewn unrhyw ffordd am fethu recordio, amseru gwallus, oriau wedi eu gwastraffu nac effeithiau anymunol eraill.</disclaimer>
