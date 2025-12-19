@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2025-07-28 01:31+0000\n"
+"PO-Revision-Date: 2025-12-18 20:13+0000\n"
 "Last-Translator: Alexey <signfinder@gmail.com>\n"
 "Language-Team: Russian <https://kodi.weblate.cloud/projects/kodi-add-ons-pvr-clients/pvr-dvblink/ru_ru/>\n"
 "Language: ru_ru\n"
@@ -15,11 +15,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 5.12.2\n"
+"X-Generator: Weblate 5.15\n"
 
 msgctxt "Addon Summary"
 msgid "PVR Plugin for TVMosaic/DVBLink"
-msgstr "Дополнение PVR для TVMosaic/DVBLink"
+msgstr "Плагин PVR для TVMosaic/DVBLink"
 
 msgctxt "Addon Description"
 msgid "PVR Plugin for TVMosaic/DVBLink from DVBLogic (www.tv-mosaic.com); supporting streaming of Live TV & Recordings, EPG, Timers"
@@ -27,7 +27,7 @@ msgstr "Плагин PVR для TVMosaic/DVBLink с сайта DVBLogic (www.tv-
 
 msgctxt "Addon Disclaimer"
 msgid "This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects."
-msgstr "Это тестовое программное обеспечение! Авторы не несут никакой ответственности за неудачные записи, неправильные таймеры, потраченные впустую часы или любые другие нежелательные последствия."
+msgstr "Это нестабильное программное обеспечение! Авторы не несут ответственности за неудачные записи, некорректные таймеры, потраченное впустую время или любые другие нежелательные последствия."
 
 msgctxt "#30000"
 msgid "General"
@@ -43,15 +43,15 @@ msgstr "Порт сервера"
 
 msgctxt "#30003"
 msgid "Client name"
-msgstr "Имя клиентского приложения"
+msgstr "Имя клиента"
 
 msgctxt "#30004"
 msgid "Connection timeout (s)"
-msgstr "Лимит времени соединения (сек.)"
+msgstr "Время ожидания соединения (сек.)"
 
 msgctxt "#30005"
 msgid "Username"
-msgstr "Пользователь"
+msgstr "Имя пользователя"
 
 msgctxt "#30006"
 msgid "Password"
@@ -67,7 +67,7 @@ msgstr "Поток"
 
 msgctxt "#30102"
 msgid "Enable transcoding"
-msgstr "Включить транскодинг"
+msgstr "Включить транскодирование"
 
 msgctxt "#30103"
 msgid "Height"
@@ -103,11 +103,11 @@ msgstr "ASF"
 
 msgctxt "#30111"
 msgid "Enable Timeshift"
-msgstr "Включить таймшифт"
+msgstr "Включить сдвиг по времени"
 
 msgctxt "#30112"
 msgid "Timeshift buffer path"
-msgstr "Путь к буферу таймшифт"
+msgstr "Путь к буферу сдвига по времени"
 
 # empty strings from id 30113 to 30119
 msgctxt "#30120"
@@ -176,7 +176,7 @@ msgstr "Дополнительно"
 
 msgctxt "#30201"
 msgid "Use channel handle instead of client id"
-msgstr "Использовать клавишу канала вместо id клиента"
+msgstr "Использовать идентификатор канала вместо id клиента"
 
 msgctxt "#30202"
 msgid "Show information messages"
@@ -184,27 +184,27 @@ msgstr "Отображать информационные сообщения"
 
 msgctxt "#30203"
 msgid "Combine title and episode name for recordings"
-msgstr "Сочетать название и имя эпизода для записей"
+msgstr "Сочетать название и имя серии для записей"
 
 msgctxt "#30204"
 msgid "Group Recordings by Series"
-msgstr "Группировать записи по сериям"
+msgstr "Группировать записи по сериалам"
 
 msgctxt "#32001"
 msgid "Connected to DVBLink Server '%s'"
-msgstr "Соединение с сервером DVBLink, '%s'"
+msgstr "Подключено к серверу DVBLink '%s'"
 
 msgctxt "#32002"
 msgid "Found '%d' channels"
-msgstr "Найдено каналов, '%d'"
+msgstr "Найдено '%d' каналов"
 
 msgctxt "#32003"
 msgid "Could not connect to DVBLink Server '%s' (Error code : %d)"
-msgstr "Не удалось совершить соединение с сервером DVBLink, '%s' (Код ошибки : %d)"
+msgstr "Не удалось соединиться с сервером DVBLink '%s' (Код ошибки : %d)"
 
 msgctxt "#32004"
 msgid "Could not get recordings (Error code : %d)"
-msgstr "Не удалось найти записи (Код ошибки : %d)"
+msgstr "Не удалось получить записи (Код ошибки : %d)"
 
 msgctxt "#32006"
 msgid "Could not get timers(Error code : %d)"
@@ -216,7 +216,7 @@ msgstr "Найдено %d таймеров EPG"
 
 msgctxt "#32008"
 msgid "Found %d manual timers"
-msgstr "Обнаружено %d ручных таймеров"
+msgstr "Обнаружено %d созданных вручную таймеров"
 
 msgctxt "#32009"
 msgid "Found %d recordings"
@@ -228,15 +228,15 @@ msgstr "Не удалось обнаружить трансляцию для к�
 
 msgctxt "#32011"
 msgid "Series recording"
-msgstr "Запись серий"
+msgstr "Серия записей"
 
 msgctxt "#32012"
 msgid "Record this episode only"
-msgstr "Запись только данного эпизода"
+msgstr "Запись только данной серии"
 
 msgctxt "#32013"
 msgid "Record all episodes"
-msgstr "Запись всех эпизодов"
+msgstr "Запись всех серий"
 
 msgctxt "#32014"
 msgid "Delete timer"
@@ -252,11 +252,11 @@ msgstr "Удалить все серии"
 
 msgctxt "#32017"
 msgid "Margin before (minutes)"
-msgstr "Запас перед (минуты)"
+msgstr "Разница до (минут)"
 
 msgctxt "#32018"
 msgid "Margin after (minutes)"
-msgstr "Запас после (минуты)"
+msgstr "Разница после (минут)"
 
 msgctxt "#32019"
 msgid "New episodes only"
@@ -268,11 +268,11 @@ msgstr "Трансляция в любое время"
 
 msgctxt "#32021"
 msgid "Number of episodes to keep"
-msgstr "Хранить количество серий"
+msgstr "Сохранить количество серий"
 
 msgctxt "#32022"
 msgid "Default"
-msgstr "По-умолчанию"
+msgstr "По умолчанию"
 
 msgctxt "#32023"
 msgid "Keep all"
@@ -280,7 +280,7 @@ msgstr "Хранить все"
 
 msgctxt "#32024"
 msgid "Playback failed. Server does not support transcoding"
-msgstr "Воспроизведение не удалось. Сервер не поддерживает перекодирование"
+msgstr "Воспроизведение не удалось. Сервер не поддерживает транскодирование"
 
 msgctxt "#32025"
 msgid "Do not group single recordings"
@@ -324,7 +324,7 @@ msgstr "Сохранять 10 записей"
 
 msgctxt "#32035"
 msgid "Record all episodes"
-msgstr "Запись всех эпизодов"
+msgstr "Записывать все серии"
 
 msgctxt "#32036"
 msgid "Record only new episodes"
